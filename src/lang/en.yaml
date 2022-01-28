@@ -12,7 +12,7 @@ iaentitymodel:
 
   panels:
     variants:
-      title: Model Variants
+      title: Model Variants (not tested)
       addVariant:
         title: Add Variant
         description: Adds a new Variant to the model
