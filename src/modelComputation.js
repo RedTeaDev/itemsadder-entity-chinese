@@ -295,6 +295,12 @@ async function computeModels(cubeData) {
 							`Unexpected undefined in ${group.name}.children`
 						)
 					}
+
+					// Shit to allow colored potions
+					for (const [faceName, face] of Object.entries(cube.faces)) {
+						face["tintindex"] = 0;
+					}
+
 					elements.push({
 						faces: cube.faces,
 						to: cube.to,

@@ -2,10 +2,10 @@
 #? AJ
 iaentitymodel:
     plugin:
-        title: Animated Java
+        title: ItemsAdder Entity
 
     menubar:
-        dropdown: Animated Java
+        dropdown: ItemsAdder Entity
         settings: 设置
         export: 导出模型
         about: 关于...
@@ -28,13 +28,13 @@ iaentitymodel:
         animationRendering: 渲染动画中... %currents/%totals
 
     settings:
-        header: Animated Java 设置
+        header: ItemsAdder Entity 设置
         isGlobal: '(全局)'
         isOptional: '(可选)'
 
         generic:
             errors:
-                invalid: 当你看见这条信息时代表 Animated Java 坏了。（哎哟）
+                invalid: 当你看见这条信息时代表 ItemsAdder Entity 坏了。（哎哟）
                 emptyValue: 值不能为空
                 mustBeBoolean: 必须为布尔值
                 mustBeString: 必须为字符串
@@ -121,7 +121,7 @@ iaentitymodel:
                 - 允许你的模型拥有不同的“皮肤”，可以在运行中通过执行函数来切换皮肤。
 
         about:
-            title: 关于 Animated Java
+            title: 关于 ItemsAdder Entity
             description:
                 - 一个为帮助 Minecraft Java 版地图创作者们制作丝滑、丰富的动画而准备的工具。
 
@@ -154,7 +154,7 @@ iaentitymodel:
 
         errors:
             misc:
-                title: Animated Java 出现了一个未知错误
+                title: ItemsAdder Entity 出现了一个未知错误
                 body:
                     - |-
                         <textarea style="height: 256px" readonly="readonly">
@@ -165,7 +165,7 @@ iaentitymodel:
 
                         Build ID: %buildID
                         </textarea>
-                    - <p>请在 <a href="%githubLink">Animated Java的GitHub</a> 上报告这个错误，提供重现方式及上述错误信息。</p>
+                    - <p>请在 <a href="%githubLink">ItemsAdder Entity的GitHub</a> 上报告这个错误，提供重现方式及上述错误信息。</p>
                     - <p>你也可以加入我们的 <a href="%discordLink">Discord 服务器</a> 并在 #animated-java-support 频道上寻求帮助。</p>
                     - <p>感谢！</p>
 
@@ -178,17 +178,17 @@ iaentitymodel:
                 title: Predicate 合并失败
                 body:
                     - '%reason'
-                    - 仅支持合并到 Animated Java 控制的 predicate 模型。
-                    - 请确保你的 predicate 物品模型合并到一个已存在且有效的 Animated Java predicate 物品模型。
+                    - 仅支持合并到 ItemsAdder Entity 控制的 predicate 模型。
+                    - 请确保你的 predicate 物品模型合并到一个已存在且有效的 ItemsAdder Entity predicate 物品模型。
                 reasons:
                     overridesMissing: 模型缺少 overrides 列表。
-                    ajMetaMissing: 所合并到的物品模型并非 Animated Java predicate 文件。
+                    ajMetaMissing: 所合并到的物品模型并非 ItemsAdder Entity predicate 文件。
 
             invalidAnimationSnappingValue:
                 title: 无效的动画吸附值
                 body:
                     - "'%animationName' 动画的吸附值为 %snapping！"
-                    - Animated Java 仅支持和使用与 Minecraft 游戏刻相同的吸附值（20）。
+                    - ItemsAdder Entity 仅支持和使用与 Minecraft 游戏刻相同的吸附值（20）。
                     - 请在导出前更新该动画为此值。
                     - （你可能需要稍微移动时间轴上的关键帧以更新现有的吸附时间）
 
@@ -341,7 +341,7 @@ iaentitymodel:
                 mcbConfigPath:
                     title: Lang-mc config.json 路径
                     description:
-                        - 导出用于 Animated Java 的默认 MCB 配置
+                        - 导出用于 ItemsAdder Entity 的默认 MCB 配置
                         - 警告！该操作会覆盖现有的 config.json
                     errors:
                         mustBeNamedAfterProject: 路径必须指向名为 %projectName.mc 的文件！

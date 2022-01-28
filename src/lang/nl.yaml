@@ -1,5 +1,5 @@
 #? AJ
-iaentitymodel: Animated Java
+iaentitymodel: ItemsAdder Entity
 iaentitymodel.menubar.export.name: Export Model
 
 panel.states: Modelvarianten
@@ -70,7 +70,7 @@ iaentitymodel.setting.useCache.description: Render alleen de veranderde animatie
 
 iaentitymodel.setting.cacheMode.name: Animatie Cache Modus
 iaentitymodel.setting.cacheMode.description: |-
-    The Animatie Cache zorgt ervoor dat Animated Java slechts animaties die veranderd zijn sinds de laatste export opnieuw rendert. Dit zorgt voor snellere exporttijden, vooral bij grotere modellen.
+    The Animatie Cache zorgt ervoor dat ItemsAdder Entity slechts animaties die veranderd zijn sinds de laatste export opnieuw rendert. Dit zorgt voor snellere exporttijden, vooral bij grotere modellen.
     - Geheugenmodus is sneller, maar gebruikt meer geheugen om de cache op te slaan.
     - Diskmodus is langzamer, maar slaat de cache op de disk waardoor er minder geheugen verbruikt wordt.
 iaentitymodel.setting.cacheMode.memory.name: Geheugenmodus
@@ -151,7 +151,7 @@ iaentitymodel_exporter_animationExporter.setting.itemsadderItemConfig.invalidPop
 
 iaentitymodel_exporter_animationExporter.setting.mcbConfigPath.name: Lang-mc config.json bestandspad
 iaentitymodel_exporter_animationExporter.setting.mcbConfigPath.description: |-
-    Exporteert de standaard MCB config voor Animated Java
+    Exporteert de standaard MCB config voor ItemsAdder Entity
     WAARSCHUWING! Dit zal de huidige config.json overschrijven
 
 iaentitymodel_exporter_animationExporter.setting.itemsadderItemConfigPath.name: Data Pack

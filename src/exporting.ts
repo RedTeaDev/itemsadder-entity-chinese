@@ -135,11 +135,10 @@ async function exportRigModels(
 		console.log('Exporting Model', modelFilePath, model.elements)
 		// Export the model
 		const modelJSON = {
-			__credit:
-				'Generated using Animated Java (https://animated-java.dev/)',
 			...model,
 			aj: undefined,
 		}
+		
 		Blockbench.writeFile(modelFilePath, {
 			content: autoStringify(modelJSON),
 			custom_writer: null,
@@ -169,11 +168,10 @@ async function exportRigModels(
 			console.log('Exporting Model', modelFilePath)
 			// Export the model
 			const modelJSON = {
-				__credit:
-					'Generated using Animated Java (https://animated-java.dev/)',
 				...model,
 				aj: undefined,
 			}
+			
 			Blockbench.writeFile(modelFilePath, {
 				content: autoStringify(modelJSON),
 				custom_writer: null,
@@ -246,7 +244,7 @@ async function exportPredicate(
 			layer1: `item/potion`
 		},
 		overrides: [],
-		aj: { // TODO: remove this useless stuff
+		aj: { // TODO: remove this useless stuff?
 			includedRigs: {},
 		},
 	}
