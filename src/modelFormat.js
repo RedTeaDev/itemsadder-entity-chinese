@@ -4,17 +4,17 @@ import { store } from './util/store'
 import events from './constants/events'
 
 const FORMATV = '0.0'
-const codec = new Codec('ajmodel', {
+const codec = new Codec('iaentitymodel', {
 	load_filter: {
-		extensions: ['ajmodel'],
+		extensions: ['iaentitymodel'],
 		type: 'json',
 	},
-	extension: 'ajmodel',
+	extension: 'iaentitymodel',
 	remember: true,
-	id: 'animated_java/ajmodel',
-	name: 'Animated Java Model',
+	id: 'ia/iaentitymodel',
+	name: 'ItemsAdder Entity Model',
 	description:
-		'Model format that exports to animated java edition armor_stand animations',
+		'Blockbench Model format that includes animations and ItemsAdder Entity project data.',
 	show_on_start_screen: true,
 	bone_rig: true,
 	animation_mode: true,
@@ -29,7 +29,7 @@ const codec = new Codec('ajmodel', {
 			{
 				resource_id: 'model',
 				type: scope.name,
-				extensions: ['ajmodel', 'mcmodel'],
+				extensions: ['iaentitymodel', 'mcmodel'],
 				name: scope.fileName(),
 				startpath: scope.startPath(),
 				content: scope.compile(),
@@ -162,7 +162,7 @@ const codec = new Codec('ajmodel', {
 		}
 	},
 	parse(model, path) {
-		console.groupCollapsed('Parse .ajmodel')
+		console.groupCollapsed('Parse .iaentitymodel')
 
 		if (!model.meta) {
 			Blockbench.showMessageBox({
@@ -292,14 +292,14 @@ const codec = new Codec('ajmodel', {
 		this.dispatchEvent('parsed', { model })
 		Canvas.updateAll()
 
-		console.groupEnd('Parse .ajmodel')
+		console.groupEnd('Parse .iaentitymodel')
 	},
 })
 const format = new ModelFormat({
-	id: 'animated_java/ajmodel',
-	name: 'Animated Java Model',
+	id: 'ia/iaentitymodel',
+	name: 'ItemsAdder Entity Model',
 	description:
-		'Model format that exports to animated java edition armor_stand animations',
+		'Blockbench Model format that includes animations and ItemsAdder Entity project data.',
 	show_on_start_screen: true,
 	bone_rig: true,
 	animation_mode: true,

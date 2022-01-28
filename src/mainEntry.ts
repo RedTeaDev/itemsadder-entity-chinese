@@ -1,4 +1,4 @@
-import type * as aj from './animatedJava'
+import type * as aj from './iaentitymodel'
 
 import { tl, intl } from './util/intl'
 // @ts-ignore
@@ -75,14 +75,14 @@ import {
 } from './modelComputation'
 
 export const BuildModel = (callback: any, options: any) => {
-	if (!ANIMATED_JAVA.exportInProgress) {
-		ANIMATED_JAVA.exportInProgress = true
+	if (!IAENTITY.exportInProgress) {
+		IAENTITY.exportInProgress = true
 		computeAnimationData(callback, options)
 			.then(() => {
-				ANIMATED_JAVA.exportInProgress = false
+				IAENTITY.exportInProgress = false
 			})
 			.catch((e) => {
-				ANIMATED_JAVA.exportInProgress = false
+				IAENTITY.exportInProgress = false
 				Blockbench.setProgress(0)
 				if (
 					e instanceof CustomError &&
@@ -91,7 +91,7 @@ export const BuildModel = (callback: any, options: any) => {
 				) {
 					// @ts-ignore
 					Blockbench.showQuickMessage(
-						tl('animatedJava.popups.exportCancelled')
+						tl('iaentitymodel.popups.exportCancelled')
 					)
 					console.log('Intentional Error:', e.message)
 					throw e
@@ -101,8 +101,8 @@ export const BuildModel = (callback: any, options: any) => {
 				}
 			})
 	} else {
-		Blockbench.showQuickMessage(tl('animatedJava.popups.exportInProgress'))
-		ERROR.ANIMATED_JAVA_BUSY()
+		Blockbench.showQuickMessage(tl('iaentitymodel.popups.exportInProgress'))
+		ERROR.IAENTITY_BUSY()
 	}
 }
 
@@ -112,33 +112,33 @@ async function computeAnimationData(
 ) {
 	console.groupCollapsed('Compute Animation Data')
 
-	if (!settings.animatedJava.predicateFilePath) {
+	if (!settings.iaentitymodel.predicateFilePath) {
 		throw new CustomError('Predicate File Path Undefined Error', {
 			intentional: true,
 			dialog: {
-				id: 'animatedJava.dialogs.errors.predicateFilePathUndefined',
+				id: 'iaentitymodel.dialogs.errors.predicateFilePathUndefined',
 				title: tl(
-					'animatedJava.dialogs.errors.predicateFilePathUndefined.title'
+					'iaentitymodel.dialogs.errors.predicateFilePathUndefined.title'
 				),
 				lines: [
 					tl(
-						'animatedJava.dialogs.errors.predicateFilePathUndefined.body'
+						'iaentitymodel.dialogs.errors.predicateFilePathUndefined.body'
 					),
 				],
 				width: 256
 			},
 		})
 	}
-	if (!settings.animatedJava.rigModelsExportFolder) {
+	if (!settings.iaentitymodel.rigModelsExportFolder) {
 		throw new CustomError('Rig Model Exporter Folder Undefined', {
 			intentional: true,
 			dialog: {
-				id: 'animatedJava.dialogs.errors.rigModelsExportFolderUndefined',
+				id: 'iaentitymodel.dialogs.errors.rigModelsExportFolderUndefined',
 				title: tl(
-					'animatedJava.dialogs.errors.rigModelsExportFolderUndefined.title'
+					'iaentitymodel.dialogs.errors.rigModelsExportFolderUndefined.title'
 				),
 				lines: [tl(
-					'animatedJava.dialogs.errors.rigModelsExportFolderUndefined.body'
+					'iaentitymodel.dialogs.errors.rigModelsExportFolderUndefined.body'
 				)],
 				width: 256
 			},
@@ -171,8 +171,8 @@ async function computeAnimationData(
 	// console.log('Flat Variant Models:', flatVariantModels)
 
 	await exportRigModels(models, variants.variantModels)
-	await exportPredicate(models, variants.variantModels, settings.animatedJava)
-	if (settings.animatedJava.transparentTexturePath) {
+	await exportPredicate(models, variants.variantModels, settings.iaentitymodel)
+	if (settings.iaentitymodel.transparentTexturePath) {
 		await exportTransparentTexture()
 	}
 
@@ -197,7 +197,7 @@ import { show_settings } from './ui/dialogs/settings'
 import { show_about } from './ui/dialogs/about'
 
 const menu: any = new BarMenu(
-	'animated_java',
+	'iaentitymodel',
 	[],
 	() => Format.id === modelFormat.id
 )
@@ -216,8 +216,8 @@ Blockbench.on('unselect_project', () => {
 	menu.label.style.display = 'none'
 })
 // @ts-ignore
-import logo from './assets/Animated_Java_2022.svg'
-menu.label.innerHTML = tl('animatedJava.menubar.dropdown')
+import logo from './assets/itemsadder_icon.png'
+menu.label.innerHTML = tl('iaentitymodel.menubar.dropdown')
 let img = document.createElement('img')
 img.src = logo
 img.width = 16
@@ -228,53 +228,46 @@ img.style.borderRadius = '8px'
 img.style.marginRight = '5px'
 menu.label.prepend(img)
 MenuBar.addAction(
-	CustomAction('animated_java_settings', {
+	CustomAction('iaentitymodel_settings', {
 		icon: 'settings',
-		category: 'animated_java',
-		name: tl('animatedJava.menubar.settings'),
+		category: 'iaentitymodel',
+		name: tl('iaentitymodel.menubar.settings'),
 		condition: () => modelFormat.id === Format.id,
 		click: function () {
 			show_settings()
 		},
 	}),
-	'animated_java'
+	'iaentitymodel'
 )
 MenuBar.addAction(
 	{
 		// @ts-ignore
-		name: tl('animatedJava.menubar.export'),
-		id: 'animatedJava.export',
+		name: tl('iaentitymodel.menubar.export'),
+		id: 'iaentitymodel.export',
 		icon: 'insert_drive_file',
 		condition: () => modelFormat.id === Format.id,
 		click: () => {
 			// Call the selected exporter.
 			// @ts-ignore
-			const exporter = settings.animatedJava.exporter
-			if (exporter) {
-				store.getStore('exporters').get(exporter)()
-			} else {
-				Blockbench.showQuickMessage(
-					tl('animatedJava.popups.noExporterSelected')
-				)
-			}
+			store.getStore('exporters').get("vanillaAnimationExporter")()
 		},
 		keybind: new Keybind({
 			key: 120, // f9
 		}),
 	},
-	'animated_java'
+	'iaentitymodel'
 )
 MenuBar.addAction(
-	CustomAction('animated_java_about', {
+	CustomAction('iaentitymodel_about', {
 		icon: 'help',
-		category: 'animated_java',
-		name: tl('animatedJava.menubar.about'),
+		category: 'iaentitymodel',
+		name: tl('iaentitymodel.menubar.about'),
 		condition: () => modelFormat.id === Format.id,
 		click: function () {
 			show_about()
 		},
 	}),
-	'animated_java'
+	'iaentitymodel'
 )
 MenuBar.update()
 const cb = () => {

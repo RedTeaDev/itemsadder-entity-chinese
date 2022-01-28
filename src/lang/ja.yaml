@@ -1,7 +1,7 @@
 
 ---
 #? AJ
-animatedJava:
+iaentitymodel:
   plugin:
     title: アニメーテッド ジャバ
 
@@ -43,11 +43,11 @@ animatedJava:
         invalidEntityTag: このヴァリューはエンティティタグではありません。
 
     projectName:
-      title: プロジェクトの名前
+      title: モデル名
       description:
-        - プロジェクトのためのID。セットするの忘れないで下さい！
+        - エンティティの一意のID。 必ずこれを設定してください！
       errors:
-        invalidFunctionName: プロジェクトの名前を使えるファンクションの名前にしてください。
+        invalidFunctionName: エンティティ名が無効です！
 
     exporter:
       title: エクスポーター
@@ -61,13 +61,6 @@ animatedJava:
       description:
         - 選んだエクスポーターでディバグ／エラーメッセージをエクスポートするかを示します。
         - スタチューとアニメーションのエクスポーターだけに影響します。
-
-    rigItem:
-      title: リグアイテム
-      description:
-        - このアイテムはarmor_standsにモデルをディスプレーするために使われます。
-      errors:
-        invalidMinecraftItem: 選んだアイテムは存在しません！
 
     rigModelsExportFolder:
       title: リグモデルのエクスポートフォルダー
@@ -271,15 +264,10 @@ animatedJava:
 
       dialogs:
         errors:
-          mcbFilePathNotDefined:
+          itemsadderItemConfigPathNotDefined:
             title: MCB ファイルパスがセットされていません
             body:
               - エクスポートする前に、MCBファイルの場所をセットしてください。
-
-          dataPackPathNotDefined:
-            title: データパックファイルパスがセットされていません
-            body:
-              - エクスポートする前に、データパックの場所をセットしてください。
 
       settings:
         rootEntityType:
@@ -345,7 +333,7 @@ animatedJava:
             mcb: MCB
             vanilla: バニラ
 
-        mcbFilePath:
+        itemsadderItemConfig:
           title: Lang-mc ファイル
           description:
             - .mcをエクスポートする場所
@@ -359,7 +347,7 @@ animatedJava:
           errors:
             mustBeNamedAfterProject: パスは%projectName.mc!で終わるのが必要です！
 
-        dataPackPath:
+        itemsadderItemConfigPath:
           title: データパック
           description:
             - データパックをエクスポートする場所。
@@ -384,25 +372,6 @@ animatedJava:
               - エクスポートする前にアニメーションを作って下さい。
 
       settings:
-        autoDistance:
-          title: オートディスタンス
-          description:
-            - レンダリングされたアニメーションに基づいて、リグ内のすべてのボーンをアニメートするために必要な最大距離を計算します。
-
-        autoDistanceMovementThreshold:
-          title: オートディスタンス　ムーブメントスレスホルド
-          description:
-            - 計算されたアニメーション距離に追加する距離。
-          errors:
-            valueOutOfRange: 設定値は0以上であるのが必要です。
-
-        manualDistance:
-          title: マニュアル　アニメーションディスタンス
-          description:
-            - ボーンがアニメートを停止する前に、ルートエンティティからどれだけ離れられるかセットできます。
-          errors:
-            valueOutOfRange: 設定値は0以上であるのが必要です。
-
         frameScoreboardObjective:
           title: フレーム　スコアボード
           description:

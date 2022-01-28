@@ -1,4 +1,4 @@
-const AnimatedJavaBabelTransformPlugin = require('./tools/babelTransform')
+const iaentitymodelBabelTransformPlugin = require('./tools/babelTransform')
 module.exports = {
 	include: '*',
 	presets: [
@@ -14,6 +14,6 @@ module.exports = {
 	],
 	plugins: [
 		'@babel/plugin-proposal-class-properties',
-		AnimatedJavaBabelTransformPlugin,
+		iaentitymodelBabelTransformPlugin,
 	],
 }

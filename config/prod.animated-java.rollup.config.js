@@ -10,9 +10,9 @@ import url from '@rollup/plugin-url'
 import yaml from '@rollup/plugin-yaml'
 import typescript from 'rollup-plugin-typescript2'
 export default {
-	input: 'src/animatedJava.ts',
+	input: 'src/iaentitymodel.ts',
 	output: {
-		file: 'dist/animated_java.js',
+		file: 'dist/iaentitymodel.js',
 		format: 'cjs',
 	},
 	plugins: [

@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 declare global {
 	var AJ: any
-	const ANIMATED_JAVA: any
+	const IAENTITY: any
 	function autoStringify(obj: any): string
 	var THREE: typeof import('three')
 	var konsole: Console

@@ -1,7 +1,7 @@
 import { makeError } from './makeError'
 export class ERROR {
-	static ANIMATED_JAVA_BUSY = makeError(
-		'ERR_ANIMATED_JAVA_BUSY',
+	static IAENTITY_BUSY = makeError(
+		'ERR_IAENTITY_BUSY',
 		'Animated Java is already busy performing a task.',
 		'Animated Java is most likely already performing a build right now, please wait a moment then try again'
 	)

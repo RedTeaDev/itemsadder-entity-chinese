@@ -10,10 +10,10 @@ export function getTexturePath(texture: any) {
 		console.log('Unsaved texture:', texture)
 		throw new CustomError('Unsaved texture', {
 			dialog: {
-				id: 'animatedJava.dialogs.errors.unsavedTexture',
-				title: tl('animatedJava.dialogs.errors.unsavedTexture.title'),
+				id: 'iaentitymodel.dialogs.errors.unsavedTexture',
+				title: tl('iaentitymodel.dialogs.errors.unsavedTexture.title'),
 				lines: [
-					tl('animatedJava.dialogs.errors.unsavedTexture.body', {
+					tl('iaentitymodel.dialogs.errors.unsavedTexture.body', {
 						textureName: texture.name,
 					}),
 				],
@@ -45,13 +45,13 @@ export function getTexturePath(texture: any) {
 	console.log('Failed to generate path for:', texture)
 	throw new CustomError('Unable to generate texture path', {
 		dialog: {
-			id: 'animatedJava.dialogs.errors.unableToGenerateTexturePath',
+			id: 'iaentitymodel.dialogs.errors.unableToGenerateTexturePath',
 			title: tl(
-				'animatedJava.dialogs.errors.unableToGenerateTexturePath.title'
+				'iaentitymodel.dialogs.errors.unableToGenerateTexturePath.title'
 			),
 			lines: [
 				tl(
-					'animatedJava.dialogs.errors.unableToGenerateTexturePath.body',
+					'iaentitymodel.dialogs.errors.unableToGenerateTexturePath.body',
 					{
 						textureName: texture.name,
 					}
@@ -87,13 +87,13 @@ export function getModelPath(modelPath: string, modelName: string) {
 	}
 	throw new CustomError('Unable to generate model path', {
 		dialog: {
-			id: 'animatedJava.dialogs.errors.unableToGenerateModelPath',
+			id: 'iaentitymodel.dialogs.errors.unableToGenerateModelPath',
 			title: tl(
-				'animatedJava.dialogs.errors.unableToGenerateModelPath.title'
+				'iaentitymodel.dialogs.errors.unableToGenerateModelPath.title'
 			),
 			lines: [
 				tl(
-					'animatedJava.dialogs.errors.unableToGenerateModelPath.body',
+					'iaentitymodel.dialogs.errors.unableToGenerateModelPath.body',
 					{
 						modelName,
 					}

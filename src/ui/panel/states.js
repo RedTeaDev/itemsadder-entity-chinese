@@ -110,7 +110,7 @@ function Dialog({ children, onRequestHide }) {
 					style={{ cursor: 'default' }}
 				>
 					<div className="dialog_title">
-						{tl('animatedJava.dialogs.variants.title')}
+						{tl('iaentitymodel.dialogs.variants.title')}
 					</div>
 				</div>
 				<div
@@ -200,7 +200,7 @@ function StatePanel() {
 						}}
 					>
 						<div>
-							<p>{tl('animatedJava.dialogs.variants.description')}</p>
+							<p>{tl('iaentitymodel.dialogs.variants.description')}</p>
 						</div>
 						<div style={{ width: '100%', display: 'inline-block' }}>
 							<ul
@@ -363,13 +363,13 @@ function StatePanel() {
 									className="tooltip"
 									style={{ marginLeft: '0px' }}
 								>
-									{intl.tl('animatedJava.panels.variants.addVariant.title')}
+									{intl.tl('iaentitymodel.panels.variants.addVariant.title')}
 									<div
 										className="tooltip_description"
 										style={{ marginLeft: '-5px' }}
 									>
 										{intl.tl(
-											'animatedJava.panels.variants.addVariant.description'
+											'iaentitymodel.panels.variants.addVariant.description'
 										)}
 									</div>
 								</div>
@@ -522,7 +522,7 @@ function find(query) {
 }
 find('#java-animator-states').then((el) => {
 	el.previousElementSibling.children[0].innerHTML = intl.tl(
-		'animatedJava.panels.variants.title'
+		'iaentitymodel.panels.variants.title'
 	)
 	ReactDom.render(<StatePanel></StatePanel>, el)
 	bus.on(events.LIFECYCLE.CLEANUP, () => el.remove())

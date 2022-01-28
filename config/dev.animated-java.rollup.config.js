@@ -10,9 +10,9 @@ import typescript from 'rollup-plugin-typescript2'
 import replace from 'rollup-plugin-replace'
 
 export default {
-	input: 'src/animatedJava.ts',
+	input: 'src/iaentitymodel.ts',
 	output: {
-		file: 'dist/animated_java.js',
+		file: 'dist/iaentitymodel.js',
 		format: 'cjs',
 	},
 	plugins: [

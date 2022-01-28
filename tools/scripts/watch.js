@@ -17,9 +17,9 @@ watcher.on('event', (event) => {
 				shouldTransform = false
 				console.log(chalk.green('transforming...'))
 				fs.writeFileSync(
-					'./dist/animated_java.js',
-					`(()=>{\nconst PromiseWrapper=(p)=>p.catch((e)=>{globalThis.ANIMATED_JAVA&&globalThis.ANIMATED_JAVA.asyncError(e);return e});\n${fixup(
-						fs.readFileSync('./dist/animated_java.js', 'utf-8'),
+					'./dist/iaentitymodel.js',
+					`(()=>{\nconst PromiseWrapper=(p)=>p.catch((e)=>{globalThis.IAENTITY&&globalThis.IAENTITY.asyncError(e);return e});\n${fixup(
+						fs.readFileSync('./dist/iaentitymodel.js', 'utf-8'),
 						{
 							BUILD_ID:
 								'dbb29fae73ce8a216b2d4f4e0da42a36fd348983cae2e96587463def059fee9a',

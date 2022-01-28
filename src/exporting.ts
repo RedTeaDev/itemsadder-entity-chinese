@@ -1,4 +1,4 @@
-import type * as aj from './animatedJava'
+import type * as aj from './iaentitymodel'
 
 import * as fs from 'fs'
 import * as path from 'path'
@@ -6,7 +6,7 @@ import { tl } from './util/intl'
 import { mkdir } from './util/ezfs'
 import { settings } from './settings'
 import { CustomError } from './util/customError'
-import { format, safeFunctionName } from './util/replace'
+import {  safeFunctionName } from './util/replace'
 import { getModelPath } from './util/minecraft/resourcepack'
 // @ts-ignore
 import transparent from './assets/transparent.png'
@@ -18,27 +18,27 @@ async function exportRigModels(
 ) {
 	console.groupCollapsed('Export Rig Models')
 	const metaPath = path.join(
-		settings.animatedJava.rigModelsExportFolder,
+		settings.iaentitymodel.rigModelsExportFolder,
 		'.aj_meta'
 	)
 
 	if (!fs.existsSync(metaPath)) {
 		const files = fs.readdirSync(
-			settings.animatedJava.rigModelsExportFolder
+			settings.iaentitymodel.rigModelsExportFolder
 		)
 		// If the meta folder is empty, just write the meta and export models. However it there are other files/folder in there, show a warning.
 		if (files.length > 0) {
 			await new Promise<void>((resolve, reject) => {
 				let d = new Dialog({
-					id: 'animatedJava.rigFolderHasUnknownContent',
+					id: 'iaentitymodel.rigFolderHasUnknownContent',
 					title: tl(
-						'animatedJava.dialogs.errors.rigFolderHasUnknownContent.title'
+						'iaentitymodel.dialogs.errors.rigFolderHasUnknownContent.title'
 					),
 					lines: [
 						tl(
-							'animatedJava.dialogs.errors.rigFolderHasUnknownContent.body',
+							'iaentitymodel.dialogs.errors.rigFolderHasUnknownContent.body',
 							{
-								path: settings.animatedJava
+								path: settings.iaentitymodel
 									.rigModelsExportFolder,
 								files: files.join(', '),
 							}
@@ -79,19 +79,19 @@ async function exportRigModels(
 		// @ts-ignore
 	} else if (fs.readFileSync(metaPath, 'utf-8') !== Project.UUID) {
 		const files = fs.readdirSync(
-			settings.animatedJava.rigModelsExportFolder
+			settings.iaentitymodel.rigModelsExportFolder
 		)
 		await new Promise<void>((resolve, reject) => {
 			let d = new Dialog({
-				id: 'animatedJava.rigFolderAlreadyUsedByOther',
+				id: 'iaentitymodel.rigFolderAlreadyUsedByOther',
 				title: tl(
-					'animatedJava.dialogs.errors.rigFolderAlreadyUsedByOther.title'
+					'iaentitymodel.dialogs.errors.rigFolderAlreadyUsedByOther.title'
 				),
 				lines: [
 					tl(
-						'animatedJava.dialogs.errors.rigFolderAlreadyUsedByOther.body',
+						'iaentitymodel.dialogs.errors.rigFolderAlreadyUsedByOther.body',
 						{
-							path: settings.animatedJava.rigModelsExportFolder,
+							path: settings.iaentitymodel.rigModelsExportFolder,
 							files: files.join(', '),
 						}
 					),
@@ -129,7 +129,7 @@ async function exportRigModels(
 	for (const [name, model] of Object.entries(models)) {
 		// Get the model's file path
 		const modelFilePath = path.join(
-			settings.animatedJava.rigModelsExportFolder,
+			settings.iaentitymodel.rigModelsExportFolder,
 			name + '.json'
 		)
 		console.log('Exporting Model', modelFilePath, model.elements)
@@ -152,7 +152,7 @@ async function exportRigModels(
 
 	for (const [variantName, variant] of Object.entries(variantModels)) {
 		const variantFolderPath = path.join(
-			settings.animatedJava.rigModelsExportFolder,
+			settings.iaentitymodel.rigModelsExportFolder,
 			variantName
 		)
 		// Don't export empty variants
@@ -213,15 +213,15 @@ function throwPredicateMergingError(reason: string) {
 	throw new CustomError('Predicate Missing Overrides List', {
 		intentional: true,
 		dialog: {
-			id: 'animatedJava.predicateMergeFailed',
+			id: 'iaentitymodel.predicateMergeFailed',
 			title: tl(
-				'animatedJava.dialogs.errors.predicateMergeFailed.title',
+				'iaentitymodel.dialogs.errors.predicateMergeFailed.title',
 				{
 					reason,
 				}
 			),
 			lines: [
-				tl('animatedJava.dialogs.errors.predicateMergeFailed.body', {
+				tl('iaentitymodel.dialogs.errors.predicateMergeFailed.body', {
 					reason,
 				}),
 			],
@@ -242,10 +242,11 @@ async function exportPredicate(
 	const predicateJSON = {
 		parent: 'item/generated',
 		textures: {
-			layer0: `item/${ajSettings.rigItem.replace('minecraft:', '')}`,
+			layer0: `item/potion_overlay`,
+			layer1: `item/potion`
 		},
 		overrides: [],
-		aj: {
+		aj: { // TODO: remove this useless stuff
 			includedRigs: {},
 		},
 	}
@@ -269,13 +270,13 @@ async function exportPredicate(
 			if (!oldPredicate?.aj) {
 				throwPredicateMergingError(
 					tl(
-						'animatedJava.dialogs.errors.predicateMergeFailed.reasons.ajMetaMissing'
+						'iaentitymodel.dialogs.errors.predicateMergeFailed.reasons.ajMetaMissing'
 					)
 				)
 			} else if (!oldPredicate.overrides) {
 				throwPredicateMergingError(
 					tl(
-						'animatedJava.dialogs.errors.predicateMergeFailed.reasons.overridesMissing'
+						'iaentitymodel.dialogs.errors.predicateMergeFailed.reasons.overridesMissing'
 					)
 				)
 			}
@@ -349,7 +350,7 @@ async function exportPredicate(
 
 	//@ts-ignore
 	predicateJSON.aj.includedRigs[Project.UUID] = {
-		name: settings.animatedJava.projectName,
+		name: settings.iaentitymodel.projectName,
 		usedIDs: packArr(myMeta),
 	}
 	Blockbench.writeFile(ajSettings.predicateFilePath, {
@@ -381,7 +382,7 @@ function packArr(arr) {
 }
 async function exportTransparentTexture() {
 	console.log(transparent)
-	Blockbench.writeFile(settings.animatedJava.transparentTexturePath, {
+	Blockbench.writeFile(settings.iaentitymodel.transparentTexturePath, {
 		content: Buffer.from(
 			String(transparent).replace('data:image/png;base64,', ''),
 			'base64'

@@ -1,6 +1,6 @@
 ---
 #? AJ
-animatedJava:
+iaentitymodel:
     plugin:
         title: Animated Java
 
@@ -42,11 +42,11 @@ animatedJava:
                 invalidEntityTag: 不是有效的实体标签
 
         projectName:
-            title: 项目名称
+            title: 型号名称
             description:
-                - 此项目的唯一ID。必填！
+                - 您的实体的唯一 ID。 确保你设置了这个！
             errors:
-                invalidFunctionName: 项目名称必须为有效的函数名称！
+                invalidFunctionName: 实体名称无效！
 
         exporter:
             title: 导出器
@@ -60,13 +60,6 @@ animatedJava:
             description:
                 - 所选的导出器是否导出额外的调试/错误信息。
                 - 仅影响静态和动画导出器。
-
-        rigItem:
-            title: 骨骼物品
-            description:
-                - 盔甲架上展示模型时所使用的物品
-            errors:
-                invalidMinecraftItem: 所选物品不存在！
 
         rigModelsExportFolder:
             title: 骨骼模型导出文件夹
@@ -270,15 +263,10 @@ animatedJava:
 
             dialogs:
                 errors:
-                    mcbFilePathNotDefined:
+                    itemsadderItemConfigPathNotDefined:
                         title: 未定义 MCB 文件路径
                         body:
                             - 导出前需要在静态导出器设置中定义 MCB 文件的路径！
-
-                    dataPackPathNotDefined:
-                        title: 未定义数据包文件路径
-                        body:
-                            - 导出前需要在设置中定义数据包的路径。
 
             settings:
                 rootEntityType:
@@ -344,7 +332,7 @@ animatedJava:
                         mcb: MCB
                         vanilla: 原版
 
-                mcbFilePath:
+                itemsadderItemConfig:
                     title: Lang-mc 文件路径
                     description:
                         - .mc 文件的导出路径
@@ -358,7 +346,7 @@ animatedJava:
                     errors:
                         mustBeNamedAfterProject: 路径必须指向名为 %projectName.mc 的文件！
 
-                dataPackPath:
+                itemsadderItemConfigPath:
                     title: 数据包
                     description:
                         - 已生成数据包的导出路径。
@@ -384,27 +372,6 @@ animatedJava:
                             - 使用动画导出器前需要在动画模式中创建动画。
 
             settings:
-                autoDistance:
-                    title: 自动设置动画距离
-                    description:
-                        - 基于已渲染的动画自动计算动态化所有骨骼所需的最大距离。
-
-                autoDistanceMovementThreshold:
-                    title: 自动距离移动阈值
-                    description:
-                        - 为已计算的动画所添加的距离。
-                        - 越高的距离能使骨骼在单刻移动得更远时不出现骨骼丢失的情况
-                    errors:
-                        valueOutOfRange: 设置的值必须至少为 0
-
-                manualDistance:
-                    title: 手动设置动画距离
-                    description:
-                        - 骨骼在停止动画前离根实体所允许的最远距离。
-                        - 此设置适用于进阶用户。
-                    errors:
-                        valueOutOfRange: 设置的值必须至少为 0
-
                 frameScoreboardObjective:
                     title: 帧 记分板
                     description:

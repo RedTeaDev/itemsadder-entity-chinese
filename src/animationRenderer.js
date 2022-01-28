@@ -153,19 +153,19 @@ const Cache = new (class {
 		this.cache = new Map()
 		this.tmp = path.join(
 			os.tmpdir(),
-			`animatedJava-${Math.random().toString(16).substr(2)}`
+			`iaentitymodel-${Math.random().toString(16).substr(2)}`
 		)
 		this.data = new Map()
-		settings.watch('animatedJava.cacheMode', () => {
+		settings.watch('iaentitymodel.cacheMode', () => {
 			this.initDiskCache()
 		})
-		settings.watch('animatedJava.useCache', () => {
+		settings.watch('iaentitymodel.useCache', () => {
 			this.clear()
 		})
 		this.initDiskCache()
 	}
 	initDiskCache() {
-		if (settings.animatedJava.cacheMode === 'file') {
+		if (settings.iaentitymodel.cacheMode === 'file') {
 			console.log(`Anim Cache: using cache at ${this.tmp}`)
 			mkdirSync(this.tmp, { recursive: true })
 			for (const [key, value] of this.data) {
@@ -179,13 +179,13 @@ const Cache = new (class {
 		}
 	}
 	hit(anim) {
-		if (!settings.animatedJava.useCache) return null
+		if (!settings.iaentitymodel.useCache) return null
 		if (this.cache.has(anim.uuid)) {
 			const old_hash = this.cache.get(anim.uuid)
 			const new_hash = hash.animation(anim)
 			const hit = old_hash !== new_hash
 			if (!hit) {
-				if (settings.animatedJava.cacheMode === 'memory') {
+				if (settings.iaentitymodel.cacheMode === 'memory') {
 					return this.data.get(anim.uuid)
 				} else {
 					const data = readFileSync(
@@ -203,8 +203,8 @@ const Cache = new (class {
 		}
 	}
 	update(anim, value) {
-		if (!settings.animatedJava.useCache) return
-		if (settings.animatedJava.cacheMode === 'memory') {
+		if (!settings.iaentitymodel.useCache) return
+		if (settings.iaentitymodel.cacheMode === 'memory') {
 			this.data.set(anim.uuid, value)
 		} else {
 			writeFileSync(
@@ -242,7 +242,7 @@ async function renderAnimation(options) {
 
 	if (options.generate_static_animation) {
 		static_animation = new Animation({
-			name: 'animatedJava.staticSnimation',
+			name: 'iaentitymodel.staticSnimation',
 			snapping: 20,
 			length: 0,
 		}).add(false)
@@ -255,7 +255,7 @@ async function renderAnimation(options) {
 	)
 	// Accumulated animation length
 	let accAnimationLength = 0
-	const tldMessage = tl('animatedJava.progress.animationRendering')
+	const tldMessage = tl('iaentitymodel.progress.animationRendering')
 	const progressUpdaterID = setInterval(() => {
 		console.log(accAnimationLength, totalAnimationLength)
 		Blockbench.setStatusBarText(
@@ -290,13 +290,13 @@ async function renderAnimation(options) {
 				throw new CustomError('Invalid Snapping Value Error', {
 					intentional: true,
 					dialog: {
-						id: 'animatedJava.invalidAnimationSnappingValue',
+						id: 'iaentitymodel.invalidAnimationSnappingValue',
 						title: tl(
-							'animatedJava.dialogs.errors.invalidAnimationSnappingValue.title'
+							'iaentitymodel.dialogs.errors.invalidAnimationSnappingValue.title'
 						),
 						lines: [
 							tl(
-								'animatedJava.dialogs.errors.invalidAnimationSnappingValue.body',
+								'iaentitymodel.dialogs.errors.invalidAnimationSnappingValue.body',
 								{
 									animationName: animation.name,
 									snapping: animation.snapping,

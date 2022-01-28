@@ -41,7 +41,7 @@ BarItems.rescale_toggle.condition = function () {
 bus.on(EVENTS.LIFECYCLE.LOAD, () => {
 	const frame = () => {
 		if (format.id === Format.id) {
-			const viewmode = settings.animatedJava.boundingBoxRenderMode
+			const viewmode = settings.iaentitymodel.boundingBoxRenderMode
 			if (viewmode !== mode) {
 				mode = viewmode
 				visboxs.forEach((v) => v.parent.remove(v))

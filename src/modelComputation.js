@@ -2,14 +2,12 @@
 import path from 'path'
 import { store } from './util/store'
 import { tl } from './util/intl'
-import { cloneObject } from './util/misc'
 import { size } from './util/misc'
-import { roundToN } from './util/misc'
 import * as resourcepack from './util/minecraft/resourcepack'
 import { settings } from './settings'
 import './overrides/overrides'
 import { CustomError } from './util/customError'
-import { format, safeFunctionName } from './util/replace'
+import {  safeFunctionName } from './util/replace'
 import { isSceneBased } from './util/hasSceneAsParent'
 
 function getMCPath(raw) {
@@ -79,12 +77,12 @@ export function computeElements() {
 			throw new CustomError('Top Level Cubes Found in model', {
 				intentional: true,
 				dialog: {
-					id: 'animatedJava.dialogs.errors.topLevelCubes',
+					id: 'iaentitymodel.dialogs.errors.topLevelCubes',
 					title: tl(
-						'animatedJava.dialogs.errors.topLevelCubes.title'
+						'iaentitymodel.dialogs.errors.topLevelCubes.title'
 					),
 					lines: [
-						tl('animatedJava.dialogs.errors.topLevelCubes.body'),
+						tl('iaentitymodel.dialogs.errors.topLevelCubes.body'),
 					],
 					width: 128,
 					singleButton: true,
@@ -222,10 +220,10 @@ export function computeElements() {
 		throw new CustomError('Invalid Element Rotations', {
 			dialog: {
 				title: tl(
-					'animatedJava.dialogs.errors.invalidCubeRotations.title'
+					'iaentitymodel.dialogs.errors.invalidCubeRotations.title'
 				),
 				lines: [
-					tl('animatedJava.dialogs.errors.invalidCubeRotations.body'),
+					tl('iaentitymodel.dialogs.errors.invalidCubeRotations.body'),
 				],
 				width: 512,
 			},
@@ -307,6 +305,8 @@ async function computeModels(cubeData) {
 				const modelName = safeFunctionName(group.name)
 				models[modelName] = {
 					aj: { customModelData: getPredicateId() },
+					//origin_pos: group.origin,
+					//origin_rot: group.rotation, // Is this correct? or must i take into account also parents one?
 					textures: getTexturesOnGroup(group),
 					elements,
 				}
@@ -352,7 +352,7 @@ export async function computeVariantModels(models, variantOverrides) {
 					},
 					parent: getModelMCPath(
 						path.join(
-							settings.animatedJava.rigModelsExportFolder,
+							settings.iaentitymodel.rigModelsExportFolder,
 							modelName
 						)
 					),
@@ -503,10 +503,10 @@ export function computeVariantTextureOverrides(models) {
 	const variantModels = {}
 
 	let transparentTexturePath
-	if (settings.animatedJava.transparentTexturePath) {
+	if (settings.iaentitymodel.transparentTexturePath) {
 		transparentTexturePath = resourcepack.getTexturePath({
 			name: 'Transparent Texture',
-			path: settings.animatedJava.transparentTexturePath,
+			path: settings.iaentitymodel.transparentTexturePath,
 			saved: true,
 		})
 	}
@@ -547,13 +547,13 @@ export function computeVariantTextureOverrides(models) {
 									{
 										intentional: true,
 										dialog: {
-											id: 'animatedJava.dialogs.errors.transparentTexturePathNotFound',
+											id: 'iaentitymodel.dialogs.errors.transparentTexturePathNotFound',
 											title: tl(
-												'animatedJava.dialogs.errors.transparentTexturePathNotFound.title'
+												'iaentitymodel.dialogs.errors.transparentTexturePathNotFound.title'
 											),
 											lines: [
 												tl(
-													'animatedJava.dialogs.errors.transparentTexturePathNotFound.body'
+													'iaentitymodel.dialogs.errors.transparentTexturePathNotFound.body'
 												),
 											],
 											width: 512,

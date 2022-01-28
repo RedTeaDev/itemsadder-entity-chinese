@@ -8,18 +8,18 @@ import { Items } from './util/minecraft/items'
 import { tl } from './util/intl'
 
 function genericEmptyErrorText() {
-	return tl('animatedJava.settings.generic.errors.emptyValue')
+	return tl('iaentitymodel.settings.generic.errors.emptyValue')
 }
 export let ForeignSettingTranslationKeys = {}
 const UNASSIGNED = Symbol('UNASSIGNED_CACHE')
 export const DefaultSettings = {
-	animatedJava: {
+	iaentitymodel: {
 		projectName: {
 			get title() {
-				return tl('animatedJava.settings.projectName.title')
+				return tl('iaentitymodel.settings.projectName.title')
 			},
 			get description() {
-				return tl('animatedJava.settings.projectName.description')
+				return tl('iaentitymodel.settings.projectName.description')
 			},
 			type: 'text',
 			default: 'unnamed_project',
@@ -28,7 +28,7 @@ export const DefaultSettings = {
 					if (d.value !== safeFunctionName(d.value)) {
 						d.isValid = false
 						d.error = tl(
-							'animatedJava.settings.projectName.errors.invalidFunctionName'
+							'iaentitymodel.settings.projectName.errors.invalidFunctionName'
 						)
 					}
 				} else {
@@ -37,91 +37,14 @@ export const DefaultSettings = {
 				}
 				return d
 			},
-		},
-		exporter: {
-			get title() {
-				return tl('animatedJava.settings.exporter.title')
-			},
-			get description() {
-				return tl('animatedJava.settings.exporter.description')
-			},
-			type: 'select',
-			get default() {
-				return [...store.getStore('exporters').keys()][0]
-			},
-			get options() {
-				return Object.fromEntries(
-					[...store.getStore('exporters').keys()].map((v) => [
-						v,
-						ForeignSettingTranslationKeys[v],
-					])
-				)
-			},
-			onUpdate(d) {
-				console.log(d)
-				console.log([...store.getStore('exporters').keys()])
-				if (
-					![...store.getStore('exporters').keys()].includes(d.value)
-				) {
-					d.isValid = false
-					d.error = tl(
-						'animatedJava.settings.exporter.errors.mustBeValidExporter'
-					)
-				}
-				return d
-			},
-		},
-		verbose: {
-			get title() {
-				return tl('animatedJava.settings.verbose.title')
-			},
-			get description() {
-				return tl('animatedJava.settings.verbose.description')
-			},
-			type: 'checkbox',
-			default: true,
-			onUpdate(d) {
-				if (!(typeof d.value === 'boolean')) {
-					d.isValid = false
-					d.error = tl(
-						'animatedJava.settings.generic.errors.mustBeBoolean'
-					)
-				}
-				return d
-			},
-		},
-		rigItem: {
-			get title() {
-				return tl('animatedJava.settings.rigItem.title')
-			},
-			get description() {
-				return tl('animatedJava.settings.rigItem.description')
-			},
-			type: 'text',
-			default: 'minecraft:white_dye',
-			onUpdate(d) {
-				if (d.value != '') {
-					if (!Items.isItem(d.value)) {
-						d.isValid = false
-						d.error = tl(
-							'animatedJava.settings.rigItem.errors.invalidMinecraftItem'
-						)
-					}
-				} else {
-					d.isValid = false
-					d.error = genericEmptyErrorText()
-				}
-				return d
-			},
-			dependencies: ['animatedJava.predicateFilePath'],
 		},
 		rigModelsExportFolder: {
 			get title() {
-				return tl('animatedJava.settings.rigModelsExportFolder.title')
+				return tl('iaentitymodel.settings.rigModelsExportFolder.title')
 			},
 			get description() {
 				return tl(
-					'animatedJava.settings.rigModelsExportFolder.description'
+					'iaentitymodel.settings.rigModelsExportFolder.description'
 				)
 			},
 			type: 'filepath',
@@ -145,7 +68,7 @@ export const DefaultSettings = {
 						console.error(e)
 						d.isValid = false
 						d.error = tl(
-							'animatedJava.settings.rigModelsExportFolder.errors.invalidPath'
+							'iaentitymodel.settings.rigModelsExportFolder.errors.invalidPath'
 						)
 					}
 				} else {
@@ -157,10 +80,10 @@ export const DefaultSettings = {
 		},
 		predicateFilePath: {
 			get title() {
-				return tl('animatedJava.settings.predicateFilePath.title')
+				return tl('iaentitymodel.settings.predicateFilePath.title')
 			},
 			get description() {
-				return tl('animatedJava.settings.predicateFilePath.description')
+				return tl('iaentitymodel.settings.predicateFilePath.description')
 			},
 			type: 'filepath',
 			props: {
@@ -168,9 +91,7 @@ export const DefaultSettings = {
 				dialogOpts: {
 					get defaultPath() {
 						// console.log(store.get('settings.project'))
-						return `${removeNamespace(
-							ANIMATED_JAVA.settings.animatedJava.rigItem
-						)}.json`
+						return `potion.json`
 					},
 					promptToCreate: true,
 					properties: ['openFile'],
@@ -178,35 +99,46 @@ export const DefaultSettings = {
 			},
 			default: '',
 			onUpdate(d) {
-				if (d.value != '') {
-					const p = new Path(d.value)
-					const b = p.parse()
-					const rigItem = removeNamespace(
-						ANIMATED_JAVA.settings.animatedJava.rigItem
-					)
-					if (`${rigItem}.json` !== b.base) {
-						d.isValid = false
-						d.error = tl(
-							'animatedJava.settings.predicateFilePath.errors.notEqualToRigItem',
-							{
-								rigItem,
-							}
-						)
-					}
-				} else {
+				if (d.value === '') {
 					d.isValid = false
 					d.error = genericEmptyErrorText()
 				}
 				return d
 			},
 		},
-		transparentTexturePath: {
+		itemsadderItemConfigPath: {
 			get title() {
-				return tl('animatedJava.settings.transparentTexturePath.title')
+				return tl('iaentitymodel.exporters.generic.settings.itemsadderItemConfigPath.title')
 			},
 			get description() {
 				return tl(
-					'animatedJava.settings.transparentTexturePath.description'
+					'iaentitymodel.exporters.generic.settings.itemsadderItemConfigPath.description'
+				)
+			},
+			type: 'filepath',
+			default: '',
+			props: {
+				target: 'folder',
+				dialogOpts: {
+					promptToCreate: true,
+					properties: ['openDirectory'],
+				},
+			},
+			onUpdate(d) {
+				if (d.value === '') {
+					d.isValid = false
+					d.error = tl('iaentitymodel.settings.generic.errors.emptyValue');
+				}
+				return d
+			},
+		},
+		transparentTexturePath: {
+			get title() {
+				return tl('iaentitymodel.settings.transparentTexturePath.title')
+			},
+			get description() {
+				return tl(
+					'iaentitymodel.settings.transparentTexturePath.description'
 				)
 			},
 			type: 'filepath',
@@ -221,7 +153,7 @@ export const DefaultSettings = {
 			},
 			onUpdate(d) {
 				if (d.value === '') {
-					const variants = ANIMATED_JAVA.variants
+					const variants = IAENTITY.variants
 					if (
 						variants &&
 						Object.values(variants).find((v) =>
@@ -230,7 +162,7 @@ export const DefaultSettings = {
 					) {
 						d.isValid = false
 						d.error = tl(
-							'animatedJava.settings.transparentTexturePath.errors.undefinedWhenNeeded'
+							'iaentitymodel.settings.transparentTexturePath.errors.undefinedWhenNeeded'
 						)
 					}
 				}
@@ -239,10 +171,10 @@ export const DefaultSettings = {
 		},
 		useCache: {
 			get title() {
-				return tl('animatedJava.settings.useCache.title')
+				return tl('iaentitymodel.settings.useCache.title')
 			},
 			get description() {
-				return tl('animatedJava.settings.useCache.description')
+				return tl('iaentitymodel.settings.useCache.description')
 			},
 			type: 'checkbox',
 			default: true,
@@ -253,42 +185,42 @@ export const DefaultSettings = {
 		},
 		cacheMode: {
 			get title() {
-				return tl('animatedJava.settings.cacheMode.title')
+				return tl('iaentitymodel.settings.cacheMode.title')
 			},
 			get description() {
-				return tl('animatedJava.settings.cacheMode.description')
+				return tl('iaentitymodel.settings.cacheMode.description')
 			},
 			type: 'select',
 			default: 'memory',
 			options: {
-				memory: 'animatedJava.settings.cacheMode.options.memory',
-				file: 'animatedJava.settings.cacheMode.options.disk',
+				memory: 'iaentitymodel.settings.cacheMode.options.memory',
+				file: 'iaentitymodel.settings.cacheMode.options.disk',
 			},
 			onUpdate(d) {
 				d.isValid = Boolean(this.options[d.value])
 				return d
 			},
 			isVisible(settings) {
-				return settings.animatedJava.useCache
+				return settings.iaentitymodel.useCache
 			},
-			dependencies: ['animatedJava.useCache'],
+			dependencies: ['iaentitymodel.useCache'],
 			global: true,
 		},
 		boundingBoxRenderMode: {
 			get title() {
-				return tl('animatedJava.settings.boundingBoxRenderMode.title')
+				return tl('iaentitymodel.settings.boundingBoxRenderMode.title')
 			},
 			get description() {
 				return tl(
-					'animatedJava.settings.boundingBoxRenderMode.description'
+					'iaentitymodel.settings.boundingBoxRenderMode.description'
 				)
 			},
 			type: 'select',
 			default: 'single',
 			options: {
-				single: 'animatedJava.settings.boundingBoxRenderMode.options.single',
-				many: 'animatedJava.settings.boundingBoxRenderMode.options.many',
-				none: 'animatedJava.settings.boundingBoxRenderMode.options.none',
+				single: 'iaentitymodel.settings.boundingBoxRenderMode.options.single',
+				many: 'iaentitymodel.settings.boundingBoxRenderMode.options.many',
+				none: 'iaentitymodel.settings.boundingBoxRenderMode.options.none',
 			},
 			global: true,
 		},

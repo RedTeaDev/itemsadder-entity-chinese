@@ -257,7 +257,7 @@ const SettingInput = ({ namespace, name, template }) => {
 						}}
 						title={
 							error ||
-							tl('animatedJava.settings.generic.errors.invalid')
+							tl('iaentitymodel.settings.generic.errors.invalid')
 						}
 					>
 						<span
@@ -280,7 +280,7 @@ const SettingInput = ({ namespace, name, template }) => {
 							marginLeft: '1em',
 						}}
 					>
-						{tl('animatedJava.settings.isGlobal')}
+						{tl('iaentitymodel.settings.isGlobal')}
 					</span>
 				)}
 				{SettingDef.optional && (
@@ -290,7 +290,7 @@ const SettingInput = ({ namespace, name, template }) => {
 							marginLeft: '1em',
 						}}
 					>
-						{tl('animatedJava.settings.isOptional')}
+						{tl('iaentitymodel.settings.isOptional')}
 					</span>
 				)}
 			</div>
@@ -409,7 +409,7 @@ const Settings = () => {
 					style={{ cursor: 'default' }}
 				>
 					<div className="dialog_title">
-						{tl('animatedJava.menubar.settings')}
+						{tl('iaentitymodel.menubar.settings')}
 					</div>
 				</div>
 				<div
@@ -429,50 +429,23 @@ const Settings = () => {
 								className="tl i_b"
 								style={{ marginLeft: '1em' }}
 							>
-								{tl('animatedJava.settings.header')}
+								{tl('iaentitymodel.settings.header')}
 							</h2>
 							<ul style={{ marginLeft: '2em' }}>
-								{Object.keys(DefaultSettings.animatedJava).map(
+								{Object.keys(DefaultSettings.iaentitymodel).map(
 									(child, id) => (
 										<li key={child}>
 											<SettingInput
-												namespace={'animatedJava'}
+												namespace={'iaentitymodel'}
 												name={child}
 												template={
 													DefaultSettings
-														.animatedJava[child]
+														.iaentitymodel[child]
 												}
 											></SettingInput>
 										</li>
 									)
 								)}
-							</ul>
-						</li>
-						<li>
-							<ul>
-								<h2 style={{ marginLeft: '1em' }}>
-									{tl('animatedJava.menubar.export')}
-								</h2>
-								{Object.keys(DefaultSettings)
-									.filter((key) => key !== 'animatedJava')
-									.map((key, index) => {
-										const children = Object.keys(
-											DefaultSettings[key]
-										)
-										return (
-											// SettingsPanel(key, setRevealedIndex, index, revealedIndex, children)
-											<SettingsPanel
-												key={key}
-												name={
-													ForeignSettingTranslationKeys[
-														key
-													] || key
-												}
-												id={key}
-												childrenSettings={children}
-											/>
-										)
-									})}
 							</ul>
 						</li>
 					</ul>

@@ -9,7 +9,7 @@ bus.on(EVENTS.LIFECYCLE.LOAD, () => {
 	MenuBar.addAction(
 		CustomAction({
 			icon: 'info',
-			category: 'AnimatedJava',
+			category: 'ItemsAdder Entity',
 			name: tl('menubar.dropdown.name'),
 			id: 'java_plugin_about',
 			condition: () => format.id === Format.id,

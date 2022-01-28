@@ -1,11 +1,11 @@
 ---
 #? AJ
-animatedJava:
+iaentitymodel:
   plugin:
-    title: Animated Java
+    title: ItemsAdder Entity
 
   menubar:
-    dropdown: Animated Java
+    dropdown: ItemsAdder Entity
     settings: Settings
     export: Export Model
     about: About...
@@ -28,13 +28,13 @@ animatedJava:
     animationRendering: Rendering Animations... %currents/%totals
 
   settings:
-    header: Animated Java Settings
+    header: ItemsAdder Entity Settings
     isGlobal: '(Global)'
     isOptional: '(Optional)'
 
     generic:
       errors:
-        invalid: If you're seeing this message Animated Java broke. (Uh Oh)
+        invalid: If you're seeing this message ItemsAdder Entity broke. (Uh Oh)
         emptyValue: Value cannot be empty
         mustBeBoolean: Value must be a boolean
         mustBeString: Value must be a string
@@ -42,11 +42,11 @@ animatedJava:
         invalidEntityTag: Value is not a valid entity tag
 
     projectName:
-      title: Project Name
+      title: Model Name
       description:
-        - The unique ID of your project. Make sure you set this!
+        - The unique ID of your entity. Make sure you set this!
       errors:
-        invalidFunctionName: Project name must be a valid function name!
+        invalidFunctionName: Entity name is not valid!
 
     exporter:
       title: Exporter
@@ -60,25 +60,20 @@ animatedJava:
       description:
         - Indicates to the selected exporter whether or not to export extra debug/error messages.
         - Only really effects the Statue and Animation exporters.
-
-    rigItem:
-      title: Rig Item
-      description:
-        - The item that will be used to display the models on the armor_stands
-      errors:
-        invalidMinecraftItem: Chosen item does not exist!
-
+        
     rigModelsExportFolder:
-      title: Rig Models Export Folder
+      title: ItemsAdder resourcepack custom models folder (in your namespace)
       description:
-        - The folder that all of the rig's models will be dumped into
+        - "The folder that all of the entity item models will be saved into."
+        - "This folder must be inside the ItemsAdder resourcepack models folder."
+        - "For example: ItemsAdder/data/resource_pack/assets/my_namespace/models/npc_1/" 
       errors:
         invalidPath: Chosen path is not a valid location to export models to!
 
     predicateFilePath:
-      title: Rig Item Predicate Model
+      title: ItemsAdder resourcepack vanilla models folder (minecraft namespace)
       description:
-        - The item model file of the rig item
+        - The folder where all vanilla models are saved.
       errors:
         notEqualToRigItem: Path must end on a file named %rigItem.json
 
@@ -128,17 +123,19 @@ animatedJava:
         - Variants allow your model to have different "skins" that can be swapped out during runtime using a function.
 
     about:
-      title: About Animated Java
+      title: About ItemsAdder Entity
       description:
-        - A tool for mapmakers to create smooth, and detailed animations for Minecraft Java Edition.
+        - A tool for server admins to create smooth, and detailed animations for ItemsAdder (Spigot plugin for Minecraft Java Edition)
 
       version: Version
       buildID: Build ID
 
       creators: Creators
-      discordServer: Join our discord server!
+      discordServer: Join my discord server!
       githubRepo: Source
       developers: Developers
+      originalDevelopers: Original Animated Java developers
+      originalPluginInfo: Original Animated Java plugin info 
       patrons: Patrons
       honourableMentions: Honourable Mentions
 
@@ -161,7 +158,7 @@ animatedJava:
 
     errors:
       misc:
-        title: An Unknown Error has Occured in Animated Java
+        title: An Unknown Error has Occured in ItemsAdder Entity
         body:
         - |-
           <textarea style="height: 256px" readonly="readonly">
@@ -172,7 +169,7 @@ animatedJava:
 
           Build ID: %buildID
           </textarea>
-        - <p>Please report this error on <a href="%githubLink">Animated Java's github</a> with information on how to reproduce it and a copy of the error above.</p>
+        - <p>Please report this error on <a href="%githubLink">ItemsAdder Entity's github</a> with information on how to reproduce it and a copy of the error above.</p>
         - <p>You can also join our <a href="%discordLink">Discord Server</a> and ask questions in the animated-java-support channel.</p>
         - <p>Thank you!</p>
 
@@ -185,17 +182,17 @@ animatedJava:
         title: Predicate Failed to Merge
         body:
           - "%reason"
-          - Animated Java only supports merging into Animated Java controlled predicate models.
-          - Please make sure you are attempting to merge your predicate item model with a valid pre-existing Animated Java predicate item model.
+          - ItemsAdder Entity only supports merging into ItemsAdder Entity controlled predicate models.
+          - Please make sure you are attempting to merge your predicate item model with a valid pre-existing ItemsAdder Entity predicate item model.
         reasons:
           overridesMissing: Model overrides list missing.
-          ajMetaMissing: Model file to merge into is not an Animated Java predicate file.
+          ajMetaMissing: Model file to merge into is not an ItemsAdder Entity predicate file.
 
       invalidAnimationSnappingValue:
         title: Invalid Animation Snapping Value
         body:
           - The animation '%animationName' has a snapping value of %snapping!
-          - Due to how fast Minecraft ticks, Animated Java only supports a snapping value of 20.
+          - Due to how fast Minecraft ticks, ItemsAdder Entity only supports a snapping value of 20.
           - Please update your animations and keyframes to reflect this limitation before you export.
           - (You may have to wiggle your keyframes on the timeline a bit to update their snapped time)
 
@@ -270,15 +267,14 @@ animatedJava:
 
       dialogs:
         errors:
-          mcbFilePathNotDefined:
-            title: MCB file path not defined
+          itemsadderItemConfigPathNotDefined:
+            title: ItemsAdder configs file path undefined
             body:
-              - You must define a path for the MCB file in the Statue Exporter settings before exporting!
-
-          dataPackPathNotDefined:
-            title: Data Pack file path undefined
+              - You must define an ItemsAdder configs path in settings before you can export.
+          itemsadderItemConfigPathNotDefinedinvalidPath:
+            title: ItemsAdder configs file path invalid
             body:
-              - You must define a data pack path in settings before you can export.
+              - Chosen path is not a valid location to export ItemsAdder configurations to!
 
       settings:
         rootEntityType:
@@ -344,7 +340,7 @@ animatedJava:
             mcb: MCB
             vanilla: Vanilla
 
-        mcbFilePath:
+        itemsadderItemConfig:
           title: Lang-mc file
           description:
             - The path to export the .mc file to
@@ -353,15 +349,16 @@ animatedJava:
         mcbConfigPath:
           title: Lang-mc config.json Path
           description:
-            - Exports the default MCB config for Animated Java
+            - Exports the default MCB config for ItemsAdder Entity
             - WARNING! Will overwrite existing config.json
           errors:
             mustBeNamedAfterProject: Path must end on a file named %projectName.mc!
 
-        dataPackPath:
-          title: Data Pack
+        itemsadderItemConfigPath:
+          title: "ItemsAdder custom entity yml and json save location."
           description:
-            - The path to export the generated Data Pack to.
+            - The path to export the generated ItemsAdder configurations to.
+            - "Example: ItemsAdder/data/items_packs/my_namespace/npc_1/"
 
     #? Vanilla Statue Exporter
     vanillaStatue:
@@ -384,27 +381,6 @@ animatedJava:
               - You'll need to create some animations in the animation tab before you can export using the animation exporter.
 
       settings:
-        autoDistance:
-          title: Auto Distance
-          description:
-            - Automatically calculate the maximum distance required to animate all bones in the rig based on the rendered animations.
-
-        autoDistanceMovementThreshold:
-          title: Auto Distance Movement Threshold
-          description:
-            - How much distance to add to the calculated animation distance.
-            - The more distance you add the farther you can move the rig in a single tick without dropping bones
-          errors:
-            valueOutOfRange: Setting value must be at least 0
-
-        manualDistance:
-          title: Manual Animation Distance
-          description:
-            - How far away a bone can be from the root entity before it stops animating.
-            - This setting is intended for advanced users.
-          errors:
-            valueOutOfRange: Setting value must be at least 0
-
         frameScoreboardObjective:
           title: Frame Scoreboard
           description:

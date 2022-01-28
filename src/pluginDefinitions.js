@@ -1,16 +1,16 @@
 import { format } from './modelFormat'
 import { bus } from './util/bus'
 
-Plugin.register('animated_java', {
-	name: 'ajmodel',
-	title: 'Animated Java',
-	author: 'SnaveSutit & FetchBot',
+Plugin.register('iaentitymodel', {
+	name: 'iaentitymodel',
+	title: 'ItemsAdder Entity',
+	author: 'LoneDev',
 	description: process.env.PLUGIN_DESCRIPTION,
 	icon: 'icon-armor_stand',
 	version: process.env.PLUGIN_VERSION,
 	min_version: '4.1.0',
 	variant: 'desktop',
-	tags: ['Minecraft: Java Edition', 'Animation', 'Armor Stand'],
+	tags: ['Minecraft: Java Edition', 'Animation', 'Armor Stand', 'ItemsAdder', 'Spigot'],
 	format,
 	onload: function onload(event) {
 		bus.dispatch('plugin:load', {})

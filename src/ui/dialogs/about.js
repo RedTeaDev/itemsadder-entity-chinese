@@ -1,9 +1,10 @@
 import { tl } from '../../util/intl'
 import ReactDOM from 'react-dom'
 import React from 'react'
-import logo from '../../assets/Animated_Java_2022.svg'
+import logo from '../../assets/itemsadder_icon.png'
 import snavesutitpfp from '../../assets/YokaiS_Snave.png'
 import fetchbotpfp from '../../assets/YokaiS_Fetchbot.png'
+import LoneDev6pfp from '../../assets/LoneDev6.png'
 const Reasons = {
 	BetaTester: 0,
 	Moderator: 1,
@@ -19,63 +20,63 @@ const Reasons = {
 const roles = {
 	[Reasons.Translator]: {
 		get content() {
-			return tl('animatedJava.dialogs.about.translator')
+			return tl('iaentitymodel.dialogs.about.translator')
 		},
 		color: '#E67E22',
 		textColor: 'black',
 	},
 	[Reasons.BetaTester]: {
 		get content() {
-			return tl('animatedJava.dialogs.about.closedBeta')
+			return tl('iaentitymodel.dialogs.about.closedBeta')
 		},
 		color: '#9B59B6',
 		textColor: 'black',
 	},
 	[Reasons.Moderator]: {
 		get content() {
-			return tl('animatedJava.dialogs.about.moderator')
+			return tl('iaentitymodel.dialogs.about.moderator')
 		},
 		color: '#19B395',
 		textColor: 'black',
 	},
 	[Reasons.Contributor]: {
 		get content() {
-			return tl('animatedJava.dialogs.about.contributor')
+			return tl('iaentitymodel.dialogs.about.contributor')
 		},
 		color: '#00aced',
 		textColor: 'black',
 	},
 	[Reasons.BrandingArtist]: {
 		get content() {
-			return tl('animatedJava.dialogs.about.brandingArtist')
+			return tl('iaentitymodel.dialogs.about.brandingArtist')
 		},
 		color: '#00aced',
 		textColor: 'black',
 	},
 	[Reasons.Youtuber]: {
 		get content() {
-			return tl('animatedJava.dialogs.about.youtuber')
+			return tl('iaentitymodel.dialogs.about.youtuber')
 		},
 		color: '#FF0000',
 		textColor: 'white',
 	},
 	[Reasons.PatreonT1]: {
 		get content() {
-			return tl('animatedJava.dialogs.about.patronTier1')
+			return tl('iaentitymodel.dialogs.about.patronTier1')
 		},
 		color: 'rgb(241, 196, 15)',
 		textColor: 'black',
 	},
 	[Reasons.PatreonT2]: {
 		get content() {
-			return tl('animatedJava.dialogs.about.patronTier2')
+			return tl('iaentitymodel.dialogs.about.patronTier2')
 		},
 		color: 'rgb(241, 196, 15)',
 		textColor: 'black',
 	},
 	[Reasons.PatreonT3]: {
 		get content() {
-			return tl('animatedJava.dialogs.about.patronTier3')
+			return tl('iaentitymodel.dialogs.about.patronTier3')
 		},
 		color: 'rgb(241, 196, 15)',
 		textColor: 'black',
@@ -230,7 +231,7 @@ function About() {
 				></img>
 			</Center>
 			<Center>
-				<h1 style={{ fontSize: '3em' }}>{tl('animatedJava')}</h1>
+				<h1 style={{ fontSize: '3em' }}>{tl('iaentitymodel.plugin.title')}</h1>
 			</Center>
 			<Center>
 				<p style={{ marginTop: '0.1em' }}>
@@ -247,7 +248,7 @@ function About() {
 						fontSize: '2em',
 						color: '#5865F2',
 					}}
-					title={tl('animatedJava.dialogs.about.discordServer')}
+					title={tl('iaentitymodel.dialogs.about.discordServer')}
 				>
 					<i className="fab fa-discord"></i>
 				</Link>
@@ -260,7 +261,7 @@ function About() {
 						fontSize: '2em',
 						color: '#FFFFFF',
 					}}
-					title={tl('animatedJava.dialogs.about.githubRepo')}
+					title={tl('iaentitymodel.dialogs.about.githubRepo')}
 				>
 					<i className="fab fa-github"></i>
 				</Link>
@@ -273,7 +274,7 @@ function About() {
 						fontSize: '2em',
 						color: '#FF424D',
 					}}
-					title={tl('animatedJava.dialogs.about.patron')}
+					title={tl('iaentitymodel.dialogs.about.patron')}
 				>
 					<i className="fab fa-patron"></i>
 				</Link>
@@ -285,13 +286,58 @@ function About() {
 						whiteSpace: 'pre',
 					}}
 				>
-					{tl('animatedJava.dialogs.about.description')}
+					{tl('iaentitymodel.dialogs.about.description')}
 				</div>
 			</Center>
 			<hr />
+			<p>
+				<b>{tl('iaentitymodel.dialogs.about.buildID')}</b> {process.env.BUILD_ID}
+			</p>
 			<Center>
 				<h1 style={{ marginTop: '1em', marginBottom: '0.3em' }}>
-					{tl('animatedJava.dialogs.about.developers')}
+					{tl('iaentitymodel.dialogs.about.developers')}
+				</h1>
+			</Center>
+			<div
+				style={{
+					display: 'flex',
+					flexWrap: 'wrap',
+					margin: '20px 14%',
+					justifyContent: 'space-between',
+					backgroundColor: 'var(--color-back)',
+					borderRadius: '4px',
+					padding: '3% 3%',
+					border: '4px solid var(--color-border)',
+				}}
+			>
+				<div>
+					<img
+						src={LoneDev6pfp}
+						width={128}
+						height={128}
+						style={{
+							borderRadius: '128px',
+							backgroundColor: 'var(--color-ui)',
+							border: '4px solid var(--color-border)',
+							display: 'block',
+							marginLeft: 'auto',
+							marginRight: 'auto',
+						}}
+					></img>
+					<div style={{ textAlign: 'center' }}>
+						<a
+							href="https://twitter.com/LoneDev6"
+							style={{ fontSize: '2em' }}
+						>
+							LoneDev6
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<Center>
+				<h1 style={{ marginTop: '1em', marginBottom: '0.3em' }}>
+					{tl('iaentitymodel.dialogs.about.originalDevelopers')}
 				</h1>
 			</Center>
 			<div
@@ -329,7 +375,7 @@ function About() {
 						</a>
 					</div>
 					<p style={{ textAlign: 'center', fontSize: '1em' }}>
-						{tl('animatedJava.dialogs.about.fetchbotQuote')}
+						{tl('iaentitymodel.dialogs.about.fetchbotQuote')}
 					</p>
 				</div>
 				<div>
@@ -356,75 +402,31 @@ function About() {
 						</a>
 					</div>
 					<p style={{ textAlign: 'center', fontSize: '1em' }}>
-						{tl('animatedJava.dialogs.about.snavesutitQuote')}
+						{tl('iaentitymodel.dialogs.about.snavesutitQuote')}
 					</p>
 				</div>
 			</div>
 			<Center>
-				<h1 style={{ marginTop: '1em', marginBottom: '0.8em' }}>
-					{tl('animatedJava.dialogs.about.patrons')}
-				</h1>
+				<a
+					href="https://github.com/Animated-Java/animated-java"
+					style={{ fontSize: '2em' }}
+				>
+					{tl('iaentitymodel.dialogs.about.originalPluginInfo')}
+				</a>
 			</Center>
-			<div
-				style={{
-					display: 'flex',
-					flexWrap: 'wrap',
-					justifyContent: 'space-evenly',
-				}}
-			>
-				{people
-					.filter((person) => {
-						return (
-							person.roles.includes(Reasons.PatreonT1) ||
-							person.roles.includes(Reasons.PatreonT2) ||
-							person.roles.includes(Reasons.PatreonT3)
-						)
-					})
-					.map((person) => (
-						<Person key={person.name} person={person} />
-					))}
-			</div>
-
-			<Center>
-				<h1 style={{ marginTop: '1em', marginBottom: '0.8em' }}>
-					{tl('animatedJava.dialogs.about.honourableMentions')}
-				</h1>
-			</Center>
-			<div
-				style={{
-					display: 'flex',
-					flexWrap: 'wrap',
-					justifyContent: 'space-evenly',
-				}}
-			>
-				{people
-					.filter((person) => {
-						return !(
-							person.roles.includes(Reasons.PatreonT1) ||
-							person.roles.includes(Reasons.PatreonT2) ||
-							person.roles.includes(Reasons.PatreonT3)
-						)
-					})
-					.map((person) => (
-						<Person key={person.name} person={person} />
-					))}
-			</div>
-			<p>
-				<b>{tl('animatedJava.dialogs.about.buildID')}</b> {process.env.BUILD_ID}
-			</p>
 		</div>
 	)
 }
 export function show_about() {
 	new Dialog({
-		id: 'animatedJava.about',
+		id: 'iaentitymodel.about',
 		// width: 1024,
-		title: tl('animatedJava.dialogs.about.title'),
-		// lines: [format(tl('animatedJava.dialogs.about.body'), {
+		title: tl('iaentitymodel.dialogs.about.title'),
+		// lines: [format(tl('iaentitymodel.dialogs.about.body'), {
 		// 	version: process.env.PLUGIN_VERSION,
 		// 	buildID: process.env.BUILD_ID
 		// })],
-		lines: [`<div id="animated_java_about"></div>`],
+		lines: [`<div id="iaentitymodel_about"></div>`],
 		//@ts-ignore
 		width: 900,
 		buttons: [],
@@ -450,5 +452,5 @@ export function show_about() {
 		// 	`,
 		// },
 	}).show()
-	ReactDOM.render(<About />, document.getElementById('animated_java_about'))
+	ReactDOM.render(<About />, document.getElementById('iaentitymodel_about'))
 }

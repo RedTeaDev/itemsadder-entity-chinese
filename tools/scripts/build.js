@@ -31,7 +31,7 @@ const flavor = process.env.FLAVOR?.split('/').pop()
 				'-' +
 				crypto.createHash('sha256').update(chunk.code).digest('hex')
 			fs.writeFileSync(
-				'./dist/animated_java.js',
+				'./dist/iaentitymodel.js',
 				[
 					'\n\n\n',
 					makeBanner(
@@ -42,8 +42,8 @@ const flavor = process.env.FLAVOR?.split('/').pop()
 					makeBanner(header.split('\n').map((_) => _.trim())),
 					'\n\n\n',
 					`console.log("hello from Animated Java!");
-const konsole=new Proxy(console,{apply(a,b,c){(globalThis?.ANIMATED_JAVA?.logging??true)&&a(...c)},get(a,b){return typeof a[b]==="function"?function(...args){(globalThis?.ANIMATED_JAVA?.logging??true)&&a[b](...args)}:a[b]}});
-const PromiseWrapper=(p)=>p.catch((e)=>{globalThis.ANIMATED_JAVA&&globalThis.ANIMATED_JAVA.asyncError(e);return e});`,
+const konsole=new Proxy(console,{apply(a,b,c){(globalThis?.IAENTITY?.logging??true)&&a(...c)},get(a,b){return typeof a[b]==="function"?function(...args){(globalThis?.IAENTITY?.logging??true)&&a[b](...args)}:a[b]}});
+const PromiseWrapper=(p)=>p.catch((e)=>{globalThis.IAENTITY&&globalThis.IAENTITY.asyncError(e);return e});`,
 					'\n\n\n',
 					fixup(chunk.code, { BUILD_ID: id }),
 					'})();',

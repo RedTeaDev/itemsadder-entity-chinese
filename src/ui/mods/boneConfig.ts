@@ -6,7 +6,7 @@ type AJGroup = {
 	armAnimationEnabled: boolean
 } & Group
 
-const openBoneConfig = CustomAction('animatedJava.BoneConfig', {
+const openBoneConfig = CustomAction('iaentitymodel.BoneConfig', {
 	name: 'Bone Config',
 	icon: 'settings',
 	category: 'edit',
@@ -15,18 +15,18 @@ const openBoneConfig = CustomAction('animatedJava.BoneConfig', {
 		console.log('Opened bone config')
 		const selected = Group.selected as AJGroup
 		const dialog = new Dialog({
-			title: tl('animatedJava.boneConfig.title'),
+			title: tl('iaentitymodel.boneConfig.title'),
 			id: 'boneConfig',
 			form: {
 				nbt: {
 					type: 'textarea',
-					label: tl('animatedJava.boneConfig.boneNbt'),
+					label: tl('iaentitymodel.boneConfig.boneNbt'),
 					value: selected.nbt,
 				},
 				// armAnimationEnabled: {
 				// 	type: 'checkbox',
 				// 	label: tl(
-				// 		'animatedJava.boneConfig.armAnimationEnabled'
+				// 		'iaentitymodel.boneConfig.armAnimationEnabled'
 				// 	),
 				// 	value: false,
 				// },

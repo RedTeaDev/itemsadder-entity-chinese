@@ -1,6 +1,6 @@
 const babel = require('@babel/core')
 
-module.exports = function AnimatedJavaBabelTransformPlugin() {
+module.exports = function iaentitymodelBabelTransformPlugin() {
 	return {
 		visitor: {
 			NewExpression: (path) => {
@@ -28,7 +28,7 @@ module.exports = function AnimatedJavaBabelTransformPlugin() {
 									babel.types.expressionStatement(
 										babel.types.callExpression(
 											babel.types.identifier(
-												'ANIMATED_JAVA.asyncError'
+												'IAENTITY.asyncError'
 											),
 											[babel.types.identifier('e')]
 										)
@@ -53,7 +53,7 @@ module.exports = function AnimatedJavaBabelTransformPlugin() {
 									babel.types.expressionStatement(
 										babel.types.callExpression(
 											babel.types.identifier(
-												'ANIMATED_JAVA.asyncError'
+												'IAENTITY.asyncError'
 											),
 											[babel.types.identifier('e')]
 										)
