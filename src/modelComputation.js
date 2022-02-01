@@ -21,14 +21,6 @@ function getMCPath(raw) {
 
 let globalPredicateId = 0
 let globalPredicateCount = 0
-// let rootPredicatePath
-
-function getPredicateId() {
-	globalPredicateId += 1
-	globalPredicateCount += 1
-	console.log(`new PID: ${globalPredicateId}`)
-	return globalPredicateId
-}
 
 function resetPredicateData() {
 	globalPredicateId = 0

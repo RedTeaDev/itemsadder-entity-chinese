@@ -154,6 +154,13 @@ ModelFormat.prototype.convertTo = function convertTo() {
 	Canvas.updateAllBones()
 	Canvas.updateAllFaces()
 	updateSelection()
+
+	// Mark the project as unsaved, so the user can save it and preserve the conversion
+	Project.saved = false;
+	
+	// Hacky shit to show the itemsadder menu on top
+	Interface.tab_bar.openNewTab()
+	ModelProject.all[0].select()
 }
 
 bus.on(EVENTS.LIFECYCLE.CLEANUP, () => {
