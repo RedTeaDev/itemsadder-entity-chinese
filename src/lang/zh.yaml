@@ -61,20 +61,6 @@ iaentitymodel:
                 - 所选的导出器是否导出额外的调试/错误信息。
                 - 仅影响静态和动画导出器。
 
-        rigModelsExportFolder:
-            title: 骨骼模型导出文件夹
-            description:
-                - 所有骨骼模型导出时的存放位置
-            errors:
-                invalidPath: 所选路径不为导出模型的有效位置！
-
-        predicateFilePath:
-            title: 骨骼物品模型 Predicate
-            description:
-                - 骨骼物品的物品模型文件
-            errors:
-                notEqualToRigItem: 路径必须指向名为 %rigItem.json 的文件
-
         transparentTexturePath:
             title: 透明纹理路径
             description:
@@ -243,16 +229,6 @@ iaentitymodel:
                 body:
                     - 在使用的变体带有未定义路径的透明纹理吗？
                     - 导出前需要在配置中设置透明纹理的路径。
-
-            predicateFilePathUndefined:
-                title: 未定义 Predicate 文件路径
-                body:
-                    - 导出前需要在设置中指定 predicate 文件的路径。
-
-            rigModelsExportFolderUndefined:
-                title: 未定义骨骼模型文件夹
-                body:
-                    - 导出前需要在设置中指定骨骼模型的文件夹路径。
 
     exporters:
         #? Generic Exporter Strings

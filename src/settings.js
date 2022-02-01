@@ -14,6 +14,30 @@ export let ForeignSettingTranslationKeys = {}
 const UNASSIGNED = Symbol('UNASSIGNED_CACHE')
 export const DefaultSettings = {
 	iaentitymodel: {
+		namespace: {
+			get title() {
+				return tl('iaentitymodel.settings.namespace.title')
+			},
+			get description() {
+				return tl('iaentitymodel.settings.namespace.description')
+			},
+			type: 'text',
+			default: 'custom',
+			onUpdate(d) {
+				if (d.value !== '') {
+					if (d.value !== safeFunctionName(d.value)) {
+						d.isValid = false
+						d.error = tl(
+							'iaentitymodel.settings.namespace.errors.invalidFunctionName'
+						)
+					}
+				} else {
+					d.isValid = false
+					d.error = genericEmptyErrorText()
+				}
+				return d
+			},
+		},
 		projectName: {
 			get title() {
 				return tl('iaentitymodel.settings.projectName.title')
@@ -22,7 +46,7 @@ export const DefaultSettings = {
 				return tl('iaentitymodel.settings.projectName.description')
 			},
 			type: 'text',
-			default: 'unnamed_project',
+			default: 'my_entity',
 			onUpdate(d) {
 				if (d.value !== '') {
 					if (d.value !== safeFunctionName(d.value)) {
@@ -32,74 +56,6 @@ export const DefaultSettings = {
 						)
 					}
 				} else {
-					d.isValid = false
-					d.error = genericEmptyErrorText()
-				}
-				return d
-			},
-		},
-		rigModelsExportFolder: {
-			get title() {
-				return tl('iaentitymodel.settings.rigModelsExportFolder.title')
-			},
-			get description() {
-				return tl(
-					'iaentitymodel.settings.rigModelsExportFolder.description'
-				)
-			},
-			type: 'filepath',
-			default: '',
-			props: {
-				target: 'folder',
-				dialogOpts: {
-					promptToCreate: true,
-					properties: ['openDirectory'],
-				},
-			},
-			onUpdate(d) {
-				if (d.value != '') {
-					let modelPath
-					try {
-						modelPath = getModelPath(
-							pathjs.join(d.value, 'fakemodel.json')
-						)
-					} catch (e) {
-						console.log(d.value)
-						console.error(e)
-						d.isValid = false
-						d.error = tl(
-							'iaentitymodel.settings.rigModelsExportFolder.errors.invalidPath'
-						)
-					}
-				} else {
-					d.isValid = false
-					d.error = genericEmptyErrorText()
-				}
-				return d
-			},
-		},
-		predicateFilePath: {
-			get title() {
-				return tl('iaentitymodel.settings.predicateFilePath.title')
-			},
-			get description() {
-				return tl('iaentitymodel.settings.predicateFilePath.description')
-			},
-			type: 'filepath',
-			props: {
-				target: 'file',
-				dialogOpts: {
-					get defaultPath() {
-						// console.log(store.get('settings.project'))
-						return `potion.json`
-					},
-					promptToCreate: true,
-					properties: ['openFile'],
-				},
-			},
-			default: '',
-			onUpdate(d) {
-				if (d.value === '') {
 					d.isValid = false
 					d.error = genericEmptyErrorText()
 				}

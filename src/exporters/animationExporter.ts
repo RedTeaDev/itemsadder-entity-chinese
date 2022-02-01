@@ -16,20 +16,11 @@ import {
 } from '../util/replace'
 import { Object3D, Scene } from 'three'
 import { settings } from '../settings'
+import { getModelExportFolder } from '../util/utilz'
 
 interface vanillaAnimationExporterSettings {
 	itemsadderItemConfigPath: string | undefined
 }
-
-interface MCBConfig {
-	dev: boolean
-	header: string
-	generatedDirectory: string
-	rootNamespace?: string
-	defaultNamespace?: string
-	[index: string]: any
-}
-
 const loopModeIDs = ['once', 'hold', 'loop']
 
 async function createAnimationFile(
@@ -57,7 +48,6 @@ async function createAnimationFile(
 	console.log(animations)
 
 	const generatedAnimationData = {
-		vanilla_material: "potion",
 		bones: [],
 		animations: []
 	};
@@ -234,7 +224,6 @@ async function createAnimationFile(
 
 			generatedAnimationData.bones.push({
 					name: boneName,
-					custom_model_data: bone.customModelData,
 					pos: pos,
 					rot: rot
 			});
@@ -303,14 +292,8 @@ async function exportAnimationFile(
 		)
 	}
 
-	//TODO export also the itemsadder yml animation.
-
-
-	let path = settings.iaentitymodel.itemsadderItemConfigPath + "/" + settings.iaentitymodel.projectName ;
-	if (!fs.existsSync(path))
-		fs.mkdirSync(path, { recursive: true });
-
-	Blockbench.writeFile(path + "/" + settings.iaentitymodel.projectName + ".ia_entity", {
+	const modelExportFolder = getModelExportFolder(settings)
+	Blockbench.writeFile(modelExportFolder + "/" + ".metadata", {
 		content: generated.animationFile,
 		custom_writer: null,
 	})

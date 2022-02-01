@@ -41,41 +41,25 @@ iaentitymodel:
         missingFormatString: Value missing required %notFound formatting string
         invalidEntityTag: Value is not a valid entity tag
 
-    projectName:
-      title: Model Name
+    namespace:
+      title: Entity Namespace
       description:
-        - The unique ID of your entity. Make sure you set this!
+        - The namespace of your entity.
       errors:
-        invalidFunctionName: Entity name is not valid!
+        invalidFunctionName: Entity namespace is not valid!
 
-    exporter:
-      title: Exporter
+    projectName:
+      title: Entity ID
       description:
-        - Which export format to use for this project
+        - The unique ID of your entity.
       errors:
-        mustBeValidExporter: Selected exporter does not exist in the registered exporters!
+        invalidFunctionName: Entity ID is not valid!
 
     verbose:
       title: Verbose
       description:
         - Indicates to the selected exporter whether or not to export extra debug/error messages.
         - Only really effects the Statue and Animation exporters.
-        
-    rigModelsExportFolder:
-      title: ItemsAdder resourcepack custom models folder (in your namespace)
-      description:
-        - "The folder that all of the entity item models will be saved into."
-        - "This folder must be inside the ItemsAdder resourcepack models folder."
-        - "For example: ItemsAdder/data/resource_pack/assets/my_namespace/models/npc_1/" 
-      errors:
-        invalidPath: Chosen path is not a valid location to export models to!
-
-    predicateFilePath:
-      title: ItemsAdder resourcepack vanilla models folder (minecraft namespace)
-      description:
-        - The folder where all vanilla models are saved.
-      errors:
-        notEqualToRigItem: Path must end on a file named %rigItem.json
 
     transparentTexturePath:
       title: Transparent Texture Path
@@ -247,11 +231,6 @@ iaentitymodel:
         body:
           - Looks like you're trying to use variants with transparent textures without defining a texture path!
           - You'll need to configure the transparent texture path in the settings before you can export.
-
-      predicateFilePathUndefined:
-        title: Predicate File Path Undefined
-        body:
-          - You must define a predicate file path in the settings before you can export.
 
       rigModelsExportFolderUndefined:
         title: Rig Model Folder Undefined

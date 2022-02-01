@@ -136,8 +136,6 @@ export interface Settings {
 	useCache: boolean
 	cacheMode: 'memory' | 'disk'
 	itemsadder: string
-	predicateFilePath: string
-	rigModelsExportFolder: string
 	transparentTexturePath: string
 	boundingBoxRenderMode: 'single' | 'multiple' | 'disabled'
 }
@@ -150,7 +148,6 @@ export interface GlobalSettings {
 export type Bone = {
 	nbt: string
 	armAnimationEnabled: boolean
-	customModelData: number
 	export: boolean
 } & Cube
 
@@ -211,9 +208,6 @@ export type TextureObject = {
 }
 
 export type Model = {
-	aj: {
-		customModelData: number
-	}
 	parent: string
 	display: any
 	elements: ModelElement[]
@@ -232,9 +226,6 @@ export interface CubeData {
 }
 
 export type VariantModel = {
-	aj: {
-		customModelData: number
-	}
 	parent: string
 	textures: TextureObject
 }

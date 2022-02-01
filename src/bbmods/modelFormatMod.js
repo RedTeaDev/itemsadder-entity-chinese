@@ -14,6 +14,10 @@ ModelFormat.prototype.convertTo = function convertTo() {
 	var old_format = Format
 	this.select()
 	Modes.options.edit.select()
+	// Set uuid on project convert 
+	if (Format.id === format.id) {
+		Project.UUID = guid()
+	}
 
 	// Box UV
 	if (!this.optional_box_uv) Project.box_uv = this.box_uv
@@ -130,9 +134,7 @@ ModelFormat.prototype.convertTo = function convertTo() {
 	) {
 		Cube.all.forEach((cube) => {
 			if (!cube.rotation.allEqual(0)) {
-				var axis =
-					(cube.rotation_axis && getAxisNumber(cube.rotation_axis)) ||
-					0
+				var axis = cube.rotationAxis() ? getAxisNumber(cube.rotationAxis()) : 0;
 				var angle = limitNumber(
 					Math.round(cube.rotation[axis] / 22.5) * 22.5,
 					-45,

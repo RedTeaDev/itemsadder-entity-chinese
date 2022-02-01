@@ -6,10 +6,10 @@ import { tl } from './util/intl'
 import { mkdir } from './util/ezfs'
 import { settings } from './settings'
 import { CustomError } from './util/customError'
-import {  safeFunctionName } from './util/replace'
-import { getModelPath } from './util/minecraft/resourcepack'
+import { safeFunctionName } from './util/replace'
 // @ts-ignore
 import transparent from './assets/transparent.png'
+import { getModelExportFolder } from './util/utilz'
 
 // Exports the model.json rig files
 async function exportRigModels(
@@ -17,14 +17,17 @@ async function exportRigModels(
 	variantModels: aj.VariantModels
 ) {
 	console.groupCollapsed('Export Rig Models')
+
+	const modelExportFolder = getModelExportFolder(settings)
+	console.log("sus", modelExportFolder)
 	const metaPath = path.join(
-		settings.iaentitymodel.rigModelsExportFolder,
-		'.aj_meta'
+		modelExportFolder,
+		'.uuid'
 	)
 
 	if (!fs.existsSync(metaPath)) {
 		const files = fs.readdirSync(
-			settings.iaentitymodel.rigModelsExportFolder
+			modelExportFolder
 		)
 		// If the meta folder is empty, just write the meta and export models. However it there are other files/folder in there, show a warning.
 		if (files.length > 0) {
@@ -38,8 +41,7 @@ async function exportRigModels(
 						tl(
 							'iaentitymodel.dialogs.errors.rigFolderHasUnknownContent.body',
 							{
-								path: settings.iaentitymodel
-									.rigModelsExportFolder,
+								path: modelExportFolder,
 								files: files.join(', '),
 							}
 						),
@@ -79,7 +81,7 @@ async function exportRigModels(
 		// @ts-ignore
 	} else if (fs.readFileSync(metaPath, 'utf-8') !== Project.UUID) {
 		const files = fs.readdirSync(
-			settings.iaentitymodel.rigModelsExportFolder
+			modelExportFolder
 		)
 		await new Promise<void>((resolve, reject) => {
 			let d = new Dialog({
@@ -91,7 +93,7 @@ async function exportRigModels(
 					tl(
 						'iaentitymodel.dialogs.errors.rigFolderAlreadyUsedByOther.body',
 						{
-							path: settings.iaentitymodel.rigModelsExportFolder,
+							path: modelExportFolder,
 							files: files.join(', '),
 						}
 					),
@@ -129,7 +131,7 @@ async function exportRigModels(
 	for (const [name, model] of Object.entries(models)) {
 		// Get the model's file path
 		const modelFilePath = path.join(
-			settings.iaentitymodel.rigModelsExportFolder,
+			modelExportFolder,
 			name + '.json'
 		)
 		console.log('Exporting Model', modelFilePath, model.elements)
@@ -151,7 +153,7 @@ async function exportRigModels(
 
 	for (const [variantName, variant] of Object.entries(variantModels)) {
 		const variantFolderPath = path.join(
-			settings.iaentitymodel.rigModelsExportFolder,
+			modelExportFolder,
 			variantName
 		)
 		// Don't export empty variants
@@ -183,201 +185,6 @@ async function exportRigModels(
 	console.groupEnd()
 }
 
-interface Override {
-	predicate: {
-		custom_model_data: number
-	}
-	model: string
-}
-
-interface PredicateModel {
-	parent: string
-	textures: {
-		layer0: string
-	}
-	overrides: Override[]
-	aj: {
-		includedRigs: Record<
-			string,
-			{
-				usedIDs: (number | [number, number])[]
-				name: string
-			}
-		>
-	}
-}
-
-function throwPredicateMergingError(reason: string) {
-	throw new CustomError('Predicate Missing Overrides List', {
-		intentional: true,
-		dialog: {
-			id: 'iaentitymodel.predicateMergeFailed',
-			title: tl(
-				'iaentitymodel.dialogs.errors.predicateMergeFailed.title',
-				{
-					reason,
-				}
-			),
-			lines: [
-				tl('iaentitymodel.dialogs.errors.predicateMergeFailed.body', {
-					reason,
-				}),
-			],
-			width: 512 + 256,
-			singleButton: true,
-		},
-	})
-}
-
-async function exportPredicate(
-	models: aj.ModelObject,
-	variantModels: aj.VariantModels,
-	ajSettings: aj.Settings
-) {
-	console.groupCollapsed('Export Predicate Model')
-	const projectName = safeFunctionName(ajSettings.projectName)
-
-	const predicateJSON = {
-		parent: 'item/generated',
-		textures: {
-			layer0: `item/potion_overlay`,
-			layer1: `item/potion`
-		},
-		overrides: [],
-		aj: { // TODO: remove this useless stuff?
-			includedRigs: {},
-		},
-	}
-	let usedIDs = []
-	function* idGen() {
-		let id = 1
-		while (true) {
-			if (!usedIDs.includes(id)) yield id
-			id++
-		}
-	}
-	if (fs.existsSync(ajSettings.predicateFilePath)) {
-		const oldPredicate: PredicateModel = JSON.parse(
-			await fs.promises.readFile(ajSettings.predicateFilePath, {
-				encoding: 'utf-8',
-			})
-		)
-		console.log(oldPredicate)
-		// @ts-ignore
-		if (oldPredicate) {
-			if (!oldPredicate?.aj) {
-				throwPredicateMergingError(
-					tl(
-						'iaentitymodel.dialogs.errors.predicateMergeFailed.reasons.ajMetaMissing'
-					)
-				)
-			} else if (!oldPredicate.overrides) {
-				throwPredicateMergingError(
-					tl(
-						'iaentitymodel.dialogs.errors.predicateMergeFailed.reasons.overridesMissing'
-					)
-				)
-			}
-		}
-		const data = oldPredicate?.aj?.includedRigs || {}
-		if (!oldPredicate?.aj?.includedRigs) {
-			data.preExistingIds = {
-				name: 'preExistingIds',
-				usedIDs: packArr(
-					oldPredicate.overrides.map((override) => {
-						usedIDs.push(override.predicate.custom_model_data)
-						return override.predicate.custom_model_data
-					})
-				),
-			}
-		} else {
-			Object.entries(data).forEach(([id, dat]) => {
-				let ids = dat.usedIDs
-				// @ts-ignore
-				if (id !== Project.UUID) {
-					for (let i = 0; i < ids.length; i++) {
-						if (Array.isArray(ids[i])) {
-							for (let k = ids[i][0]; k <= ids[i][1]; k++) {
-								usedIDs.push(k)
-							}
-						} else {
-							usedIDs.push(ids[i])
-						}
-					}
-				}
-			})
-		}
-		// @ts-ignore
-		delete data[Project.UUID]
-		predicateJSON.aj.includedRigs = data
-		predicateJSON.overrides = oldPredicate.overrides.filter((override) => {
-			return usedIDs.includes(override.predicate.custom_model_data)
-		})
-	}
-	const idGenerator = idGen()
-	let myMeta = []
-	for (const [modelName, model] of Object.entries(models)) {
-		// this will always be a number as the generator is infinite.
-		model.aj.customModelData = idGenerator.next().value as number
-		predicateJSON.overrides.push({
-			predicate: { custom_model_data: model.aj.customModelData },
-			model: getModelPath(
-				path.join(ajSettings.rigModelsExportFolder, modelName),
-				modelName
-			),
-		})
-		myMeta.push(model.aj.customModelData)
-	}
-
-	for (const [variantName, variant] of Object.entries(variantModels))
-		for (const [modelName, model] of Object.entries(variant)) {
-			model.aj.customModelData = idGenerator.next().value as number
-			myMeta.push(model.aj.customModelData)
-			predicateJSON.overrides.push({
-				predicate: { custom_model_data: model.aj.customModelData },
-				model: getModelPath(
-					path.join(
-						ajSettings.rigModelsExportFolder,
-						variantName,
-						modelName
-					),
-					modelName
-				),
-			})
-		}
-
-	//@ts-ignore
-	predicateJSON.aj.includedRigs[Project.UUID] = {
-		name: settings.iaentitymodel.projectName,
-		usedIDs: packArr(myMeta),
-	}
-	Blockbench.writeFile(ajSettings.predicateFilePath, {
-		content: autoStringify(predicateJSON),
-		custom_writer: null,
-	})
-	console.groupEnd()
-}
-function packArr(arr) {
-	//take an array of numbers and return an array of ranges of consecutive numbers and if a number is not consecutive it is put in its the resulting array
-	let result = []
-	let currentRange = [arr[0]]
-	for (let i = 1; i < arr.length; i++) {
-		if (arr[i] - arr[i - 1] === 1) {
-			currentRange.push(arr[i])
-		} else {
-			result.push(currentRange)
-			currentRange = [arr[i]]
-		}
-	}
-	result.push(currentRange)
-	return result.map((range) => {
-		if (range.length === 1) {
-			return range[0]
-		} else {
-			return [range[0], range[range.length - 1]]
-		}
-	})
-}
 async function exportTransparentTexture() {
 	console.log(transparent)
 	Blockbench.writeFile(settings.iaentitymodel.transparentTexturePath, {
@@ -389,4 +196,4 @@ async function exportTransparentTexture() {
 	})
 }
 
-export { exportRigModels, exportPredicate, exportTransparentTexture }
+export { exportRigModels, exportTransparentTexture }

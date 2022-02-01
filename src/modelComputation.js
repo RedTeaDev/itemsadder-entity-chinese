@@ -9,6 +9,7 @@ import './overrides/overrides'
 import { CustomError } from './util/customError'
 import {  safeFunctionName } from './util/replace'
 import { isSceneBased } from './util/hasSceneAsParent'
+import { getModelExportFolder } from './util/utilz'
 
 function getMCPath(raw) {
 	let list = raw.split(path.sep)
@@ -127,7 +128,7 @@ export function computeElements() {
 			} else {
 				element.rotation = new oneLiner({
 					angle: 0,
-					axis: s.rotation_axis || 'y',
+					axis: s.rotationAxis() || 'y',
 					origin: s.origin,
 					rescale: true,
 				})
@@ -310,7 +311,6 @@ async function computeModels(cubeData) {
 				})
 				const modelName = safeFunctionName(group.name)
 				models[modelName] = {
-					aj: { customModelData: getPredicateId() },
 					//origin_pos: group.origin,
 					//origin_rot: group.rotation, // Is this correct? or must i take into account also parents one?
 					textures: getTexturesOnGroup(group),
@@ -343,6 +343,8 @@ export async function computeVariantModels(models, variantOverrides) {
 	const variantModels = {}
 	const variantTouchedModels = {}
 
+	const modelExportFolder = getModelExportFolder(settings)
+
 	for (const [variantName, variant] of Object.entries(variants)) {
 		variantModels[variantName] = {}
 		const thisVariantOverrides = variantOverrides[variantName]
@@ -353,12 +355,9 @@ export async function computeVariantModels(models, variantOverrides) {
 			if (thisModelOverrides && size(thisModelOverrides.textures)) {
 				variantTouchedModels[modelName] = model
 				const newVariantModel = {
-					aj: {
-						customModelData: getPredicateId(),
-					},
 					parent: getModelMCPath(
 						path.join(
-							settings.iaentitymodel.rigModelsExportFolder,
+							modelExportFolder,
 							modelName
 						)
 					),
@@ -399,11 +398,10 @@ export function computeBones(models, animations) {
 					'| mesh:',
 					value.parent
 				)
-				value.parent.customModelData =
-					models[parentName].aj.customModelData
-				value.parent.scales = {
-					'1,1,1': models[parentName].aj.customModelData,
-				}
+				//WTF?
+				//value.parent.scales = {
+				//	'1,1,1': models[parentName].aj.customModelData,
+				//}
 				value.parent.armAnimationEnabled =
 					parentGroup.armAnimationEnabled
 				value.parent.nbt = parentGroup.nbt

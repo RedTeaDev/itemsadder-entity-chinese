@@ -60,7 +60,6 @@ import { DefaultSettings, settings } from './settings'
 // import { makeArmorStandModel } from './makeArmorStandModel'
 
 import {
-	exportPredicate,
 	exportRigModels,
 	exportTransparentTexture,
 } from './exporting'
@@ -112,39 +111,6 @@ async function computeAnimationData(
 ) {
 	console.groupCollapsed('Compute Animation Data')
 
-	if (!settings.iaentitymodel.predicateFilePath) {
-		throw new CustomError('Predicate File Path Undefined Error', {
-			intentional: true,
-			dialog: {
-				id: 'iaentitymodel.dialogs.errors.predicateFilePathUndefined',
-				title: tl(
-					'iaentitymodel.dialogs.errors.predicateFilePathUndefined.title'
-				),
-				lines: [
-					tl(
-						'iaentitymodel.dialogs.errors.predicateFilePathUndefined.body'
-					),
-				],
-				width: 256
-			},
-		})
-	}
-	if (!settings.iaentitymodel.rigModelsExportFolder) {
-		throw new CustomError('Rig Model Exporter Folder Undefined', {
-			intentional: true,
-			dialog: {
-				id: 'iaentitymodel.dialogs.errors.rigModelsExportFolderUndefined',
-				title: tl(
-					'iaentitymodel.dialogs.errors.rigModelsExportFolderUndefined.title'
-				),
-				lines: [tl(
-					'iaentitymodel.dialogs.errors.rigModelsExportFolderUndefined.body'
-				)],
-				width: 256
-			},
-		})
-	}
-
 	const animations = (await renderAnimation(options)) as aj.Animations
 	const cubeData: aj.CubeData = computeElements()
 	const models: aj.ModelObject = await computeModels(cubeData)
@@ -171,7 +137,6 @@ async function computeAnimationData(
 	// console.log('Flat Variant Models:', flatVariantModels)
 
 	await exportRigModels(models, variants.variantModels)
-	await exportPredicate(models, variants.variantModels, settings.iaentitymodel)
 	if (settings.iaentitymodel.transparentTexturePath) {
 		await exportTransparentTexture()
 	}

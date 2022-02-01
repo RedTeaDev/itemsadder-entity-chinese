@@ -62,20 +62,6 @@ iaentitymodel:
         - 選んだエクスポーターでディバグ／エラーメッセージをエクスポートするかを示します。
         - スタチューとアニメーションのエクスポーターだけに影響します。
 
-    rigModelsExportFolder:
-      title: リグモデルのエクスポートフォルダー
-      description:
-        - 全てのリグのモデルはこのフォルダーに入れられます。
-      errors:
-        invalidPath: 選んだ場所にはモデルをエクスポート出来ません！
-
-    predicateFilePath:
-      title: リグアイテムのファイル
-      description:
-        - グアイテムのためのモデルファイル
-      errors:
-        notEqualToRigItem: 場所は　%rigItem.json　と名前にしてください。
-
     transparentTexturePath:
       title: 透明テクスチャーパス
       description:
@@ -244,11 +230,6 @@ iaentitymodel:
         body:
           - 透明のテクスチャーがあるヴァリアントがあります。
           - 透明のテクスチャーを設定でコンフィギュアして下さい。
-
-      predicateFilePathUndefined:
-        title: プレディケットファイルパスがセットされていません
-        body:
-          - エクスポートする前にプレディケットの場所をセットしてください。
 
       rigModelsExportFolderUndefined:
         title: リグモデルフォルダー

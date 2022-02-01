@@ -29,15 +29,6 @@ iaentitymodel.popup.error.transparentTexturePathNotFound.body: |-
     Het lijkt erop dat je modelvarianten wilt gebruiken met transparente textures zonder een texture pad te definiëren!
     Je moet de transparente texture pad in de instellingen configureren voordat je kunt exporteren.
 
-iaentitymodel.popup.error.predicateFilePathUndefined.title: Predicate bestandspad is niet gedefinieerd
-iaentitymodel.popup.error.predicateFilePathUndefined.body: |-
-    Je moet een predicate bestandspad in de instellingen definiëren voordat je kunt exporteren.
-
-iaentitymodel.popup.error.rigModelsExportFolder.title: Rig Model Map is niet gedefinieerd
-iaentitymodel.popup.error.rigModelsExportFolder.body: |-
-    Je moet een bestandspad in de instellingen configureren voor de rig model map voordat je kunt exporteren.
-    You must define a rig model folder path in settings before you can export.
-
 iaentitymodel.progress.animationRendering.text: Animaties aan het renderen... %currents/%totals
 
 #? varients panel
@@ -58,9 +49,6 @@ iaentitymodel.setting.exporter.description: Welk exportformaat wil je gebruiken 
 
 iaentitymodel.setting.rigModelsExportFolder.name: Map voor geëxporteerde rig modellen
 iaentitymodel.setting.rigModelsExportFolder.description: De map die alle rig modellen van het huidige project zal bevatten
-
-iaentitymodel.setting.predicateFilePath.name: Rig Voorwerpsbestand
-iaentitymodel.setting.predicateFilePath.description: Het bestand voor het rig voorwerp
 
 iaentitymodel.setting.transparentTexturePath.name: Bestandspad voor Transparente Texture
 iaentitymodel.setting.transparentTexturePath.description: Een transparente texture, die gebruikt wordt om transparantie toe te voegen aan modelvarianten; wordt alleen maar gebruikt als je transparantie gebruikt in je modelvarianten.
