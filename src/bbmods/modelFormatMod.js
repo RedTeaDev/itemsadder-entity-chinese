@@ -2,6 +2,9 @@ import * as EVENTS from '../constants/events'
 import { format as modelFormat } from '../modelFormat'
 import { bus } from '../util/bus'
 import { wrapNumber } from '../util/misc'
+import { CustomError } from '../util/customError'
+import { settings } from '../settings'
+import { getProjectSaveFolder } from '../util/utilz'
 
 const oldConvertFunc = ModelFormat.prototype.convertTo
 
@@ -19,15 +22,18 @@ ModelFormat.prototype.convertTo = function convertTo() {
 		Project.UUID = guid()
 	}
 
+	// Set the current projectName
+	settings.iaentitymodel.projectName = Project.name;
+	
 	// Box UV
 	if (!this.optional_box_uv) Project.box_uv = this.box_uv
 
 	//Bone Rig
-	if (!Format.bone_rig && old_format.bone_rig) {
+	/*if (!Format.bone_rig && old_format.bone_rig) {
 		Group.all.forEach((group) => {
 			group.rotation.V3_set(0, 0, 0)
 		})
-	}
+	}*/
 	if (Format.bone_rig && !old_format.bone_rig) {
 		var loose_stuff = []
 		Outliner.root.forEach((el) => {
@@ -155,10 +161,17 @@ ModelFormat.prototype.convertTo = function convertTo() {
 	Canvas.updateAllFaces()
 	updateSelection()
 
-	// Mark the project as unsaved, so the user can save it and preserve the conversion
-	Project.saved = false;
-	
-	// Hacky shit to show the itemsadder menu on top
+	// Hides the conversion dialog
+	hideDialog();
+
+	// Saves the new converted file
+	Project.export_path = getProjectSaveFolder() + Project.name + "." + Project.format.codec.extension
+	Project.format.codec.export()
+
+	// Updates the current project view save_path variable to be equal to the just saved one
+	Project.save_path = Project.export_path
+
+	// Hacky trick to show the ItemsAdder menu on top
 	Interface.tab_bar.openNewTab()
 	ModelProject.all[0].select()
 }

@@ -257,6 +257,10 @@ function getTexturesOnGroup(group) {
 async function computeModels(cubeData) {
 	console.groupCollapsed('Compute Models')
 	resetPredicateData()
+	
+	// Crap to create data export folder before everything is done.
+	// To allow the user to save the textures
+	getModelExportFolder(settings);
 
 	const models = {}
 
@@ -394,9 +398,9 @@ export function computeBones(models, animations) {
 				//value.parent.scales = {
 				//	'1,1,1': models[parentName].aj.customModelData,
 				//}
-				value.parent.armAnimationEnabled =
-					parentGroup.armAnimationEnabled
+				value.parent.armAnimationEnabled = parentGroup.armAnimationEnabled
 				value.parent.nbt = parentGroup.nbt
+				value.parent.isHead = parentGroup.isHead
 				bones[parentName] = value.parent
 			}
 		}

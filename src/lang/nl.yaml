@@ -11,6 +11,7 @@ iaentitymodel.settings.invalidSetting.generic: 'Instellingswaarde is ongeldig'
 iaentitymodel.boneConfig.title: Bot Configuratie
 iaentitymodel.boneConfig.boneNbt: Bot NBT
 iaentitymodel.boneConfig.armAnimationEnabled: Schakel Armanimatie in
+iaentitymodel.boneConfig.isHead: Is Head
 
 iaentitymodel.popup.quickMessage.noExporterSelected: Geen Exporter geselecteerd!
 
@@ -141,8 +142,3 @@ iaentitymodel_exporter_animationExporter.setting.mcbConfigPath.name: Lang-mc con
 iaentitymodel_exporter_animationExporter.setting.mcbConfigPath.description: |-
     Exporteert de standaard MCB config voor ItemsAdder Entity
     WAARSCHUWING! Dit zal de huidige config.json overschrijven
-
-iaentitymodel_exporter_animationExporter.setting.itemsadderItemConfigPath.name: Data Pack
-iaentitymodel_exporter_animationExporter.setting.itemsadderItemConfigPath.description: Het bestandspad waar de gegenereerde Data Pack naar geëxporteerd wordt.
-iaentitymodel_exporter_animationExporter.popup.error.itemsadderItemConfigPathNotDefined.title: Data Pack bestandspad is niet gedefinieerd
-iaentitymodel_exporter_animationExporter.popup.error.itemsadderItemConfigPathNotDefined.body: Je moet een bestandspad voor de data pack definiëren in de instellingen voordat je exporteert.

@@ -172,8 +172,11 @@ document.querySelector('#menu_bar').appendChild(menu.label)
 Blockbench.on('select_project', () => {
 	queueMicrotask(() => {
 		console.log('selected', Format.id !== modelFormat.id)
-		menu.label.style.display =
-			Format.id !== modelFormat.id ? 'none' : 'inline-block'
+		menu.label.style.display = Format.id !== modelFormat.id ? 'none' : 'inline-block'
+
+		if(Format.id === modelFormat.id) {
+			refreshIcons()
+		}
 	})
 })
 // @ts-ignore
@@ -182,6 +185,7 @@ Blockbench.on('unselect_project', () => {
 })
 // @ts-ignore
 import logo from './assets/itemsadder_icon.png'
+import { refreshIcons } from './util/utilz'
 menu.label.innerHTML = tl('iaentitymodel.menubar.dropdown')
 let img = document.createElement('img')
 img.src = logo
@@ -245,4 +249,10 @@ bus.on(EVENTS.LIFECYCLE.CLEANUP, () => {
 	menu.label.remove()
 	// @ts-ignore
 	Blockbench.removeListener('new_project', cb)
+	// @ts-ignore
+	Blockbench.removeListener('select_mode', cb)
+})
+
+Blockbench.on('select_mode', () => {
+	refreshIcons()
 })

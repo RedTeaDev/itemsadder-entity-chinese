@@ -102,6 +102,7 @@ iaentitymodel:
       title: ボーンコンフィグ
       boneNbt: ボーン NBT
       armAnimationEnabled: 腕のアニメーションをエネーブル
+      isHead: Is Head
 
     variants:
       title: モデルバリアント
@@ -243,13 +244,6 @@ iaentitymodel:
         writingDataPack: データパックをディスクに書き中... %progress% | %fileName　を書いています
         exportingDataPack: データパック作り中... %progress%
 
-      dialogs:
-        errors:
-          itemsadderItemConfigPathNotDefined:
-            title: MCB ファイルパスがセットされていません
-            body:
-              - エクスポートする前に、MCBファイルの場所をセットしてください。
-
       settings:
         rootEntityType:
           title: ルートエンティティ
@@ -327,11 +321,6 @@ iaentitymodel:
             - WARNING! config.jsonをオーバーライトします。
           errors:
             mustBeNamedAfterProject: パスは%projectName.mc!で終わるのが必要です！
-
-        itemsadderItemConfigPath:
-          title: データパック
-          description:
-            - データパックをエクスポートする場所。
 
     #? Vanilla Statue Exporter
     vanillaStatue:

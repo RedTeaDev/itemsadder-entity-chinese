@@ -1,25 +1,16 @@
 import type * as aj from '../iaentitymodel'
 
-import * as fs from 'fs'
 import { tl } from '../util/intl'
-import { Path } from '../util/path'
 import { store } from '../util/store'
 import { roundToN } from '../util/misc'
 import { removeKeyGently } from '../util/misc'
 import { generateTree } from '../util/treeGen'
 import { CustomError } from '../util/customError'
-import {
-	safeFunctionName,
-	format,
-	fixIndent,
-	safeEntityTag,
-} from '../util/replace'
-import { Object3D, Scene } from 'three'
 import { settings } from '../settings'
 import { getModelExportFolder } from '../util/utilz'
+import type * as bc from '../ui/mods/boneConfig'
 
 interface vanillaAnimationExporterSettings {
-	itemsadderItemConfigPath: string | undefined
 }
 const loopModeIDs = ['once', 'hold', 'loop']
 
@@ -32,13 +23,8 @@ async function createAnimationFile(
 	variantTextureOverrides: aj.VariantTextureOverrides,
 	variantTouchedModels: aj.variantTouchedModels
 ): Promise<{ animationFile: string }> {
-	const ajSettings = settings.iaentitymodel
-	const exporterSettings: vanillaAnimationExporterSettings =
-		settings.vanillaAnimationExporter
-	const projectName = safeFunctionName(ajSettings.projectName)
-
 	let headYOffset = -1.813
-	/*if (!exporterSettings.markerArmorStands)*/ headYOffset += -0.1
+	headYOffset += -0.1
 	console.log(headYOffset)
 
 	const staticAnimationUuid = store.get('staticAnimationUuid')
@@ -151,6 +137,7 @@ async function createAnimationFile(
 									y: roundToN(rot.y, 10000),
 									z: roundToN(rot.z, 10000)
 								}
+
 								// prettier-ignore
 								keyframes.push({
 									pos: [
@@ -177,7 +164,8 @@ async function createAnimationFile(
 			const finalAnimation = {
 				name: animation.name,
 				maxDistance: animation.maxDistance,
-				loopMode: animation.maxDistance,
+				loopMode: animation.loopMode,
+				length: animation.length,
 				bones: boneTrees
 			}
 
@@ -187,75 +175,43 @@ async function createAnimationFile(
 			// boneTrees is used in the next_frame function
 		}
 
+		// Add all bones to the final json
 		for (const [boneName, bone] of Object.entries(bones)) {
-
-////// This should not be needed. 
-			// I have to do that shit since I can't assign bone to currBone.
-			let pos = [
-				bone["position"]["x"],
-				bone["position"]["y"],
-				bone["position"]["z"]
-			];
-			let rot = [
-				bone["rotation"]["x"],
-				bone["rotation"]["y"],
-				bone["rotation"]["z"]
-			];
 			
-			// Adds parents pos and rot to the final bone
-			let parentBone = bone["parent"];
-			while(parentBone != null && parentBone["type"] == "Object3D")
-			{
-				console.log("TEST: parent of", bone)
-				console.log("TEST: parent", parentBone)
-
-				pos = [
-					pos[0] + parentBone["position"]["x"],
-					pos[1] + parentBone["position"]["y"],
-					pos[2] + parentBone["position"]["z"]
-				];
-				rot = [
-					rot[0] + parentBone["rotation"]["x"],
-					rot[1] + parentBone["rotation"]["y"],
-					rot[2] + parentBone["rotation"]["z"]
-				];
-				parentBone = parentBone["parent"];
-			}
-
-			generatedAnimationData.bones.push({
-					name: boneName,
-					pos: pos,
-					rot: rot
-			});
-
-			/*generatedAnimationData.bones.push({
+			let boneData = {
 				name: boneName,
-				custom_model_data: bone.customModelData,
+				isHead: bone.isHead,
+				parents: [],
 				pos: [
 					bone["position"]["x"],
 					bone["position"]["y"],
-					bone["position"]["z"],
+					bone["position"]["z"]
 				],
 				rot: [
 					bone["rotation"]["x"],
 					bone["rotation"]["y"],
 					bone["rotation"]["z"]
 				]
-			});*/
-		};
-		
-////// This should not be needed. Keep this commented here just in case.
-		/*for (const [modeName, model] of Object.entries(models)) {
-			finished.bones.push({
-					name: modeName,
-					custom_model_data: model["aj"]["customModelData"],
-					pos: model["origin_pos"],
-					rot: model["origin_rot"]
-			});
-		};
+			};
 
-		finished["models"] = models;
-		*/
+			let parentBone = bone["parent"] as bc.AJGroup;
+			while(parentBone != null && parentBone["type"] === "Object3D") {
+				// @ts-ignore
+				if(parentBone.getGroup() !== undefined) {
+					// @ts-ignore
+					boneData.parents.push(parentBone.getName());
+				}
+
+				console.log("TEST: parent of", bone)
+				console.log("TEST: parent", parentBone)
+
+				parentBone = parentBone["parent"] as bc.AJGroup;
+			}
+
+			console.log("amogus boneData: ", boneData)
+
+			generatedAnimationData.bones.push(boneData);
+		}
 
 		console.log("Finished: ", generatedAnimationData);
 	}
@@ -269,28 +225,6 @@ async function exportAnimationFile(
 	exporterSettings: vanillaAnimationExporterSettings
 ) {
 	console.log("settings", settings)
-
-	if (!settings.iaentitymodel.itemsadderItemConfigPath) {
-		throw new CustomError(
-			'iaentitymodel.exporters.generic.dialogs.errors.itemsadderItemConfigPathNotDefined',
-			{
-				intentional: true,
-				dialog: {
-					id: 'iaentitymodel.exporters.generic.dialogs.errors.itemsadderItemConfigPathNotDefined',
-					title: tl(
-						'iaentitymodel.exporters.generic.dialogs.errors.itemsadderItemConfigPathNotDefined.title'
-					),
-					lines: [
-						tl(
-							'iaentitymodel.exporters.generic.dialogs.errors.itemsadderItemConfigPathNotDefined.body'
-						),
-					],
-					width: 512,
-					singleButton: true,
-				},
-			}
-		)
-	}
 
 	const modelExportFolder = getModelExportFolder(settings)
 	Blockbench.writeFile(modelExportFolder + "/" + ".metadata", {
@@ -312,14 +246,6 @@ async function animationExport(data: any) {
 		data.variantTouchedModels
 	)
 
-	/*switch (exporterSettings.exportMode) {
-		case 'mcb':
-			await exportMCFile(generated, data.settings, exporterSettings)
-			break
-		case 'vanilla':
-			await exportDataPack(generated, data.settings, exporterSettings)
-			break
-	}*/
 	await exportAnimationFile(generated, data.settings, exporterSettings)
 
 	Blockbench.showQuickMessage(tl('iaentitymodel.popups.successfullyExported'))

@@ -46,7 +46,7 @@ export const DefaultSettings = {
 				return tl('iaentitymodel.settings.projectName.description')
 			},
 			type: 'text',
-			default: 'my_entity',
+			default: '',
 			onUpdate(d) {
 				if (d.value !== '') {
 					if (d.value !== safeFunctionName(d.value)) {
@@ -58,32 +58,6 @@ export const DefaultSettings = {
 				} else {
 					d.isValid = false
 					d.error = genericEmptyErrorText()
-				}
-				return d
-			},
-		},
-		itemsadderItemConfigPath: {
-			get title() {
-				return tl('iaentitymodel.exporters.generic.settings.itemsadderItemConfigPath.title')
-			},
-			get description() {
-				return tl(
-					'iaentitymodel.exporters.generic.settings.itemsadderItemConfigPath.description'
-				)
-			},
-			type: 'filepath',
-			default: '',
-			props: {
-				target: 'folder',
-				dialogOpts: {
-					promptToCreate: true,
-					properties: ['openDirectory'],
-				},
-			},
-			onUpdate(d) {
-				if (d.value === '') {
-					d.isValid = false
-					d.error = tl('iaentitymodel.settings.generic.errors.emptyValue');
 				}
 				return d
 			},

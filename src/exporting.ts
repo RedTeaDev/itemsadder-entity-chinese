@@ -9,7 +9,7 @@ import { CustomError } from './util/customError'
 import { safeFunctionName } from './util/replace'
 // @ts-ignore
 import transparent from './assets/transparent.png'
-import { getModelExportFolder } from './util/utilz'
+import { getModelExportFolder, toJson } from './util/utilz'
 
 // Exports the model.json rig files
 async function exportRigModels(
@@ -19,11 +19,16 @@ async function exportRigModels(
 	console.groupCollapsed('Export Rig Models')
 
 	const modelExportFolder = getModelExportFolder(settings)
-	console.log("sus", modelExportFolder)
 	const metaPath = path.join(
 		modelExportFolder,
 		'.uuid'
 	)
+
+	// Set uuid on project, it's undefined on project creation for some reason.
+	// @ts-ignore
+	if(Project.UUID === undefined)
+		// @ts-ignore
+		Project.UUID = guid();
 
 	if (!fs.existsSync(metaPath)) {
 		const files = fs.readdirSync(
@@ -142,7 +147,7 @@ async function exportRigModels(
 		}
 		
 		Blockbench.writeFile(modelFilePath, {
-			content: autoStringify(modelJSON),
+			content: toJson(modelJSON),
 			custom_writer: null,
 		})
 	}
@@ -175,7 +180,7 @@ async function exportRigModels(
 			}
 			
 			Blockbench.writeFile(modelFilePath, {
-				content: autoStringify(modelJSON),
+				content: toJson(modelJSON),
 				custom_writer: null,
 			})
 		}

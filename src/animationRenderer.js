@@ -286,28 +286,9 @@ async function renderAnimation(options) {
 		}
 
 		for (const animation of Animator.animations.sort()) {
-			if (animation.snapping != 20) {
-				throw new CustomError('Invalid Snapping Value Error', {
-					intentional: true,
-					dialog: {
-						id: 'iaentitymodel.invalidAnimationSnappingValue',
-						title: tl(
-							'iaentitymodel.dialogs.errors.invalidAnimationSnappingValue.title'
-						),
-						lines: [
-							tl(
-								'iaentitymodel.dialogs.errors.invalidAnimationSnappingValue.body',
-								{
-									animationName: animation.name,
-									snapping: animation.snapping,
-								}
-							),
-						],
-						width: 512 + 256,
-						singleButton: true,
-					},
-				})
-			}
+			
+			// Fix animation snapping
+			animation.snapping = 20;
 
 			const value = Cache.hit(animation)
 			if (!value) {
@@ -367,6 +348,7 @@ async function renderAnimation(options) {
 					maxDistance,
 					name: animation.name,
 					loopMode: animation.loop,
+					length: animation.length
 				}
 				animations[animation.uuid] = avalue
 				Cache.update(animation, avalue)

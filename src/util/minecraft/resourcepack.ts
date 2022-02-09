@@ -1,26 +1,23 @@
 //@ts-ignore
 import * as path from 'path'
+import * as fs from 'fs'
 import { CustomError } from '../customError'
 import { tl } from '../intl'
 import { normalizePath } from '../misc'
-import { format } from '../replace'
+import { getTexturesExportFolder } from '../utilz'
+import { settings } from '../../settings'
 
 export function getTexturePath(texture: any) {
 	if (!texture.path || !texture.saved) {
-		console.log('Unsaved texture:', texture)
-		throw new CustomError('Unsaved texture', {
-			dialog: {
-				id: 'iaentitymodel.dialogs.errors.unsavedTexture',
-				title: tl('iaentitymodel.dialogs.errors.unsavedTexture.title'),
-				lines: [
-					tl('iaentitymodel.dialogs.errors.unsavedTexture.body', {
-						textureName: texture.name,
-					}),
-				],
-				width: 512,
-				singleButton: true,
-			},
-		})
+		console.log('Unsaved texture, now saving:', texture)
+
+		let texturesFolder = getTexturesExportFolder(settings)
+		texture.path = path.join(texturesFolder, texture.name.toLowerCase())
+		if(!texture.path.endsWith('.png'))
+			texture.path = texture.path + ".png"
+
+		fs.closeSync(fs.openSync(texture.path, 'w')) // Hack to create a blank file
+		texture.save(false)
 	}
 	const parts = texture.path.split(path.sep)
 	const assetsIndex = parts.indexOf('assets')

@@ -100,6 +100,7 @@ iaentitymodel:
             title: 骨骼配置
             boneNbt: 骨骼 NBT
             armAnimationEnabled: 启用手臂动画
+            isHead: Is Head
 
         variants:
             title: 模型变体
@@ -237,13 +238,6 @@ iaentitymodel:
                 writingDataPack: 数据包写入到磁盘中... %progress% | %fileName 写入中
                 exportingDataPack: 生成数据包中... %progress%
 
-            dialogs:
-                errors:
-                    itemsadderItemConfigPathNotDefined:
-                        title: 未定义 MCB 文件路径
-                        body:
-                            - 导出前需要在静态导出器设置中定义 MCB 文件的路径！
-
             settings:
                 rootEntityType:
                     title: 根实体类型
@@ -321,11 +315,6 @@ iaentitymodel:
                         - 警告！该操作会覆盖现有的 config.json
                     errors:
                         mustBeNamedAfterProject: 路径必须指向名为 %projectName.mc 的文件！
-
-                itemsadderItemConfigPath:
-                    title: 数据包
-                    description:
-                        - 已生成数据包的导出路径。
 
         #? Vanilla Statue Exporter
         vanillaStatue:

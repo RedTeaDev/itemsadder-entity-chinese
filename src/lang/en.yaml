@@ -100,6 +100,7 @@ iaentitymodel:
       title: Bone Config
       boneNbt: Bone NBT
       armAnimationEnabled: Enable Arm Animation
+      isHead: Is Head
 
     variants:
       title: Model Variants
@@ -244,17 +245,6 @@ iaentitymodel:
         writingDataPack: Writing Data Pack to disk... %progress% | Writing %fileName
         exportingDataPack: Generating Data Pack... %progress%
 
-      dialogs:
-        errors:
-          itemsadderItemConfigPathNotDefined:
-            title: ItemsAdder configs file path undefined
-            body:
-              - You must define an ItemsAdder configs path in settings before you can export.
-          itemsadderItemConfigPathNotDefinedinvalidPath:
-            title: ItemsAdder configs file path invalid
-            body:
-              - Chosen path is not a valid location to export ItemsAdder configurations to!
-
       settings:
         rootEntityType:
           title: Root Entity Type
@@ -332,12 +322,6 @@ iaentitymodel:
             - WARNING! Will overwrite existing config.json
           errors:
             mustBeNamedAfterProject: Path must end on a file named %projectName.mc!
-
-        itemsadderItemConfigPath:
-          title: "ItemsAdder custom entity yml and json save location."
-          description:
-            - The path to export the generated ItemsAdder configurations to.
-            - "Example: ItemsAdder/data/items_packs/my_namespace/npc_1/"
 
     #? Vanilla Statue Exporter
     vanillaStatue:

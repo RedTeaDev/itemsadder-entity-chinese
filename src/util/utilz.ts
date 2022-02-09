@@ -2,7 +2,9 @@ import * as path from "path/posix"
 import * as fs from 'fs'
 
 export function getModelExportFolder(settings) {
-    let dirPath = Project.save_path.replace(Project.name + "." + Project.format["codec"].id, "").slice(0, -1);
+    let fileName = Project.save_path.replace(/\\/g, '/').split('/').pop()
+    let dirPath = Project.save_path.slice(0, -fileName.length - 1)
+
 	dirPath = path.normalize(dirPath);
 
     const modelsPath = path.join(
@@ -14,11 +16,19 @@ export function getModelExportFolder(settings) {
         settings.iaentitymodel.projectName
 	)
 
-    //Shit
-    fs.mkdirSync(modelsPath, { recursive: true });
+    // Dirty way
+    fs.mkdirSync(modelsPath, { recursive: true })
+
+    return modelsPath
+}
 
 
-    //Double shit
+export function getTexturesExportFolder(settings) {
+    let fileName = Project.save_path.replace(/\\/g, '/').split('/').pop()
+    let dirPath = Project.save_path.slice(0, -fileName.length - 1)
+
+	dirPath = path.normalize(dirPath)
+
     const texturesPath = path.join(
 		dirPath,
 		"assets",
@@ -27,7 +37,38 @@ export function getModelExportFolder(settings) {
 		"entity",
         settings.iaentitymodel.projectName
 	)
-    fs.mkdirSync(texturesPath, { recursive: true });
 
-    return modelsPath;
+    // Dirty way
+    fs.mkdirSync(texturesPath, { recursive: true })
+
+    return texturesPath
+}
+
+export function getProjectSaveFolder() {
+    let fileName = Project.save_path.replace(/\\/g, '/').split('/').pop()
+    let dirPath = Project.save_path.slice(0, -fileName.length)
+
+	return dirPath = path.normalize(dirPath);
+}
+
+export function refreshIcons() {
+    for (const [groupName, group] of Object.entries(Project.groups)) {
+
+        if(group.parent["name"] === undefined)
+            group["icon"] = "fa fa-archive"
+        else if(group["isHead"])
+            group["icon"] = "fa fa-heading"
+        else
+            group["icon"] = "fa fa-bone"
+
+        group.updateElement()
+    }
+
+    if(Project.groups.length > 0)
+        Project.groups[0]["icon"] = "fa fa-archive" // Root element
+}
+
+export function toJson(object: any) : string {
+    // @ts-ignore
+    return compileJSON(object, {small: true})
 }

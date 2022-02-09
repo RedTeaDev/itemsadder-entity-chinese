@@ -148,6 +148,7 @@ export interface GlobalSettings {
 export type Bone = {
 	nbt: string
 	armAnimationEnabled: boolean
+	isHead: boolean
 	export: boolean
 } & Cube
 
@@ -171,7 +172,8 @@ export type RenderedAnimation = {
 	frames: Frame[]
 	maxDistance: number
 	name: string
-	loopMode: 'loop' | 'hold' | 'once'
+	loopMode: 'loop' | 'hold' | 'once',
+	length: number
 }
 
 export interface Animations {
