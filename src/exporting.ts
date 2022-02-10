@@ -14,7 +14,8 @@ import { getModelExportFolder, toJson } from './util/utilz'
 // Exports the model.json rig files
 async function exportRigModels(
 	models: aj.ModelObject,
-	variantModels: aj.VariantModels
+	variantModels: aj.VariantModels,
+	scaleModels: aj.ScaleModels
 ) {
 	console.groupCollapsed('Export Rig Models')
 
@@ -139,8 +140,9 @@ async function exportRigModels(
 			modelExportFolder,
 			name + '.json'
 		)
-		console.log('Exporting Model', modelFilePath, model.elements)
+
 		// Export the model
+		console.log('Exporting Model', modelFilePath, model.elements)
 		const modelJSON = {
 			...model,
 			aj: undefined,
@@ -150,6 +152,31 @@ async function exportRigModels(
 			content: toJson(modelJSON),
 			custom_writer: null,
 		})
+	}
+	console.groupEnd()
+
+	console.log('Export Scale Models:', scaleModels)
+	console.group('Details')
+	for (const [modelName, scales] of Object.entries(scaleModels)) {
+		// Export the models
+		for (const [scale, model] of Object.entries(scales)) {
+			// Get the model's file path
+			const modelFilePath = path.join(
+				getModelExportFolder(settings),
+				`${modelName}_${scale}.json`
+			)
+
+			console.log('Exporting Model', scale, modelFilePath)
+			const modelJSON = {
+				...model,
+				aj: undefined,
+			}
+
+			Blockbench.writeFile(modelFilePath, {
+				content: autoStringify(modelJSON),
+				custom_writer: null,
+			})
+		}
 	}
 	console.groupEnd()
 

@@ -55,6 +55,15 @@ iaentitymodel:
       errors:
         invalidFunctionName: Entity ID is not valid!
 
+    modelScalingMode:
+        title: Model Scaling Mode
+        description:
+            - Max Model size provides 7x7x7 block wide models but limits scaling to shrinking only.
+            - Max Scaling range provides shrinking and growing up to 3.125x in size, but limits the maximum model size to 3x3x3 blocks
+        options:
+            3x3x3: Max Scaling
+            7x7x7: Max Model Size
+
     verbose:
       title: Verbose
       description:
@@ -157,6 +166,12 @@ iaentitymodel:
         - <p>Please report this error on <a href="%githubLink">ItemsAdder Entity's github</a> with information on how to reproduce it and a copy of the error above.</p>
         - <p>You can also join our <a href="%discordLink">Discord Server</a> and ask questions in the animated-java-support channel.</p>
         - <p>Thank you!</p>
+
+      scaleOutOfBounds:
+          title: Scale out of bounds
+          body:
+              - "The bone '%boneName' has an invalid scaling during one of your animations:"
+              - "%displayString"
 
       topLevelCubes:
         title: Model has top-level cubes

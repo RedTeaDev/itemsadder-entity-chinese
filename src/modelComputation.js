@@ -10,6 +10,7 @@ import { CustomError } from './util/customError'
 import {  safeFunctionName } from './util/replace'
 import { isSceneBased } from './util/hasSceneAsParent'
 import { getModelExportFolder } from './util/utilz'
+import { roundToN } from './util/misc'
 
 function getMCPath(raw) {
 	let list = raw.split(path.sep)
@@ -333,7 +334,11 @@ async function computeModels(cubeData) {
 	return scaledModels
 }
 
-export async function computeVariantModels(models, variantOverrides) {
+export async function computeVariantModels(
+	models,
+	scaleModels,
+	variantOverrides
+) {
 	console.groupCollapsed('Compute Variant Models')
 	const variants = store.get('states')
 	const variantModels = {}
@@ -360,12 +365,27 @@ export async function computeVariantModels(models, variantOverrides) {
 					textures: thisModelOverrides.textures,
 				}
 				variantModels[variantName][modelName] = newVariantModel
+
+				if (!scaleModels[modelName]) continue
+				for (const [vecStr, model] of Object.entries(
+					scaleModels[modelName]
+				)) {
+					const clone = cloneObject(model)
+					clone.parent = getModelMCPath(
+						path.join(
+							getModelExportFolder(settings),
+							variantName,
+							modelName
+						)
+					)
+					variantModels[variantName][`${modelName}_${vecStr}`] = clone
+				}
 			}
 		}
 	}
 
 	console.groupEnd('Compute Variant Models')
-	return { variantModels, variantTouchedModels }
+	return { variantModels, scaleModels, variantTouchedModels }
 }
 
 export function computeBones(models, animations) {
@@ -394,10 +414,11 @@ export function computeBones(models, animations) {
 					'| mesh:',
 					value.parent
 				)
-				//WTF?
-				//value.parent.scales = {
-				//	'1,1,1': models[parentName].aj.customModelData,
-				//}
+
+				// IDK???
+				value.parent.scales = {
+					'1-1-1': "sus",
+				}
 				value.parent.armAnimationEnabled = parentGroup.armAnimationEnabled
 				value.parent.nbt = parentGroup.nbt
 				value.parent.isHead = parentGroup.isHead
@@ -406,29 +427,27 @@ export function computeBones(models, animations) {
 		}
 	}
 
-	// function roundScale(scale) {
-	// 	return {
-	// 		x: roundToN(scale.x, 1000),
-	// 		y: roundToN(scale.y, 1000),
-	// 		z: roundToN(scale.z, 1000),
-	// 	}
-	// }
+	function roundScale(scale) {
+		return {
+			x: roundToN(scale.x, 1000),
+			y: roundToN(scale.y, 1000),
+			z: roundToN(scale.z, 1000),
+		}
+	}
 
-	// for (const [animUuid, anim] of Object.entries(animations)) {
-	// 	for (const frame of anim.frames) {
-	// 		for (const [boneName, bone] of Object.entries(frame.bones)) {
-	// 			if (bones[boneName]) {
-	// 				// Save this scale to the bone's scale object
-	// 				const rounded = roundScale(bone.scale, 1000)
-	// 				const vecStr = `${rounded.x},${rounded.y},${rounded.z}`
-	// 				if (bone.scale && !bones[boneName].scales[vecStr]) {
-	// 					console.log('New Scale:', vecStr)
-	// 					bones[boneName].scales[vecStr] = getPredicateId(bone)
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-	// }
+	for (const [_, animation] of Object.entries(animations)) {
+		for (const frame of animation.frames) {
+			for (const [boneName, bone] of Object.entries(frame.bones)) {
+				if (!bones[boneName]) continue
+				const scale = roundScale(bone.scale)
+				const vecStr = `${scale.x}-${scale.y}-${scale.z}`
+				if (bone.scale && !bones[boneName].scales[vecStr]) {
+					console.log('New scale', vecStr)
+					bones[boneName].scales[vecStr] = "sus"
+				}
+			}
+		}
+	}
 
 	console.log('Bones', bones)
 	console.groupEnd('Compute Bones')
@@ -436,15 +455,26 @@ export function computeBones(models, animations) {
 	return bones
 }
 
-//FIXME This code block should be moved to model_computation.js and it's variables should be passed to AJ by the exporter
-//START
 const displayScale = 1.6
-const displayScaleModifier = 4
-const elementScaleModifier = displayScaleModifier / displayScale
+let displayScaleModifier = 1
+let elementScaleModifier = displayScaleModifier / displayScale
+
+function computeScaleModifiers() {
+	displayScaleModifier =
+		settings.iaentitymodel.modelScalingMode === '3x3x3' ? 1 : 4
+	elementScaleModifier = displayScaleModifier / displayScale
+}
 
 async function scaleModels(models) {
+	computeScaleModifiers()
 	for (const [modelName, model] of Object.entries(models)) {
-		model.display = computeDisplay()
+		model.display = {
+			head: {
+				translation: [0, 5.6, 0],
+				scale: [0, 0, 0].map(() => displayScaleModifier),
+				rotation: [0, 0, 0],
+			},
+		}
 		for (const element of model.elements) {
 			element.to = [
 				element.to[0] / elementScaleModifier + 8, // Center the x pos in the model
@@ -469,31 +499,85 @@ async function scaleModels(models) {
 	}
 	return models
 }
-//END
 
-function computeDisplay() {
-	return {
-		head: {
-			translation: [0, 5.6, 0],
-			scale: [0, 0, 0].map((_) => displayScaleModifier),
-			rotation: [0, 0, 0],
-		},
+function vecStrToArray(vecStr) {
+	return vecStr.split('-').map((v) => Number(v))
+}
+
+function throwIfScaleOutOfBounds(scale, boneName) {
+	if (
+		scale[0] > 4 ||
+		scale[1] > 4 ||
+		scale[2] > 4
+	) {
+		throw new CustomError('Scaling out of bounds', {
+			dialog: {
+				title: tl('iaentitymodel.dialogs.errors.scaleOutOfBounds.title'),
+				lines: [
+					tl('iaentitymodel.dialogs.errors.scaleOutOfBounds.body', {
+						boneName,
+						displayString: `${boneName}: [${scale.join(', ')}] > maximum: [3.125, 3.125, 3.125]`
+					}),
+				],
+				width: 512,
+			},
+		})
+	}
+	if (
+		scale[0] < -4 ||
+		scale[1] < -4 ||
+		scale[2] < -4
+	) {
+		throw new CustomError('Scaling out of bounds', {
+			dialog: {
+				title: tl('iaentitymodel.dialogs.errors.scaleOutOfBounds.title'),
+				lines: [
+					tl('iaentitymodel.dialogs.errors.scaleOutOfBounds.body', {
+						boneName,
+						displayString: `${boneName}: [${scale.join(', ')}] < minimum: [-3.125, -3.125, -3.125]`
+					}),
+				],
+				width: 512,
+			},
+		})
 	}
 }
 
-export function computeScaleModelOverrides(models, bones, animations) {
+export function computeScaleModels(bones) {
+	computeScaleModifiers()
 	const scaleModels = {}
 
-	for (const [animUuid, anim] of Object.entries(animations)) {
-		for (const frame of anim.frames) {
-			for (const [modelName, model] of Object.entries(models)) {
-				const boneFrame = frame.bones[modelName]
-				if (boneFrame) {
-					const thisScale = {}
-				}
+	for (const [boneName, bone] of Object.entries(bones)) {
+		// Skip bones without scaling
+		if (Object.keys(bone.scales).length <= 1) continue
+		scaleModels[boneName] = {}
+
+		for (const [vecStr, customModelData] of Object.entries(bone.scales)) {
+			const scale = vecStrToArray(vecStr)
+			const mappedScale = scale.map((v) => v * displayScaleModifier)
+			throwIfScaleOutOfBounds(mappedScale, boneName)
+
+			const model = {
+				parent: getModelMCPath(
+					path.join(
+						getModelExportFolder(settings),
+						boneName
+					)
+				),
+				display: {
+					head: {
+						translation: [0, 5.6, 0],
+						scale: mappedScale,
+						rotation: [0, 0, 0],
+					},
+				},
+				aj: { customModelData },
 			}
+			scaleModels[boneName][vecStr] = model
 		}
 	}
+
+	return scaleModels
 }
 
 export function computeVariantTextureOverrides(models) {

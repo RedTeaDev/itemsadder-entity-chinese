@@ -62,6 +62,33 @@ export const DefaultSettings = {
 				return d
 			},
 		},
+		modelScalingMode: {
+			get title() {
+				return tl('iaentitymodel.settings.modelScalingMode.title')
+			},
+			get description() {
+				return tl('iaentitymodel.settings.modelScalingMode.description')
+			},
+			type: 'select',
+			default: '3x3x3',
+			get options() {
+				return {
+					'3x3x3': tl(
+						'iaentitymodel.settings.modelScalingMode.options.3x3x3'
+					),
+					'7x7x7': tl(
+						'iaentitymodel.settings.modelScalingMode.options.7x7x7'
+					),
+				}
+			},
+			onUpdate(d) {
+				if (!d.value) {
+					d.isValid = false
+					d.error = genericEmptyErrorText()
+				}
+				return d
+			},
+		},
 		transparentTexturePath: {
 			get title() {
 				return tl('iaentitymodel.settings.transparentTexturePath.title')

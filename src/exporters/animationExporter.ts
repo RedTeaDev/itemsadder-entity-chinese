@@ -20,6 +20,7 @@ async function createAnimationFile(
 	animations: aj.Animations,
 	settings: aj.GlobalSettings,
 	variantModels: aj.VariantModels,
+	scaleModels: aj.ScaleModels,
 	variantTextureOverrides: aj.VariantTextureOverrides,
 	variantTouchedModels: aj.variantTouchedModels
 ): Promise<{ animationFile: string }> {
@@ -138,6 +139,13 @@ async function createAnimationFile(
 									z: roundToN(rot.z, 10000)
 								}
 
+								let scale = v.frame.scale
+								scale = {
+									x: roundToN(scale.x, 10000),
+									y: roundToN(scale.y, 10000),
+									z: roundToN(scale.z, 10000)
+								}
+
 								// prettier-ignore
 								keyframes.push({
 									pos: [
@@ -149,6 +157,12 @@ async function createAnimationFile(
 										rot.x,
 										rot.y,
 										rot.z
+									],
+									scale_str: `${scale.x}_${scale.z}_${scale.z}`,
+									scale: [
+										scale.x,
+										scale.y,
+										scale.z
 									]
 								})
 							}
@@ -191,7 +205,8 @@ async function createAnimationFile(
 					bone["rotation"]["x"],
 					bone["rotation"]["y"],
 					bone["rotation"]["z"]
-				]
+				],
+				scales: scaleModels[boneName] !== undefined ? Object.getOwnPropertyNames(scaleModels[boneName]) : []
 			};
 
 			let parentBone = bone["parent"] as bc.AJGroup;
@@ -242,6 +257,7 @@ async function animationExport(data: any) {
 		data.animations,
 		data.settings,
 		data.variantModels,
+		data.scaleModels,
 		data.variantTextureOverrides,
 		data.variantTouchedModels
 	)

@@ -138,6 +138,8 @@ export interface Settings {
 	itemsadder: string
 	transparentTexturePath: string
 	boundingBoxRenderMode: 'single' | 'multiple' | 'disabled'
+	verbose: boolean
+	modelScalingMode: '3x3x3' | '7x7x7'
 }
 
 export interface GlobalSettings {
@@ -225,6 +227,30 @@ export interface CubeData {
 	element_index_lut: number[]
 	invalid_rot_elements: Bone[]
 	textures_used: Texture[]
+}
+
+type Vector3 = [number, number, number]
+
+export type ModelDisplay = {
+	head: {
+		translation: Vector3,
+		rotation: Vector3,
+		scale: Vector3,
+	},
+}
+
+export type ScaleModel = {
+	aj: {
+		customModelData: number
+	}
+	parent: string
+	display: ModelDisplay
+}
+
+export interface ScaleModels {
+	[index: string]: {
+		[index: string]: ScaleModel
+	}
 }
 
 export type VariantModel = {

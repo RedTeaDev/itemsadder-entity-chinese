@@ -1,6 +1,7 @@
 import * as EVENTS from '../constants/events'
 import { format as modelFormat } from '../modelFormat'
 import { bus } from '../util/bus'
+import { safeFunctionName } from '../util/replace'
 import { wrapNumber } from '../util/misc'
 import { CustomError } from '../util/customError'
 import { settings } from '../settings'
@@ -23,7 +24,7 @@ ModelFormat.prototype.convertTo = function convertTo() {
 	}
 
 	// Set the current projectName
-	settings.iaentitymodel.projectName = Project.name;
+	settings.iaentitymodel.projectName = safeFunctionName(Project.name)
 	
 	// Box UV
 	if (!this.optional_box_uv) Project.box_uv = this.box_uv
