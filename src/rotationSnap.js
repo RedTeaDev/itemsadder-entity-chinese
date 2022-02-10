@@ -4,7 +4,7 @@ import { bus } from './util/bus'
 
 import { settings } from './settings'
 function createBox() {
-	const size = settings.animatedJava.modelScalingMode === '3x3x3' ? 3 : 7
+	const size = settings.iaentitymodel.modelScalingMode === '3x3x3' ? 3 : 7
 	const a = new THREE.BoxGeometry(16 * size, 16 * size, 16 * size)
 	const b = new THREE.EdgesGeometry(a)
 	const c = new THREE.LineSegments(
@@ -36,7 +36,7 @@ bus.on(EVENTS.LIFECYCLE.LOAD, () => {
 		visboxs.forEach((v) => (v.visible = true))
 	}
 })
-settings.watch('animatedJava.modelScalingMode', () => {
+settings.watch('iaentitymodel.modelScalingMode', () => {
 	if (Selected) {
 		visboxs = []
 		for (let item of Selected) {

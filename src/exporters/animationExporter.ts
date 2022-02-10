@@ -2,7 +2,7 @@ import type * as aj from '../iaentitymodel'
 
 import { tl } from '../util/intl'
 import { store } from '../util/store'
-import { roundToN } from '../util/misc'
+import { roundScale, roundToN } from '../util/misc'
 import { removeKeyGently } from '../util/misc'
 import { generateTree } from '../util/treeGen'
 import { CustomError } from '../util/customError'
@@ -32,7 +32,6 @@ async function createAnimationFile(
 	const staticFrame = animations[staticAnimationUuid].frames[0].bones
 
 	animations = removeKeyGently(staticAnimationUuid, animations)
-	console.log(animations)
 
 	const generatedAnimationData = {
 		bones: [],
@@ -139,13 +138,9 @@ async function createAnimationFile(
 									z: roundToN(rot.z, 10000)
 								}
 
-								let scale = v.frame.scale
-								scale = {
-									x: roundToN(scale.x, 10000),
-									y: roundToN(scale.y, 10000),
-									z: roundToN(scale.z, 10000)
-								}
-
+								const scale = roundScale(v.frame.scale)
+								const vecStr = `${scale.x}-${scale.y}-${scale.z}`
+								
 								// prettier-ignore
 								keyframes.push({
 									pos: [
@@ -158,7 +153,7 @@ async function createAnimationFile(
 										rot.y,
 										rot.z
 									],
-									scale_str: `${scale.x}_${scale.z}_${scale.z}`,
+									scale_str: vecStr,
 									scale: [
 										scale.x,
 										scale.y,
@@ -217,13 +212,8 @@ async function createAnimationFile(
 					boneData.parents.push(parentBone.getName());
 				}
 
-				console.log("TEST: parent of", bone)
-				console.log("TEST: parent", parentBone)
-
 				parentBone = parentBone["parent"] as bc.AJGroup;
 			}
-
-			console.log("amogus boneData: ", boneData)
 
 			generatedAnimationData.bones.push(boneData);
 		}
@@ -233,6 +223,7 @@ async function createAnimationFile(
 
 	return { animationFile: JSON.stringify(generatedAnimationData) }
 }
+
 
 async function exportAnimationFile(
 	generated: { animationFile: string; },

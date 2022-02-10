@@ -2,6 +2,14 @@ export function roundToN(v: number, n: number) {
 	return Math.round(v * n) / n
 }
 
+export function roundScale(scale) {
+    return {
+        x: roundToN(scale.x, 1000),
+        y: roundToN(scale.y, 1000),
+        z: roundToN(scale.z, 1000),
+    }
+}
+
 export function cloneObject(obj: any): any {
 	return JSON.parse(JSON.stringify(obj))
 }
