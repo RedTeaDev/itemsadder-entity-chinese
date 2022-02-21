@@ -175,9 +175,45 @@ Blockbench.on('select_project', () => {
 
 		if(Format.id === modelFormat.id) {
 			refreshIcons()
+			// Hide the "variable placeholders" panel under the keyframe coords 
+			// @ts-ignore
+			Interface.Panels.variable_placeholders.node.style.visibility = "hidden"
+		}
+		else {
+			// Show the "variable placeholders" panel under the keyframe coords
+			// @ts-ignore
+			Interface.Panels.variable_placeholders.node.style.visibility = "visible"
 		}
 	})
 })
+// @ts-ignore
+Blockbench.on('add_group', () => {
+	if(Format.id === modelFormat.id) {
+		refreshIcons()
+	}
+})
+// @ts-ignore
+Blockbench.on('group_elements', () => {
+	if(Format.id === modelFormat.id) {
+		refreshIcons()
+	}
+})
+// @ts-ignore
+Blockbench.on('add_cube', () => {
+	if(Format.id === modelFormat.id) {
+		refreshIcons()
+	}
+})
+
+Blockbench.on('select_mode', () => {
+	refreshIcons()
+})
+
+// Dirty
+document.body.addEventListener('click', () => {
+	refreshIcons()
+}, true); 
+
 // @ts-ignore
 Blockbench.on('unselect_project', () => {
 	menu.label.style.display = 'none'
@@ -252,6 +288,21 @@ bus.on(EVENTS.LIFECYCLE.CLEANUP, () => {
 	Blockbench.removeListener('select_mode', cb)
 })
 
-Blockbench.on('select_mode', () => {
-	refreshIcons()
-})
+
+new Property(KeyframeDataPoint, 'string', 'name', {label: "Name", condition: point => Format.id === modelFormat.id && ['particle', 'sound'].includes(point.keyframe.channel), default: "minecraft:XXXXX"},);
+new Property(KeyframeDataPoint, 'number', 'volume', {label: "Volume", condition: point => Format.id === modelFormat.id && 'sound' == point.keyframe.channel, default: 1},);
+new Property(KeyframeDataPoint, 'number', 'pitch', {label: "Pitch", condition: point => Format.id === modelFormat.id && 'sound' == point.keyframe.channel, default: 1});
+
+new Property(KeyframeDataPoint, 'number', 'bone', {label: "Bone (locator)", condition: point => Format.id === modelFormat.id && 'particle' == point.keyframe.channel, default: "bone_name"} );
+new Property(KeyframeDataPoint, 'number', 'speed', {label: "Speed", condition: point => Format.id === modelFormat.id && 'particle' == point.keyframe.channel, default: 1});
+new Property(KeyframeDataPoint, 'number', 'count', {label: "Count", condition: point => Format.id === modelFormat.id && 'particle' == point.keyframe.channel, default: 1});
+new Property(KeyframeDataPoint, 'molang', 'x_delta', { label: 'X delta', condition: point => Format.id === modelFormat.id && 'particle' == point.keyframe.channel, default: 0 });
+new Property(KeyframeDataPoint, 'molang', 'y_delta', { label: 'Y delta', condition: point => Format.id === modelFormat.id && 'particle' == point.keyframe.channel, default: 0 });
+new Property(KeyframeDataPoint, 'molang', 'z_delta', { label: 'Z delta', condition: point => Format.id === modelFormat.id && 'particle' == point.keyframe.channel, default: 0 });
+
+// Edit the Bedrock effect animator "script", "locator", "file" properties condition to hide itself if this project has our custom model format
+KeyframeDataPoint["properties"].effect.condition = (point) => { Format.id !== modelFormat.id && ['particle', 'timeline'].includes(point.keyframe.channel) }
+KeyframeDataPoint["properties"].script.condition = (point) => { Format.id !== modelFormat.id && ['particle', 'timeline'].includes(point.keyframe.channel) }
+KeyframeDataPoint["properties"].locator.condition = (point) => { Format.id !== modelFormat.id && 'particle' == point.keyframe.channel }
+KeyframeDataPoint["properties"].file.condition = (point) => { Format.id !== modelFormat.id && ['particle', 'timeline'].includes(point.keyframe.channel) }
+

@@ -288,10 +288,12 @@ async function computeModels(cubeData) {
 				const elements = []
 
 				cubeChildren.forEach((cube) => {
-					if (!cube) {
-						throw new CustomError(
-							`Unexpected undefined in ${group.name}.children`
-						)
+					if (!cube) { // Somehow the cube object is == undefined
+						//throw new CustomError(
+						//	`Unexpected undefined in ${group.name}.children`
+						//)
+						console.error(`Unexpected undefined in ${group.name}.children`)
+						return;
 					}
 
 					// Shit to allow colored potions
@@ -308,10 +310,19 @@ async function computeModels(cubeData) {
 				})
 				const modelName = safeFunctionName(group.name)
 				models[modelName] = {
-					//origin_pos: group.origin,
-					//origin_rot: group.rotation, // Is this correct? or must i take into account also parents one?
 					textures: getTexturesOnGroup(group),
 					elements,
+				}
+			} else {
+				// Check if it's a special bone and must be exported even if empty
+				if(group.isLeftHandPivot || group.isRightHandPivot || group.isMount || group.isLocator) {
+					const elements = []
+					elements.push({})
+					const modelName = safeFunctionName(group.name)
+					models[modelName] = {
+						textures: getTexturesOnGroup(group),
+						elements,
+					}
 				}
 			}
 
@@ -393,6 +404,14 @@ export function computeBones(models, animations) {
 
 	const bones = {}
 
+	// Manually add also special bones, since they don't have any mesh inside
+	for (const value of Project.groups) {
+		if(value.isRightHandPivot || value.isLeftHandPivot || value.isMount || value.isLocator) {
+			console.log("Special bone: ", value)
+			bones[value.name] = value;
+		}
+	}
+
 	for (const value of Project.elements.map((_) => _.mesh)) {
 		// const value = Project.groups[name];
 		if (value.parent) {
@@ -422,6 +441,10 @@ export function computeBones(models, animations) {
 				value.parent.armAnimationEnabled = parentGroup.armAnimationEnabled
 				value.parent.nbt = parentGroup.nbt
 				value.parent.isHead = parentGroup.isHead
+				value.parent.isLeftHandPivot = parentGroup.isLeftHandPivot
+				value.parent.isRightHandPivot = parentGroup.isRightHandPivot
+				value.parent.isMount = parentGroup.isMount
+				value.parent.isLocator = parentGroup.isLocator
 				bones[parentName] = value.parent
 			}
 		}
@@ -433,9 +456,13 @@ export function computeBones(models, animations) {
 				if (!bones[boneName]) continue
 				const scale = roundScale(bone.scale)
 				const vecStr = `${scale.x}-${scale.y}-${scale.z}`
-				if (bone.scale && !bones[boneName].scales[vecStr]) {
+				if (bone.scale && (!bones[boneName].scales || !bones[boneName].scales[vecStr])) {
 					console.log('New scale', vecStr)
-					bones[boneName].scales[vecStr] = "sus"
+					if(!bones[boneName].scales) {
+						bones[boneName].scales = []
+						bones[boneName].scales[vecStr] = "sus"
+					} else
+						bones[boneName].scales[vecStr] = "sus"
 				}
 			}
 		}
@@ -462,6 +489,10 @@ function computeScaleModifiers() {
 async function scaleModels(models) {
 	computeScaleModifiers()
 	for (const [modelName, model] of Object.entries(models)) {
+		// Special bone with no elements, it's empty.
+		if(model.elements && model.elements.length == 1 && Object.keys(model.elements[0]).length == 0) 
+			continue;
+
 		model.display = {
 			head: {
 				translation: [0, yTranslation, 0],
@@ -543,7 +574,7 @@ export function computeScaleModels(bones) {
 
 	for (const [boneName, bone] of Object.entries(bones)) {
 		// Skip bones without scaling
-		if (Object.keys(bone.scales).length <= 1) continue
+		if (!bone.scales || Object.keys(bone.scales).length <= 1) continue
 		scaleModels[boneName] = {}
 
 		for (const [vecStr, customModelData] of Object.entries(bone.scales)) {

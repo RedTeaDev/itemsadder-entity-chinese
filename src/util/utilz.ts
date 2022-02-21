@@ -54,18 +54,26 @@ export function getProjectSaveFolder() {
 export function refreshIcons() {
     for (const [groupName, group] of Object.entries(Project.groups)) {
 
-        if(group.parent["name"] === undefined)
+        if(group.parent["name"] === undefined) // Root element
             group["icon"] = "fa fa-archive"
         else if(group["isHead"])
             group["icon"] = "fa fa-heading"
+        else if(group["isLeftHandPivot"])
+            group["icon"] = "fa fa-hand-point-left"
+        else if(group["isRightHandPivot"])
+            group["icon"] = "fa fa-hand-point-right"
+        else if(group["isMount"])
+            group["icon"] = "fa fa-chair"
+        else if(group["isLocator"])
+            group["icon"] = "fa fa-anchor"
         else
             group["icon"] = "fa fa-bone"
 
         group.updateElement()
     }
 
-    if(Project.groups.length > 0)
-        Project.groups[0]["icon"] = "fa fa-archive" // Root element
+    //if(Project.groups.length > 0)
+    //    Project.groups[0]["icon"] = "fa fa-archive" // Root element
 }
 
 export function toJson(object: any) : string {

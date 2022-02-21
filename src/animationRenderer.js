@@ -14,6 +14,8 @@ import { tl } from './util/intl'
 import { format, safeFunctionName } from './util/replace'
 import { isSceneBased } from './util/hasSceneAsParent'
 import { CustomError } from './util/customError'
+import { Euler } from 'three'
+import { Quaternion } from 'three'
 store.set('staticAnimationUuid', '138747e7-2de0-4130-b900-9275ca0e6333')
 
 function setAnimatorTime(time) {
@@ -53,9 +55,16 @@ function getRotations(animation) {
 	// 	return bones[group.name].map((v, i) => v + group.rotation[i])
 	// }
 	function getRotation(obj3d) {
-		const e = new THREE.Euler(1, 1, 1, 'ZYX').setFromQuaternion(
-			obj3d.getWorldQuaternion(new THREE.Quaternion())
-		)
+		const group = Group.all.find(x => x.uuid == obj3d.name); // Shitty
+
+		const prevQuat = obj3d.quaternion.clone()
+		if(group.isLeftHandPivot || group.isRightHandPivot) {
+			//obj3d.applyQuaternion(new THREE.Quaternion().setFromEuler(new Euler(0, 0, -45, 'ZYX')))
+			obj3d.rotateZ(-0.785398); // -45
+		}
+		const worldQuat = obj3d.getWorldQuaternion(new THREE.Quaternion())
+		const e = new THREE.Euler(1, 1, 1, 'ZYX').setFromQuaternion(worldQuat)
+		obj3d.quaternion = prevQuat
 		return [
 			(e.x * 180) / Math.PI,
 			(e.y * 180) / Math.PI,
@@ -71,11 +80,23 @@ function getRotations(animation) {
 function getPositions() {
 	const result = {}
 	Group.all.forEach((group) => {
+		
+		// Fix the hands offset calculation because items are shown on top of armorstand head not directly on the neck. 
+		let prevPos = group.mesh.position.clone();
+		if(group.isLeftHandPivot || group.isRightHandPivot) {
+			group.mesh.position.x -= 8.75 // TODO: is this wrong? may I need to use relative position? entity should be in T-pose...
+			group.mesh.position.y -= 2
+			group.mesh.position.z += -4
+		}
+
 		let pos = group.mesh.getWorldPosition(new THREE.Vector3())
+
 		pos.x = roundToN(pos.x / 16, 100000)
 		pos.y = roundToN(pos.y / 16, 100000)
 		pos.z = roundToN(pos.z / 16, 100000)
 		result[group.name] = pos
+
+		group.mesh.position = prevPos
 	})
 	return result
 }
@@ -274,7 +295,8 @@ async function renderAnimation(options) {
 			(group) =>
 				!isSceneBased(group) &&
 				group.visibility &&
-				group.children.find((child) => child instanceof Cube)
+				((group["isLeftHandPivot"]) || (group["isRightHandPivot"]) || (group["isMount"]) || (group["isLocator"]) ||
+					group.children.find((child) => child instanceof Cube))
 		)
 		console.log('All Groups:', Group.all)
 		console.log('Rendered Groups:', renderedGroups)
@@ -304,30 +326,57 @@ async function renderAnimation(options) {
 					accAnimationLength += 0.05
 					await Async.wait_if_overflow()
 					setAnimatorTime(i)
-					const effects = {}
+					const effects = {
+						sounds: [],
+						particles: []
+					}
 					if (animation.animators.effects) {
 						const time = Math.round(i * 20) / 20
 						animation.animators.effects.keyframes
 							.filter((keyframe) => keyframe.time === time)
 							.forEach((keyframe) => {
 								if (keyframe.channel === 'sound') {
-									effects.sound = keyframe.data_points.map(
-										(kf) => kf.effect
-									)
+
+									keyframe.data_points.forEach(x => {
+										effects.sounds.push({
+											name: x.name,
+											volume: x.volume,
+											pitch: x.pitch
+										})
+									})
+								}
+								if (keyframe.channel === 'particle') {
+
+									keyframe.data_points.forEach(x => {
+										effects.particles.push({
+											name: x.name,
+											locator: x.bone,
+											speed: x.speed,
+											count: x.count,
+											x_delta: x.x_delta,
+											y_delta: x.y_delta,
+											z_delta: x.z_delta
+										})
+									})
 								}
 								if (
 									keyframe.channel === 'script' ||
 									keyframe.channel === 'timeline'
 								) {
-									effects.script = keyframe.data_points.map(
+									/*effects.script = keyframe.data_points.map(
 										(kf) => kf.script
-									)
+									)*/
 								}
 							})
 					}
+
+					/*if(effects.sounds.length == 0)
+						delete effects.sounds
+					if(effects.particles.length == 0)
+						delete effects.particles*/
 					const frame = {
 						bones: getData(animation, renderedGroups),
-						scripts: effects,
+						effects: effects
 					}
 					let fdist = -Infinity
 					for (const bone of Object.values(frame.bones)) {

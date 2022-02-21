@@ -31,6 +31,8 @@ async function createAnimationFile(
 	const staticAnimationUuid = store.get('staticAnimationUuid')
 	const staticFrame = animations[staticAnimationUuid].frames[0].bones
 
+	fixPivots()
+
 	animations = removeKeyGently(staticAnimationUuid, animations)
 
 	const generatedAnimationData = {
@@ -101,11 +103,67 @@ async function createAnimationFile(
 					return {
 						type: 'leaf',
 						index: animationTreeItem.index,
-						frame: animationTreeItem.item.bones[boneName],
+						frame: animationTreeItem.item.bones[boneName]
 					}
 				}
 			}
+			function collectsEffects(animationTreeItem: any) {
+				if (animationTreeItem.type === 'layer') {
+					return {
+						type: 'branch',
+						branches: animationTreeItem.items.map((v: any) =>
+							collectsEffects(v)
+						)
+					}
+				} else {
+					return {
+						type: 'leaf',
+						index: animationTreeItem.index,
+						effects: animationTreeItem.item.effects
+					}
+				}
+			}
+			function generateEffectsTree(tree: any): {
+				keyframes: object[]
+			} {
+				if (tree.type === 'branch') {
+					let keyframes: object[] = []
+					// prettier-ignore
+					tree.branches.forEach((v: any)=> {
+						if (v.type === 'branch') {
+							const t = generateEffectsTree(v)
+							t.keyframes.forEach(element => {
+								keyframes.push(element)
+							});
 
+						} else {
+							keyframes.push(v.effects)
+						}
+					})
+					return {
+						keyframes: keyframes
+					};
+				}
+			}
+
+			const effectsTmp = generateEffectsTree(collectsEffects(animationTree))
+			const effects = {
+				sounds: {
+					keyframes: []
+				},
+				particles: {
+					keyframes: []
+				}
+			}
+			
+			for (const [dummy, effectFrames] of Object.entries(effectsTmp)) {
+
+				effectFrames.forEach(effectFrame => {
+					effects.sounds.keyframes.push(effectFrame["sounds"])
+					effects.particles.keyframes.push(effectFrame["particles"])
+				})
+			}
+			
 			const boneTrees = {}
 			for (const [boneName, bone] of Object.entries(bones)) {
 				if (!touchedBones.includes(boneName)) continue
@@ -140,7 +198,7 @@ async function createAnimationFile(
 
 								const scale = roundScale(v.frame.scale)
 								const vecStr = `${scale.x}-${scale.y}-${scale.z}`
-								
+
 								// prettier-ignore
 								keyframes.push({
 									pos: [
@@ -175,7 +233,8 @@ async function createAnimationFile(
 				maxDistance: animation.maxDistance,
 				loopMode: animation.loopMode,
 				length: animation.length,
-				bones: boneTrees
+				bones: boneTrees,
+				effects: effects
 			}
 
 			console.log('Generated animation:', finalAnimation)
@@ -190,18 +249,22 @@ async function createAnimationFile(
 			let boneData = {
 				name: boneName,
 				isHead: bone.isHead,
+				isLeftHandPivot: bone.isLeftHandPivot,
+				isRightHandPivot: bone.isRightHandPivot,
+				isMount: bone.isMount,
+				isLocator: bone.isLocator,
 				parents: [],
 				pos: [
-					bone["position"]["x"],
-					bone["position"]["y"],
-					bone["position"]["z"]
+					safeGetVec(bone, "position", "x"),
+					safeGetVec(bone, "position", "y"),
+					safeGetVec(bone, "position", "z")
 				],
 				rot: [
-					bone["rotation"]["x"],
-					bone["rotation"]["y"],
-					bone["rotation"]["z"]
+					safeGetVec(bone, "rotation", "x"),
+					safeGetVec(bone, "rotation", "y"),
+					safeGetVec(bone, "rotation", "z")
 				],
-				scales: scaleModels[boneName] !== undefined ? Object.getOwnPropertyNames(scaleModels[boneName]) : []
+				scales: scaleModels[boneName] !== undefined ? Object.getOwnPropertyNames(scaleModels[boneName]) : ["1-1-1"]
 			};
 
 			let parentBone = bone["parent"] as bc.AJGroup;
@@ -216,6 +279,17 @@ async function createAnimationFile(
 			}
 
 			generatedAnimationData.bones.push(boneData);
+		}
+
+
+		const tmp = Group.all.find(x => x.name === "hitbox")
+		if(tmp !== undefined && tmp.children.length > 0)
+		{
+			generatedAnimationData["hitbox"] = {
+				pos: tmp.children[0]["origin"],
+				// @ts-ignore
+				size: tmp.children[0].size()
+			}
 		}
 
 		console.log("Finished: ", generatedAnimationData);
@@ -256,6 +330,24 @@ async function animationExport(data: any) {
 	await exportAnimationFile(generated, data.settings, exporterSettings)
 
 	Blockbench.showQuickMessage(tl('iaentitymodel.popups.successfullyExported'))
+}
+
+function fixPivots() {
+	
+	 Outliner.elements.forEach(function(element) {
+		Outliner.selected.length = 0
+		Outliner.selected.push(element)
+        // @ts-ignore
+        origin2geometry()
+    })
+}
+
+function safeGetVec(obj, key, subKey) {
+	if(!obj[key] || obj[key] === undefined || obj[key] === null)
+		return 0
+	if(!obj[key][subKey] || obj[key][subKey] === undefined || obj[key][subKey] === null)
+		return 0
+	return obj[key][subKey];
 }
 
 const genericEmptySettingText = tl(

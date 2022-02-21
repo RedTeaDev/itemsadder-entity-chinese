@@ -18,7 +18,8 @@ bus.on(events.LIFECYCLE.UNLOAD, () => {
 	style.remove()
 })
 
-Interface.Panels.aj_states = new Panel({
+// Variants panel
+/*Interface.Panels.aj_states = new Panel({
 	id: 'states',
 	icon: 'movie',
 	condition: { modes: ['edit'], formats: [format.id] },
@@ -29,7 +30,7 @@ Interface.Panels.aj_states = new Panel({
 		name: 'panel-aj-variant',
 		template: `<div id="java-animator-states"></div>`,
 	},
-})
+})*/
 bus.on(events.LIFECYCLE.CLEANUP, () => {
 	Interface.Panels?.aj_states?.delete()
 	delete Interface.Panels.aj_states

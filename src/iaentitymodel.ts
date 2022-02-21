@@ -139,7 +139,7 @@ export interface Settings {
 	transparentTexturePath: string
 	boundingBoxRenderMode: 'single' | 'multiple' | 'disabled'
 	verbose: boolean
-	modelScalingMode: '3x3x3' | '7x7x7'
+	modelScalingMode: '7x7x7' | '3x3x3'
 }
 
 export interface GlobalSettings {
@@ -151,6 +151,10 @@ export type Bone = {
 	nbt: string
 	armAnimationEnabled: boolean
 	isHead: boolean
+	isLeftHandPivot: boolean
+	isRightHandPivot: boolean
+	isMount: boolean
+	isLocator: boolean
 	export: boolean
 } & Cube
 
@@ -167,7 +171,7 @@ export type AnimationFrameBone = {
 
 export type Frame = {
 	bones: AnimationFrameBone[]
-	scripts: any
+	effects: any
 }
 
 export type RenderedAnimation = {

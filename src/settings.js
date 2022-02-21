@@ -70,15 +70,15 @@ export const DefaultSettings = {
 				return tl('iaentitymodel.settings.modelScalingMode.description')
 			},
 			type: 'select',
-			default: '3x3x3',
+			default: '7x7x7',
 			get options() {
 				return {
-					'3x3x3': tl(
-						'iaentitymodel.settings.modelScalingMode.options.3x3x3'
-					),
 					'7x7x7': tl(
 						'iaentitymodel.settings.modelScalingMode.options.7x7x7'
 					),
+					'3x3x3': tl(
+						'iaentitymodel.settings.modelScalingMode.options.3x3x3'
+					)
 				}
 			},
 			onUpdate(d) {

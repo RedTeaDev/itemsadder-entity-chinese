@@ -12,7 +12,7 @@ iaentitymodel:
 
   panels:
     variants:
-      title: Model Variants (not tested)
+      title: Model Variants (not implemented)
       addVariant:
         title: Add Variant
         description: Adds a new Variant to the model
@@ -109,7 +109,11 @@ iaentitymodel:
       title: Bone Config
       boneNbt: Bone NBT
       armAnimationEnabled: Enable Arm Animation
-      isHead: Is Head
+      isHead: Head
+      isLeftHandPivot: Left hand pivot
+      isRightHandPivot: Right hand pivot
+      isMount: Mount (used as seat location)
+      isLocator: Locator (used for effects location)
 
     variants:
       title: Model Variants

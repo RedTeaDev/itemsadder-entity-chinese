@@ -6,6 +6,10 @@ export type AJGroup = {
 	nbt: string
 	armAnimationEnabled: boolean
 	isHead: boolean
+	isLeftHandPivot: boolean
+	isRightHandPivot: boolean
+	isMount: boolean
+	isLocator: boolean
 } & Group
 
 const openBoneConfig = CustomAction('iaentitymodel.BoneConfig', {
@@ -32,25 +36,47 @@ const openBoneConfig = CustomAction('iaentitymodel.BoneConfig', {
 				 	),
 				 	value: false,
 				},
-				//TODO: hand location?
-				// armAnimationEnabled: {
-				// 	type: 'checkbox',
-				// 	label: tl(
-				// 		'iaentitymodel.boneConfig.armAnimationEnabled'
-				// 	),
-				// 	value: false,
-				// },
+				isLeftHandPivot: {
+					type: 'checkbox',
+				 	label: tl(
+				 		'iaentitymodel.dialogs.boneConfig.isLeftHandPivot'
+				 	),
+				 	value: false,
+				},
+				isRightHandPivot: {
+					type: 'checkbox',
+				 	label: tl(
+				 		'iaentitymodel.dialogs.boneConfig.isRightHandPivot'
+				 	),
+				 	value: false,
+				},
+				isMount: {
+					type: 'checkbox',
+				 	label: tl(
+				 		'iaentitymodel.dialogs.boneConfig.isMount'
+				 	),
+				 	value: false,
+				},
+				isLocator: {
+					type: 'checkbox',
+				 	label: tl(
+				 		'iaentitymodel.dialogs.boneConfig.isLocator'
+				 	),
+				 	value: false,
+				},
 			},
 			onConfirm: (formData: any) => {
 				console.log(formData)
 				//selected.nbt = formData.nbt
 				selected.isHead = formData.isHead
+				selected.isLeftHandPivot = formData.isLeftHandPivot
+				selected.isRightHandPivot = formData.isRightHandPivot
+				selected.isMount = formData.isMount
+				selected.isLocator = formData.isLocator
 				// selected.armAnimationEnabled = formData.armAnimationEnabled
 
-				// Apply some of the properties to all the sub groups too.
+				// Apply some of the properties to all the sub groups too. For now only "isHead".
 				for (const [childName, child_] of Object.entries(selected.children)) {
-					console.log("amogus", child_)
-					
 					if(child_ instanceof Group) {
 						let child = child_ as AJGroup;
 						child.isHead = selected.isHead;
@@ -58,18 +84,20 @@ const openBoneConfig = CustomAction('iaentitymodel.BoneConfig', {
 				}
 
 				refreshIcons()
-
 				dialog.hide()
 			},
 		}).show()
 		//document.querySelector('#nbt').value = selected.nbt
 		document.querySelector('#isHead')["checked"] = selected.isHead
-		// console.log(selected.armAnimationEnabled)
-		// TODO Add armor_stand arm animation
-		// document.querySelector('#armAnimationEnabled').checked =
-		// 	selected.armAnimationEnabled
-		selected.armAnimationEnabled = false
+		document.querySelector('#isLeftHandPivot')["checked"] = selected.isLeftHandPivot
+		document.querySelector('#isRightHandPivot')["checked"] = selected.isRightHandPivot
+		document.querySelector('#isMount')["checked"] = selected.isMount
+		document.querySelector('#isLocator')["checked"] = selected.isLocator
 		selected.isHead = false
+		selected.isLeftHandPivot = false
+		selected.isRightHandPivot = false
+		selected.isMount = false
+		selected.isLocator = false
 	},
 })
 
@@ -78,11 +106,23 @@ new Property(Group, 'string', 'nbt', {
 	default: () => '{}',
 	exposed: true,
 })
-new Property(Group, 'string', 'armAnimationEnabled', {
+new Property(Group, 'string', 'isHead', {
 	default: () => false,
 	exposed: true,
 })
-new Property(Group, 'string', 'isHead', {
+new Property(Group, 'string', 'isLeftHandPivot', {
+	default: () => false,
+	exposed: true,
+})
+new Property(Group, 'string', 'isRightHandPivot', {
+	default: () => false,
+	exposed: true,
+})
+new Property(Group, 'string', 'isMount', {
+	default: () => false,
+	exposed: true,
+})
+new Property(Group, 'string', 'isLocator', {
 	default: () => false,
 	exposed: true,
 })
