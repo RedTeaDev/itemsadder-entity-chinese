@@ -92,6 +92,17 @@ iaentitymodel:
         memory: Memory Mode
         disk: Disk Mode
 
+    rotationMode:
+      title: Rotation Mode
+      description:
+        - "ItemsAdder offers two bones rotation modes."
+        - "You have to decide them based on what your entity will do:"
+        - " - Smooth: suitable for NPCs and entities which won't walk around very fast."
+        - " - Precise: suitable for mobs which will walk around, jump, fly, bosses and similar."
+      options:
+        smooth: Smooth
+        precise: Precise
+
     boundingBoxRenderMode:
       title: Bone Size Limit Box
       description:
@@ -108,13 +119,18 @@ iaentitymodel:
     boneConfig:
       title: Bone Config
       boneNbt: Bone NBT
-      armAnimationEnabled: Enable Arm Animation
-      isHead: Head
-      isLeftHandPivot: Left hand pivot
-      isRightHandPivot: Right hand pivot
-      isMount: Mount (used as seat location)
-      isLocator: Locator (used for effects location)
-
+      boneType: Bone type
+      head: Head
+      normal: Generic bone
+      leftHandPivot: Left hand pivot
+      rightHandPivot: Right hand pivot
+      mount: Mount (used as seat location)
+      locator: Locator (used for effects location)
+      hitbox: Hitbox (area which can be attacked/interacted)
+      eyesHeight: Eyes height (height location of entity eyes)
+      headProperties: "Head properties"
+      maxHeadRotY: "Max head Y angle"
+      maxHeadRotX: "Max head X angle"
     variants:
       title: Model Variants
       description:

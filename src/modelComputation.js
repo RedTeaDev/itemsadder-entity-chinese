@@ -315,7 +315,7 @@ async function computeModels(cubeData) {
 				}
 			} else {
 				// Check if it's a special bone and must be exported even if empty
-				if(group.isLeftHandPivot || group.isRightHandPivot || group.isMount || group.isLocator) {
+				if(group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot" || group.boneType === "mount" || group.boneType === "locator" || group.boneType === "hitbox" || group.boneType === "eyesHeight") {
 					const elements = []
 					elements.push({})
 					const modelName = safeFunctionName(group.name)
@@ -405,10 +405,10 @@ export function computeBones(models, animations) {
 	const bones = {}
 
 	// Manually add also special bones, since they don't have any mesh inside
-	for (const value of Project.groups) {
-		if(value.isRightHandPivot || value.isLeftHandPivot || value.isMount || value.isLocator) {
-			console.log("Special bone: ", value)
-			bones[value.name] = value;
+	for (const group of Project.groups) {
+		if(group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot" || group.boneType === "mount" || group.boneType === "locator" || group.boneType === "hitbox" || group.boneType === "eyesHeight") {
+			console.log("Special bone: ", group)
+			bones[group.name] = group;
 		}
 	}
 
@@ -438,13 +438,9 @@ export function computeBones(models, animations) {
 				value.parent.scales = {
 					'1-1-1': "sus",
 				}
-				value.parent.armAnimationEnabled = parentGroup.armAnimationEnabled
-				value.parent.nbt = parentGroup.nbt
-				value.parent.isHead = parentGroup.isHead
-				value.parent.isLeftHandPivot = parentGroup.isLeftHandPivot
-				value.parent.isRightHandPivot = parentGroup.isRightHandPivot
-				value.parent.isMount = parentGroup.isMount
-				value.parent.isLocator = parentGroup.isLocator
+				value.parent.boneType = parentGroup.boneType
+				value.parent.maxHeadRotX = parentGroup.maxHeadRotX
+				value.parent.maxHeadRotY = parentGroup.maxHeadRotY
 				bones[parentName] = value.parent
 			}
 		}
@@ -624,65 +620,66 @@ export function computeVariantTextureOverrides(models) {
 		})
 	}
 
-	for (const [variantName, variant] of Object.entries(variants).sort()) {
-		const thisVariant = {}
-		// console.log('State:', state)
-		//* If this state replaces any textures
-		if (Object.keys(variant).length > 0) {
-			// For every model in models
-			for (const [modelName, model] of Object.entries(models).sort()) {
-				// console.log('Model:', model)
-				//* If this model has any of the textures this state replaces
-				for (const uuid in variant) {
-					const texture = getTextureByUUID(uuid)
-					const replaceTexture = getTextureByUUID(variant[uuid])
-					if (hasTexture(model, texture)) {
-						//* Create texture override based on state
-						if (replaceTexture) {
-							if (!thisVariant[modelName]) {
-								thisVariant[modelName] = { textures: {} }
-							}
-							console.log(texture, '->', replaceTexture)
-							thisVariant[modelName].textures[`${texture.id}`] =
-								resourcepack.getTexturePath(replaceTexture)
-						} else if (variant[uuid] === 'transparent') {
-							if (transparentTexturePath) {
+	if(variants !== undefined) {
+		for (const [variantName, variant] of Object.entries(variants).sort()) {
+			const thisVariant = {}
+			// console.log('State:', state)
+			//* If this state replaces any textures
+			if (Object.keys(variant).length > 0) {
+				// For every model in models
+				for (const [modelName, model] of Object.entries(models).sort()) {
+					// console.log('Model:', model)
+					//* If this model has any of the textures this state replaces
+					for (const uuid in variant) {
+						const texture = getTextureByUUID(uuid)
+						const replaceTexture = getTextureByUUID(variant[uuid])
+						if (hasTexture(model, texture)) {
+							//* Create texture override based on state
+							if (replaceTexture) {
 								if (!thisVariant[modelName]) {
 									thisVariant[modelName] = { textures: {} }
 								}
-								console.log(texture, '-> transparent')
-								thisVariant[modelName].textures[
-									`${texture.id}`
-								] = transparentTexturePath
-							} else {
-								throw new CustomError(
-									'Transparent Texture Path Not Found',
-									{
-										intentional: true,
-										dialog: {
-											id: 'iaentitymodel.dialogs.errors.transparentTexturePathNotFound',
-											title: tl(
-												'iaentitymodel.dialogs.errors.transparentTexturePathNotFound.title'
-											),
-											lines: [
-												tl(
-													'iaentitymodel.dialogs.errors.transparentTexturePathNotFound.body'
-												),
-											],
-											width: 512,
-											singleButton: true,
-										},
+								console.log(texture, '->', replaceTexture)
+								thisVariant[modelName].textures[`${texture.id}`] =
+									resourcepack.getTexturePath(replaceTexture)
+							} else if (variant[uuid] === 'transparent') {
+								if (transparentTexturePath) {
+									if (!thisVariant[modelName]) {
+										thisVariant[modelName] = { textures: {} }
 									}
-								)
+									console.log(texture, '-> transparent')
+									thisVariant[modelName].textures[
+										`${texture.id}`
+									] = transparentTexturePath
+								} else {
+									throw new CustomError(
+										'Transparent Texture Path Not Found',
+										{
+											intentional: true,
+											dialog: {
+												id: 'iaentitymodel.dialogs.errors.transparentTexturePathNotFound',
+												title: tl(
+													'iaentitymodel.dialogs.errors.transparentTexturePathNotFound.title'
+												),
+												lines: [
+													tl(
+														'iaentitymodel.dialogs.errors.transparentTexturePathNotFound.body'
+													),
+												],
+												width: 512,
+												singleButton: true,
+											},
+										}
+									)
+								}
 							}
 						}
 					}
 				}
 			}
+			variantModels[variantName] = thisVariant
 		}
-		variantModels[variantName] = thisVariant
 	}
-
 	console.log('Variant Overrides', variantModels)
 	console.groupEnd('Compute Variant Model Overrides')
 

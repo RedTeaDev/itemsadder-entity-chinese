@@ -37,7 +37,8 @@ async function createAnimationFile(
 
 	const generatedAnimationData = {
 		bones: [],
-		animations: []
+		animations: [],
+		rotationMode: "precise"
 	};
 
 	{
@@ -246,13 +247,15 @@ async function createAnimationFile(
 		// Add all bones to the final json
 		for (const [boneName, bone] of Object.entries(bones)) {
 			
+			// Skip hitbox, it's handled after this loop
+			if(boneName === "hitbox" || bone.boneType === "hitbox" || bone.boneType === "eyesHeight")
+				continue
+
 			let boneData = {
 				name: boneName,
-				isHead: bone.isHead,
-				isLeftHandPivot: bone.isLeftHandPivot,
-				isRightHandPivot: bone.isRightHandPivot,
-				isMount: bone.isMount,
-				isLocator: bone.isLocator,
+				boneType: bone.boneType,
+				maxHeadRotX: bone.maxHeadRotX,
+				maxHeadRotY: bone.maxHeadRotY,
 				parents: [],
 				pos: [
 					safeGetVec(bone, "position", "x"),
@@ -282,15 +285,32 @@ async function createAnimationFile(
 		}
 
 
-		const tmp = Group.all.find(x => x.name === "hitbox")
-		if(tmp !== undefined && tmp.children.length > 0)
+		// Hitbox
 		{
-			generatedAnimationData["hitbox"] = {
-				pos: tmp.children[0]["origin"],
-				// @ts-ignore
-				size: tmp.children[0].size()
+			let tmp = Group.all.find(x => x["boneType"] === "hitbox")
+			if(tmp === undefined)
+				tmp = Group.all.find(x => x.name === "hitbox")
+			if(tmp !== undefined && tmp.children.length > 0)
+			{
+				generatedAnimationData["hitbox"] = {
+					pos: tmp.children[0]["origin"],
+					// @ts-ignore
+					size: tmp.children[0].size()
+				}
 			}
 		}
+		// EyesHeight
+		{
+			const tmp = Group.all.find(x => x["boneType"] === "eyesHeight")
+			if(tmp !== undefined && tmp.children.length > 0)
+			{
+				generatedAnimationData["eyes_height"] = {
+					height: tmp.children[0]["origin"].y
+				}
+			}
+		}
+
+		generatedAnimationData.rotationMode = settings.iaentitymodel.rotationMode
 
 		console.log("Finished: ", generatedAnimationData);
 	}

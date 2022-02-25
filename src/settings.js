@@ -89,42 +89,22 @@ export const DefaultSettings = {
 				return d
 			},
 		},
-		transparentTexturePath: {
+		rotationMode: {
 			get title() {
-				return tl('iaentitymodel.settings.transparentTexturePath.title')
+				return tl('iaentitymodel.settings.rotationMode.title')
 			},
 			get description() {
 				return tl(
-					'iaentitymodel.settings.transparentTexturePath.description'
+					'iaentitymodel.settings.rotationMode.description'
 				)
 			},
-			type: 'filepath',
-			default: '',
-			props: {
-				target: 'file',
-				dialogOpts: {
-					defaultPath: '',
-					promptToCreate: true,
-					properties: ['openFile'],
-				},
+			type: 'select',
+			default: 'precise',
+			options: {
+				smooth: 'iaentitymodel.settings.rotationMode.options.smooth',
+				precise: 'iaentitymodel.settings.rotationMode.options.precise',
 			},
-			onUpdate(d) {
-				if (d.value === '') {
-					const variants = IAENTITY.variants
-					if (
-						variants &&
-						Object.values(variants).find((v) =>
-							Object.values(v).find((t) => t === 'transparent')
-						)
-					) {
-						d.isValid = false
-						d.error = tl(
-							'iaentitymodel.settings.transparentTexturePath.errors.undefinedWhenNeeded'
-						)
-					}
-				}
-				return d
-			},
+			global: false,
 		},
 		useCache: {
 			get title() {
@@ -180,6 +160,50 @@ export const DefaultSettings = {
 				none: 'iaentitymodel.settings.boundingBoxRenderMode.options.none',
 			},
 			global: true,
+		},
+		transparentTexturePath: {
+			get title() {
+				return tl('iaentitymodel.settings.transparentTexturePath.title')
+			},
+			get description() {
+				return tl(
+					'iaentitymodel.settings.transparentTexturePath.description'
+				)
+			},
+			type: 'filepath',
+			default: '',
+			props: {
+				target: 'file',
+				dialogOpts: {
+					defaultPath: '',
+					promptToCreate: true,
+					properties: ['openFile'],
+				},
+			},
+			onUpdate(d) {
+				if (d.value === '') {
+					if(IAENTITY !== undefined && IAENTITY.variants !== undefined) {
+						const variants = IAENTITY.variants
+						if (
+							variants &&
+							Object.values(variants).find((v) =>
+								Object.values(v).find((t) => t === 'transparent')
+							)
+						) {
+							d.isValid = false
+							d.error = tl(
+								'iaentitymodel.settings.transparentTexturePath.errors.undefinedWhenNeeded'
+							)
+						}
+					} else {
+						d.isValid = false
+						d.error = tl(
+							'iaentitymodel.settings.transparentTexturePath.errors.undefinedWhenNeeded'
+						)
+					}
+				}
+				return d
+			},
 		},
 	},
 }

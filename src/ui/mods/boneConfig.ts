@@ -5,126 +5,141 @@ import { refreshIcons } from '../../util/utilz'
 export type AJGroup = {
 	nbt: string
 	armAnimationEnabled: boolean
-	isHead: boolean
-	isLeftHandPivot: boolean
-	isRightHandPivot: boolean
-	isMount: boolean
-	isLocator: boolean
+	head: boolean
+	leftHandPivot: boolean
+	rightHandPivot: boolean
+	mount: boolean
+	locator: boolean
+	hitbox: boolean
+	eyesHeight: boolean
+	boneType: string
+	maxHeadRotX: number
+	maxHeadRotY: number
 } & Group
+
+
+const form1 = {
+	boneType: {
+		type: 'radio',
+		 label: tl(
+			 'iaentitymodel.dialogs.boneConfig.boneType'
+		 ),
+		 value: false,
+		options: {
+			"normal": tl('iaentitymodel.dialogs.boneConfig.normal'),
+			"leftHandPivot": tl('iaentitymodel.dialogs.boneConfig.leftHandPivot'),
+			"rightHandPivot": tl('iaentitymodel.dialogs.boneConfig.rightHandPivot'),
+			"mount": tl('iaentitymodel.dialogs.boneConfig.mount'),
+			"locator": tl('iaentitymodel.dialogs.boneConfig.locator'),
+			"hitbox": tl('iaentitymodel.dialogs.boneConfig.hitbox'),
+			"eyesHeight": tl('iaentitymodel.dialogs.boneConfig.eyesHeight'),
+			"head": tl('iaentitymodel.dialogs.boneConfig.head'),
+		}
+	}
+} as { [formElement: string]: '_' | DialogFormElement }
+
+const form2 = {
+	...form1,
+	separator : '_',
+	title_headProperties: { // hack to show a "title"
+		type: "radio",
+		label: tl(
+			'iaentitymodel.dialogs.boneConfig.headProperties'
+		),
+	},
+	maxHeadRotX: {
+		type: 'number',
+		 label: tl(
+			 'iaentitymodel.dialogs.boneConfig.maxHeadRotX'
+		 ),
+		 value: 40
+	},
+	maxHeadRotY: {
+		type: 'number',
+		 label: tl(
+			 'iaentitymodel.dialogs.boneConfig.maxHeadRotY'
+		 ),
+		 value: 75
+	},
+} as { [formElement: string]: '_' | DialogFormElement }
 
 const openBoneConfig = CustomAction('iaentitymodel.BoneConfig', {
 	name: 'Bone Config',
 	icon: 'settings',
 	category: 'edit',
 	condition: () => true,
-	click: function (ev: any) {
-		console.log('Opened bone config')
-		const selected = Group.selected as AJGroup
-		const dialog = new Dialog({
-			title: tl('iaentitymodel.dialogs.boneConfig.title'),
-			id: 'boneConfig',
-			form: {
-				/*nbt: {
-					type: 'textarea',
-					label: tl('iaentitymodel.boneConfig.boneNbt'),
-					value: selected.nbt,
-				},*/
-				isHead: {
-					type: 'checkbox',
-				 	label: tl(
-				 		'iaentitymodel.dialogs.boneConfig.isHead'
-				 	),
-				 	value: false,
-				},
-				isLeftHandPivot: {
-					type: 'checkbox',
-				 	label: tl(
-				 		'iaentitymodel.dialogs.boneConfig.isLeftHandPivot'
-				 	),
-				 	value: false,
-				},
-				isRightHandPivot: {
-					type: 'checkbox',
-				 	label: tl(
-				 		'iaentitymodel.dialogs.boneConfig.isRightHandPivot'
-				 	),
-				 	value: false,
-				},
-				isMount: {
-					type: 'checkbox',
-				 	label: tl(
-				 		'iaentitymodel.dialogs.boneConfig.isMount'
-				 	),
-				 	value: false,
-				},
-				isLocator: {
-					type: 'checkbox',
-				 	label: tl(
-				 		'iaentitymodel.dialogs.boneConfig.isLocator'
-				 	),
-				 	value: false,
-				},
-			},
-			onConfirm: (formData: any) => {
-				console.log(formData)
-				//selected.nbt = formData.nbt
-				selected.isHead = formData.isHead
-				selected.isLeftHandPivot = formData.isLeftHandPivot
-				selected.isRightHandPivot = formData.isRightHandPivot
-				selected.isMount = formData.isMount
-				selected.isLocator = formData.isLocator
-				// selected.armAnimationEnabled = formData.armAnimationEnabled
+	click: click,
+})
 
-				// Apply some of the properties to all the sub groups too. For now only "isHead".
-				for (const [childName, child_] of Object.entries(selected.children)) {
-					if(child_ instanceof Group) {
-						let child = child_ as AJGroup;
-						child.isHead = selected.isHead;
+function click (ev: any) {
+	console.log('Opened bone config')
+	const selected = Group.selected as AJGroup
+
+	let form = form1;
+	if(selected.boneType === "head")
+		form = form2;
+	
+	const dialog = new Dialog({
+		title: tl('iaentitymodel.dialogs.boneConfig.title'),
+		id: 'boneConfig',
+		form: form,
+		onConfirm: (formData: any) => {
+			console.log(formData)
+			selected.boneType = formData.boneType
+
+			if(selected.boneType === "head") {
+				selected.maxHeadRotX = formData.maxHeadRotX
+				selected.maxHeadRotY = formData.maxHeadRotY
+				
+				// Apply this change to every other head bone
+				for(const group of Group.all as AJGroup[]) {
+					if(group.boneType === "head") {
+						if(selected.name === group.name)
+							continue
+						else {
+							group.maxHeadRotX = formData.maxHeadRotX
+							group.maxHeadRotY = formData.maxHeadRotY
+						}
 					}
 				}
+			} else {
+				selected.maxHeadRotX = undefined
+				selected.maxHeadRotY = undefined
+			}
 
-				refreshIcons()
-				dialog.hide()
-			},
-		}).show()
-		//document.querySelector('#nbt').value = selected.nbt
-		document.querySelector('#isHead')["checked"] = selected.isHead
-		document.querySelector('#isLeftHandPivot')["checked"] = selected.isLeftHandPivot
-		document.querySelector('#isRightHandPivot')["checked"] = selected.isRightHandPivot
-		document.querySelector('#isMount')["checked"] = selected.isMount
-		document.querySelector('#isLocator')["checked"] = selected.isLocator
-		selected.isHead = false
-		selected.isLeftHandPivot = false
-		selected.isRightHandPivot = false
-		selected.isMount = false
-		selected.isLocator = false
-	},
-})
+			refreshIcons()
+			dialog.hide()
+		},
+		onFormChange: (formData: any) => {
+			// To refresh the dialog buttons, very hacky.
+			dialog.confirm()
+			click(null)
+		}
+	}).show()
+	
+	document.querySelector('#' + selected.boneType)["checked"] = true
 
-// Properties registration
-new Property(Group, 'string', 'nbt', {
-	default: () => '{}',
+	if(selected.boneType === "head") {
+		document.querySelector('#maxHeadRotX')["value"] = selected.maxHeadRotX ? selected.maxHeadRotX : 40
+		document.querySelector('#maxHeadRotY')["value"] = selected.maxHeadRotY ? selected.maxHeadRotY : 75
+	}
+}
+
+// Properties registration to make Blockbench save them in the project file
+new Property(Group, 'string', 'boneType', {
+	default: () => '',
 	exposed: true,
+	condition: (val: any) => val !== undefined && val !== "" && val !== "normal"
 })
-new Property(Group, 'string', 'isHead', {
-	default: () => false,
+new Property(Group, 'number', 'maxHeadRotX', {
+	default: () => undefined,
 	exposed: true,
+	condition: (val: any) => val !== undefined && val !== ""
 })
-new Property(Group, 'string', 'isLeftHandPivot', {
-	default: () => false,
+new Property(Group, 'number', 'maxHeadRotY', {
+	default: () => undefined,
 	exposed: true,
-})
-new Property(Group, 'string', 'isRightHandPivot', {
-	default: () => false,
-	exposed: true,
-})
-new Property(Group, 'string', 'isMount', {
-	default: () => false,
-	exposed: true,
-})
-new Property(Group, 'string', 'isLocator', {
-	default: () => false,
-	exposed: true,
+	condition: (val: any) => val !== undefined && val !== ""
 })
 
 // @ts-ignore

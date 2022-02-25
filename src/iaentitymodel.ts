@@ -136,10 +136,11 @@ export interface Settings {
 	useCache: boolean
 	cacheMode: 'memory' | 'disk'
 	itemsadder: string
-	transparentTexturePath: string
+	rotationMode: 'smooth' | 'precise'
 	boundingBoxRenderMode: 'single' | 'multiple' | 'disabled'
 	verbose: boolean
 	modelScalingMode: '7x7x7' | '3x3x3'
+	transparentTexturePath: string
 }
 
 export interface GlobalSettings {
@@ -150,11 +151,9 @@ export interface GlobalSettings {
 export type Bone = {
 	nbt: string
 	armAnimationEnabled: boolean
-	isHead: boolean
-	isLeftHandPivot: boolean
-	isRightHandPivot: boolean
-	isMount: boolean
-	isLocator: boolean
+	boneType: string
+	maxHeadRotX: number
+	maxHeadRotY: number
 	export: boolean
 } & Cube
 

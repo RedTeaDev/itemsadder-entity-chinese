@@ -87,7 +87,7 @@ bus.on(EVENTS.LIFECYCLE.LOAD, () => {
 				Selected = null
 			}
 			if (Mode.selected.id === 'edit' && viewmode !== 'none') {
-				if (viewmode === 'single') {
+				/*if (viewmode === 'single') {
 					let parent = null
 					if (Group.selected && Group.selected.name !== 'SCENE') {
 						parent = Group.selected
@@ -110,8 +110,8 @@ bus.on(EVENTS.LIFECYCLE.LOAD, () => {
 							visboxs.push(b)
 						}
 						last = parent
-					}
-				} else {
+					}*/
+				//} else {
 					// view many
 					last_mult = Selected
 					Selected = new Set()
@@ -137,6 +137,7 @@ bus.on(EVENTS.LIFECYCLE.LOAD, () => {
 							if (item.visbox) {
 								try {
 									console.log(`remove ${item.name}`)
+									Canvas.outlines.remove(item.visbox)
 									item.mesh.remove(item.visbox)
 									visboxs.splice(visboxs.indexOf(item.visbox), 1)
 									console.log(`remove ${item.name}`)
@@ -149,12 +150,13 @@ bus.on(EVENTS.LIFECYCLE.LOAD, () => {
 							}
 						}
 					})
-				}
+				//}
 			} else if (last || last_mult) {
 				visboxs.forEach((v) => v.parent.remove(v))
 				Array.from(last_mult || []).forEach((item) => {
 					if (item.visbox) {
 						item.mesh.remove(item.visbox)
+						Canvas.outlines.remove(item.visbox)
 						//console.log(`remove ${item.name}`)
 						delete item.visbox
 					}

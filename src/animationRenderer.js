@@ -58,7 +58,7 @@ function getRotations(animation) {
 		const group = Group.all.find(x => x.uuid == obj3d.name); // Shitty
 
 		const prevQuat = obj3d.quaternion.clone()
-		if(group.isLeftHandPivot || group.isRightHandPivot) {
+		if(group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot") {
 			//obj3d.applyQuaternion(new THREE.Quaternion().setFromEuler(new Euler(0, 0, -45, 'ZYX')))
 			obj3d.rotateZ(-0.785398); // -45
 		}
@@ -83,7 +83,7 @@ function getPositions() {
 		
 		// Fix the hands offset calculation because items are shown on top of armorstand head not directly on the neck. 
 		let prevPos = group.mesh.position.clone();
-		if(group.isLeftHandPivot || group.isRightHandPivot) {
+		if(group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot") {
 			group.mesh.position.x -= 8.75 // TODO: is this wrong? may I need to use relative position? entity should be in T-pose...
 			group.mesh.position.y -= 2
 			group.mesh.position.z += -4
@@ -295,8 +295,10 @@ async function renderAnimation(options) {
 			(group) =>
 				!isSceneBased(group) &&
 				group.visibility &&
-				((group["isLeftHandPivot"]) || (group["isRightHandPivot"]) || (group["isMount"]) || (group["isLocator"]) ||
-					group.children.find((child) => child instanceof Cube))
+				(
+					group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot" || group.boneType === "mount" || group.boneType === "locator" || group.boneType === "hitbox" || group.boneType === "eyesHeight" ||
+					group.children.find((child) => child instanceof Cube)
+				)
 		)
 		console.log('All Groups:', Group.all)
 		console.log('Rendered Groups:', renderedGroups)

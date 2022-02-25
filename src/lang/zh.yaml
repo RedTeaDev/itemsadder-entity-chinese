@@ -100,7 +100,7 @@ iaentitymodel:
             title: 骨骼配置
             boneNbt: 骨骼 NBT
             armAnimationEnabled: 启用手臂动画
-            isHead: Is Head
+            head: Is Head
 
         variants:
             title: 模型变体

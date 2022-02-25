@@ -11,7 +11,7 @@ iaentitymodel.settings.invalidSetting.generic: 'Instellingswaarde is ongeldig'
 iaentitymodel.boneConfig.title: Bot Configuratie
 iaentitymodel.boneConfig.boneNbt: Bot NBT
 iaentitymodel.boneConfig.armAnimationEnabled: Schakel Armanimatie in
-iaentitymodel.boneConfig.isHead: Is Head
+iaentitymodel.boneConfig.head: Is Head
 
 iaentitymodel.popup.quickMessage.noExporterSelected: Geen Exporter geselecteerd!
 

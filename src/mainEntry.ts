@@ -173,6 +173,10 @@ Blockbench.on('select_project', () => {
 		console.log('selected', Format.id !== modelFormat.id)
 		menu.label.style.display = Format.id !== modelFormat.id ? 'none' : 'inline-block'
 
+		// Set the current projectName
+		if(settings.iaentitymodel.projectName === undefined || settings.iaentitymodel.projectName === "")
+			settings.iaentitymodel.projectName = safeFunctionName(Project.name)
+
 		if(Format.id === modelFormat.id) {
 			refreshIcons()
 			// Hide the "variable placeholders" panel under the keyframe coords 
@@ -221,6 +225,7 @@ Blockbench.on('unselect_project', () => {
 // @ts-ignore
 import logo from './assets/itemsadder_icon.png'
 import { refreshIcons } from './util/utilz'
+import { safeFunctionName } from './util/replace'
 menu.label.innerHTML = tl('iaentitymodel.menubar.dropdown')
 let img = document.createElement('img')
 img.src = logo
