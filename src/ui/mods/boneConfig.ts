@@ -1,10 +1,10 @@
 import { CustomAction } from '../../util/customAction'
 import { tl } from '../../util/intl'
 import { refreshIcons } from '../../util/utilz'
+import { isCustomFormat } from '../../modelFormat'
 
 export type AJGroup = {
 	nbt: string
-	armAnimationEnabled: boolean
 	head: boolean
 	leftHandPivot: boolean
 	rightHandPivot: boolean
@@ -67,7 +67,7 @@ const openBoneConfig = CustomAction('iaentitymodel.BoneConfig', {
 	name: 'Bone Config',
 	icon: 'settings',
 	category: 'edit',
-	condition: () => true,
+	condition: isCustomFormat,
 	click: click,
 })
 

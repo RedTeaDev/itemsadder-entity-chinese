@@ -8,7 +8,7 @@ import { getTexturesExportFolder } from '../utilz'
 import { settings } from '../../settings'
 
 export function getTexturePath(texture: any) {
-	if (!texture.path || !texture.saved) {
+	if (!texture.path || texture.path === '' || !texture.saved) {
 		console.log('Unsaved texture, now saving:', texture)
 
 		let texturesFolder = getTexturesExportFolder(settings)

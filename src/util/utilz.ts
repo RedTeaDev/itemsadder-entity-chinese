@@ -1,5 +1,6 @@
-import * as path from "path/posix"
+import * as path from 'path'
 import * as fs from 'fs'
+import { normalizePath } from './misc';
 
 export function getModelExportFolder(settings) {
     let fileName = Project.save_path.replace(/\\/g, '/').split('/').pop()
@@ -7,14 +8,14 @@ export function getModelExportFolder(settings) {
 
 	dirPath = path.normalize(dirPath);
 
-    const modelsPath = path.join(
+    const modelsPath = normalizePath(path.join(
 		dirPath,
 		"assets",
 		settings.iaentitymodel.namespace,
 		"models", 
 		"entity",
         settings.iaentitymodel.projectName
-	)
+	))
 
     // Dirty way
     fs.mkdirSync(modelsPath, { recursive: true })
@@ -27,16 +28,16 @@ export function getTexturesExportFolder(settings) {
     let fileName = Project.save_path.replace(/\\/g, '/').split('/').pop()
     let dirPath = Project.save_path.slice(0, -fileName.length - 1)
 
-	dirPath = path.normalize(dirPath)
+	dirPath = normalizePath(dirPath)
 
-    const texturesPath = path.join(
+    const texturesPath = normalizePath(path.join(
 		dirPath,
 		"assets",
 		settings.iaentitymodel.namespace,
 		"textures", 
 		"entity",
         settings.iaentitymodel.projectName
-	)
+	))
 
     // Dirty way
     fs.mkdirSync(texturesPath, { recursive: true })
@@ -48,7 +49,7 @@ export function getProjectSaveFolder() {
     let fileName = Project.save_path.replace(/\\/g, '/').split('/').pop()
     let dirPath = Project.save_path.slice(0, -fileName.length)
 
-	return dirPath = path.normalize(dirPath);
+	return dirPath = normalizePath(dirPath);
 }
 
 export function refreshIcons() {

@@ -316,7 +316,9 @@ const format = new ModelFormat({
 		settingsByUUID.set(Project.uuid, settings.toObject())
 	},
 })
+const isCustomFormat = () => Format.id === format.id
 
 codec.format = format
 StartScreen.vue.$forceUpdate()
-export { format, codec }
+
+export { format, codec, isCustomFormat }

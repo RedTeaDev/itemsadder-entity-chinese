@@ -41,7 +41,7 @@ const flavor = process.env.FLAVOR?.split('/').pop()
 					'(()=>{',
 					makeBanner(header.split('\n').map((_) => _.trim())),
 					'\n\n\n',
-					`console.log("hello from Animated Java!");
+					`console.log("ItemsAdder Entity loaded!");
 const konsole=new Proxy(console,{apply(a,b,c){(globalThis?.IAENTITY?.logging??true)&&a(...c)},get(a,b){return typeof a[b]==="function"?function(...args){(globalThis?.IAENTITY?.logging??true)&&a[b](...args)}:a[b]}});
 const PromiseWrapper=(p)=>p.catch((e)=>{globalThis.IAENTITY&&globalThis.IAENTITY.asyncError(e);return e});`,
 					'\n\n\n',

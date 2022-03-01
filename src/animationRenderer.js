@@ -1,7 +1,6 @@
 import * as path from 'path'
 import { settings } from './settings'
 import { Async } from './util/async'
-import { bus } from './util/bus'
 import { roundToN } from './util/misc'
 import * as hash from './util/hash'
 import { store } from './util/store'
@@ -9,13 +8,9 @@ import * as os from 'os'
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs'
 import { StructTypes, StructPacker } from 'struct-packer'
 import { gunzipSync, gzipSync } from 'zlib'
-import events from './constants/events'
 import { tl } from './util/intl'
 import { format, safeFunctionName } from './util/replace'
 import { isSceneBased } from './util/hasSceneAsParent'
-import { CustomError } from './util/customError'
-import { Euler } from 'three'
-import { Quaternion } from 'three'
 store.set('staticAnimationUuid', '138747e7-2de0-4130-b900-9275ca0e6333')
 
 function setAnimatorTime(time) {
@@ -45,15 +40,6 @@ function getRotations(animation) {
 			.interpolate('rotation') || [0, 0, 0]
 	})
 	const results = {}
-	// function getRotation(group) {
-	// 	if (group.parent != 'root') {
-	// 		const prot = getRotation(group.parent)
-	// 		return bones[group.name].map(
-	// 			(v, i) => v + prot[i] + group.rotation[i]
-	// 		)
-	// 	}
-	// 	return bones[group.name].map((v, i) => v + group.rotation[i])
-	// }
 	function getRotation(obj3d) {
 		const group = Group.all.find(x => x.uuid == obj3d.name); // Shitty
 
@@ -84,7 +70,8 @@ function getPositions() {
 		// Fix the hands offset calculation because items are shown on top of armorstand head not directly on the neck. 
 		let prevPos = group.mesh.position.clone();
 		if(group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot") {
-			group.mesh.position.x -= 8.75 // TODO: is this wrong? may I need to use relative position? entity should be in T-pose...
+			// TODO: is this wrong? may I need to use relative position? entity should be in T-pose, so I might not need to worry.
+			group.mesh.position.x -= 8.75
 			group.mesh.position.y -= 2
 			group.mesh.position.z += -4
 		}
@@ -352,7 +339,7 @@ async function renderAnimation(options) {
 									keyframe.data_points.forEach(x => {
 										effects.particles.push({
 											name: x.name,
-											locator: x.bone,
+											locator: x.locator_name,
 											speed: x.speed,
 											count: x.count,
 											x_delta: x.x_delta,
@@ -361,21 +348,9 @@ async function renderAnimation(options) {
 										})
 									})
 								}
-								if (
-									keyframe.channel === 'script' ||
-									keyframe.channel === 'timeline'
-								) {
-									/*effects.script = keyframe.data_points.map(
-										(kf) => kf.script
-									)*/
-								}
 							})
 					}
 
-					/*if(effects.sounds.length == 0)
-						delete effects.sounds
-					if(effects.particles.length == 0)
-						delete effects.particles*/
 					const frame = {
 						bones: getData(animation, renderedGroups),
 						effects: effects
@@ -397,6 +372,7 @@ async function renderAnimation(options) {
 				avalue = {
 					frames,
 					maxDistance,
+					animType: animation.animType,
 					name: animation.name,
 					loopMode: animation.loop,
 					length: animation.length

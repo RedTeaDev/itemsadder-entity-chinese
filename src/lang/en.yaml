@@ -97,8 +97,8 @@ iaentitymodel:
       description:
         - "ItemsAdder offers two bones rotation modes."
         - "You have to decide them based on what your entity will do:"
-        - " - Smooth: suitable for NPCs and entities which won't walk around very fast."
-        - " - Precise: suitable for mobs which will walk around, jump, fly, bosses and similar."
+        - " - Smooth: suitable for NPCs and entities which won't walk around very fast and with a few bones."
+        - " - Precise: suitable for mobs with a lot of bones and/or which move very fast (example: run, jump, fly, bosses with complex attacks and similar)."
       options:
         smooth: Smooth
         precise: Precise
@@ -114,6 +114,45 @@ iaentitymodel:
         single: Single
         many: Multiple
         none: Disabled
+
+    idleAnim:
+      title: Idle Animation
+      description:
+        - Name of the idle animation
+
+    walkAnim:
+      title: Walk Animation
+      description:
+        - Name of the walk animation
+
+    attackAnim:
+      title: Attack Animation
+      description:
+        - Name of the attack animation
+
+    deathAnim:
+      title: Death Animation
+      description:
+        - Name of the death animation
+
+    flyAnim:
+      title: Fly Animation
+      description:
+        - Name of the fly animation
+
+    invalidAnim: Invalid animation name
+
+  menu:
+    animation:
+      animType:
+        title: "Animation Type"
+        value:
+          other: "Other"
+          idle: "Idle"
+          walk: "Walk"
+          attack: "Attack"
+          death: "Death"
+          fly: "Fly"
 
   dialogs:
     boneConfig:

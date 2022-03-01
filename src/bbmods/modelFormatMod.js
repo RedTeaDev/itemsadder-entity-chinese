@@ -24,6 +24,10 @@ ModelFormat.prototype.convertTo = function convertTo() {
 	}
 
 	// Set the current projectName
+	if(Project.name === "") {
+		let fileName = Project.save_path.replace(/\\/g, '/').split('/').pop().split('.')[0]
+		Project.name = fileName
+	}
 	settings.iaentitymodel.projectName = safeFunctionName(Project.name)
 	
 	// Box UV
@@ -152,6 +156,38 @@ ModelFormat.prototype.convertTo = function convertTo() {
 			}
 		})
 	}
+
+
+	// Detect animations names bindings
+	const includesMult = (str, arr) => {
+		for(let el of arr) {
+			if(str.includes(el))
+				return true
+		}
+		return false
+	}
+	const foundAnims = []
+	const animNamesFind = (anim, name, alt) => {
+		if(!foundAnims.find(x => x.name === name) && (includesMult(anim.name, alt))) {
+			foundAnims.push({
+				name: name,
+				anim: anim // TODO: Useless data, use a normal array
+			})
+			//settings.iaentitymodel[`${name}Anim`] = anim.name
+			anim.animType = name
+			return
+		}
+		if(anim.animType === undefined)
+			anim.animType = "other"
+	}
+	Animation.all.forEach(anim => {
+		animNamesFind(anim, "idle", ["idle"])
+		animNamesFind(anim, "walk", ["walk", "walking"])
+		animNamesFind(anim, "attack", ["attack", "attacking"])
+		animNamesFind(anim, "death", ["death", "dying", "die"])
+		animNamesFind(anim, "fly", ["fly", "flying"])
+	})
+
 
 	//Animation Mode
 	if (!Format.animation_mode && old_format.animation_mode) {

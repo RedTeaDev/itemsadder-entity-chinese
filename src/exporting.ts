@@ -6,7 +6,6 @@ import { tl } from './util/intl'
 import { mkdir } from './util/ezfs'
 import { settings } from './settings'
 import { CustomError } from './util/customError'
-import { safeFunctionName } from './util/replace'
 // @ts-ignore
 import transparent from './assets/transparent.png'
 import { getModelExportFolder, toJson } from './util/utilz'

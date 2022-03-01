@@ -298,7 +298,7 @@ new Property(KeyframeDataPoint, 'string', 'name', {label: "Name", condition: poi
 new Property(KeyframeDataPoint, 'number', 'volume', {label: "Volume", condition: point => Format.id === modelFormat.id && 'sound' == point.keyframe.channel, default: 1},);
 new Property(KeyframeDataPoint, 'number', 'pitch', {label: "Pitch", condition: point => Format.id === modelFormat.id && 'sound' == point.keyframe.channel, default: 1});
 
-new Property(KeyframeDataPoint, 'number', 'bone', {label: "Bone (locator)", condition: point => Format.id === modelFormat.id && 'particle' == point.keyframe.channel, default: "bone_name"} );
+new Property(KeyframeDataPoint, 'string', 'locator_name', {label: "Bone (locator)", condition: point => Format.id === modelFormat.id && 'particle' == point.keyframe.channel, default: "locator_bone_name"} );
 new Property(KeyframeDataPoint, 'number', 'speed', {label: "Speed", condition: point => Format.id === modelFormat.id && 'particle' == point.keyframe.channel, default: 1});
 new Property(KeyframeDataPoint, 'number', 'count', {label: "Count", condition: point => Format.id === modelFormat.id && 'particle' == point.keyframe.channel, default: 1});
 new Property(KeyframeDataPoint, 'molang', 'x_delta', { label: 'X delta', condition: point => Format.id === modelFormat.id && 'particle' == point.keyframe.channel, default: 0 });

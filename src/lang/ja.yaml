@@ -101,7 +101,6 @@ iaentitymodel:
     boneConfig:
       title: ボーンコンフィグ
       boneNbt: ボーン NBT
-      armAnimationEnabled: 腕のアニメーションをエネーブル
       head: Is Head
 
     variants:

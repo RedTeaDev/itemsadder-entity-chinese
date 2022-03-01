@@ -70,7 +70,8 @@ BarItems.rescale_toggle.condition = function () {
 bus.on(EVENTS.LIFECYCLE.LOAD, () => {
 	const frame = () => {
 		if (format.id === Format.id) {
-			const viewmode = settings.iaentitymodel.boundingBoxRenderMode
+			//const viewmode = settings.iaentitymodel.boundingBoxRenderMode
+			const viewmode = "single"
 			if (viewmode !== mode) {
 				mode = viewmode
 				visboxs.forEach((v) => v.parent.remove(v))
@@ -87,7 +88,7 @@ bus.on(EVENTS.LIFECYCLE.LOAD, () => {
 				Selected = null
 			}
 			if (Mode.selected.id === 'edit' && viewmode !== 'none') {
-				/*if (viewmode === 'single') {
+				if (viewmode === 'single') {
 					let parent = null
 					if (Group.selected && Group.selected.name !== 'SCENE') {
 						parent = Group.selected
@@ -105,13 +106,11 @@ bus.on(EVENTS.LIFECYCLE.LOAD, () => {
 						if (parent && parent.name !== 'SCENE') {
 							const b = createBox()
 							parent.mesh.add(b)
-							parent.mesh.remove(b)
-							Canvas.outlines.add(b)
 							visboxs.push(b)
 						}
 						last = parent
-					}*/
-				//} else {
+					}
+				} /*else {
 					// view many
 					last_mult = Selected
 					Selected = new Set()
@@ -137,7 +136,6 @@ bus.on(EVENTS.LIFECYCLE.LOAD, () => {
 							if (item.visbox) {
 								try {
 									console.log(`remove ${item.name}`)
-									Canvas.outlines.remove(item.visbox)
 									item.mesh.remove(item.visbox)
 									visboxs.splice(visboxs.indexOf(item.visbox), 1)
 									console.log(`remove ${item.name}`)
@@ -150,13 +148,12 @@ bus.on(EVENTS.LIFECYCLE.LOAD, () => {
 							}
 						}
 					})
-				//}
+				}*/
 			} else if (last || last_mult) {
 				visboxs.forEach((v) => v.parent.remove(v))
 				Array.from(last_mult || []).forEach((item) => {
 					if (item.visbox) {
 						item.mesh.remove(item.visbox)
-						Canvas.outlines.remove(item.visbox)
 						//console.log(`remove ${item.name}`)
 						delete item.visbox
 					}

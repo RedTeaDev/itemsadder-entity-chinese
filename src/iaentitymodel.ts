@@ -8,7 +8,7 @@ import { tl } from './util/intl'
 import { settings } from './settings'
 import { registerSettingRenderer } from './ui/dialogs/settings'
 import './ui/mods/boneConfig'
-import './compileLangMC'
+import './ui/mods/animConfig'
 import './exporters/animationExporter'
 import './bbmods/modelFormatMod'
 import './bbmods/faceTint'
@@ -30,7 +30,6 @@ function getRandomErrorMessage() {
 }
 
 function showUnknownErrorDialog(e: CustomError | any) {
-	// console.log(e.options)
 	if (e.options?.silent) {
 		console.log(e.options.message)
 		return
@@ -141,6 +140,11 @@ export interface Settings {
 	verbose: boolean
 	modelScalingMode: '7x7x7' | '3x3x3'
 	transparentTexturePath: string
+	idleAnim: string
+	walkAnim: string
+	attackAnim: string
+	deathAnim: string
+	flyAnim: string
 }
 
 export interface GlobalSettings {
@@ -150,7 +154,6 @@ export interface GlobalSettings {
 
 export type Bone = {
 	nbt: string
-	armAnimationEnabled: boolean
 	boneType: string
 	maxHeadRotX: number
 	maxHeadRotY: number
@@ -176,6 +179,7 @@ export type Frame = {
 export type RenderedAnimation = {
 	frames: Frame[]
 	maxDistance: number
+	animType: string
 	name: string
 	loopMode: 'loop' | 'hold' | 'once',
 	length: number

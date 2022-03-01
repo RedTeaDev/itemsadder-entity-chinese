@@ -10,7 +10,7 @@ import { CustomError } from './util/customError'
 import {  safeFunctionName } from './util/replace'
 import { isSceneBased } from './util/hasSceneAsParent'
 import { getModelExportFolder } from './util/utilz'
-import { roundToN, roundScale } from './util/misc'
+import { roundScale } from './util/misc'
 
 function getMCPath(raw) {
 	let list = raw.split(path.sep)
@@ -357,44 +357,45 @@ export async function computeVariantModels(
 
 	const modelExportFolder = getModelExportFolder(settings)
 
-	for (const [variantName, variant] of Object.entries(variants)) {
-		variantModels[variantName] = {}
-		const thisVariantOverrides = variantOverrides[variantName]
+	if(variants) {
+		for (const [variantName, variant] of Object.entries(variants)) {
+			variantModels[variantName] = {}
+			const thisVariantOverrides = variantOverrides[variantName]
 
-		for (const [modelName, model] of Object.entries(models)) {
-			const thisModelOverrides = thisVariantOverrides[modelName]
+			for (const [modelName, model] of Object.entries(models)) {
+				const thisModelOverrides = thisVariantOverrides[modelName]
 
-			if (thisModelOverrides && size(thisModelOverrides.textures)) {
-				variantTouchedModels[modelName] = model
-				const newVariantModel = {
-					parent: getModelMCPath(
-						path.join(
-							modelExportFolder,
-							modelName
+				if (thisModelOverrides && size(thisModelOverrides.textures)) {
+					variantTouchedModels[modelName] = model
+					const newVariantModel = {
+						parent: getModelMCPath(
+							path.join(
+								modelExportFolder,
+								modelName
+							)
+						),
+						textures: thisModelOverrides.textures,
+					}
+					variantModels[variantName][modelName] = newVariantModel
+
+					if (!scaleModels[modelName]) continue
+					for (const [vecStr, model] of Object.entries(
+						scaleModels[modelName]
+					)) {
+						const clone = cloneObject(model)
+						clone.parent = getModelMCPath(
+							path.join(
+								getModelExportFolder(settings),
+								variantName,
+								modelName
+							)
 						)
-					),
-					textures: thisModelOverrides.textures,
-				}
-				variantModels[variantName][modelName] = newVariantModel
-
-				if (!scaleModels[modelName]) continue
-				for (const [vecStr, model] of Object.entries(
-					scaleModels[modelName]
-				)) {
-					const clone = cloneObject(model)
-					clone.parent = getModelMCPath(
-						path.join(
-							getModelExportFolder(settings),
-							variantName,
-							modelName
-						)
-					)
-					variantModels[variantName][`${modelName}_${vecStr}`] = clone
+						variantModels[variantName][`${modelName}_${vecStr}`] = clone
+					}
 				}
 			}
 		}
 	}
-
 	console.groupEnd('Compute Variant Models')
 	return { variantModels, scaleModels, variantTouchedModels }
 }

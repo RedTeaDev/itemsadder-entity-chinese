@@ -46,7 +46,7 @@ export const DefaultSettings = {
 				return tl('iaentitymodel.settings.projectName.description')
 			},
 			type: 'text',
-			default: '',
+			default: 'project',
 			onUpdate(d) {
 				if (d.value !== '') {
 					if (d.value !== safeFunctionName(d.value)) {
@@ -143,7 +143,7 @@ export const DefaultSettings = {
 			dependencies: ['iaentitymodel.useCache'],
 			global: true,
 		},
-		boundingBoxRenderMode: {
+		/*boundingBoxRenderMode: {
 			get title() {
 				return tl('iaentitymodel.settings.boundingBoxRenderMode.title')
 			},
@@ -160,8 +160,8 @@ export const DefaultSettings = {
 				none: 'iaentitymodel.settings.boundingBoxRenderMode.options.none',
 			},
 			global: true,
-		},
-		transparentTexturePath: {
+		},*/
+		/*transparentTexturePath: {
 			get title() {
 				return tl('iaentitymodel.settings.transparentTexturePath.title')
 			},
@@ -204,7 +204,7 @@ export const DefaultSettings = {
 				}
 				return d
 			},
-		},
+		},*/
 	},
 }
 function createUpdateDescriptor(setting, value, event) {
