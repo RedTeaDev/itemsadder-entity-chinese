@@ -7,18 +7,7 @@ import { normalizePath } from '../misc'
 import { getTexturesExportFolder } from '../utilz'
 import { settings } from '../../settings'
 
-export function getTexturePath(texture: any) {
-	if (!texture.path || texture.path === '' || !texture.saved) {
-		console.log('Unsaved texture, now saving:', texture)
-
-		let texturesFolder = getTexturesExportFolder(settings)
-		texture.path = path.join(texturesFolder, texture.name.toLowerCase())
-		if(!texture.path.endsWith('.png'))
-			texture.path = texture.path + ".png"
-
-		fs.closeSync(fs.openSync(texture.path, 'w')) // Hack to create a blank file
-		texture.save(false)
-	}
+function getTextureReference(texture: any) {
 	const parts = texture.path.split(path.sep)
 	const assetsIndex = parts.indexOf('assets')
 	if (assetsIndex) {
@@ -58,6 +47,38 @@ export function getTexturePath(texture: any) {
 			singleButton: true,
 		},
 	})
+}
+
+export function getTexturePath(texture: any) {
+	console.log('Saving texture:', texture)
+
+	let texturesFolder = getTexturesExportFolder(settings)
+	let newPath = path.join(texturesFolder, texture.name.toLowerCase())
+
+	if(texture.saved && texture.path !== '') {
+		if(fs.existsSync(texture.path)) {
+			fs.copyFile(texture.path, newPath, (err) => {
+				if (err) {
+					console.error(err)
+					return
+				}
+				console.log('Copied texture to valid path', newPath)
+			});
+		} else {
+			texture.saved = false
+			fs.closeSync(fs.openSync(texture.path, 'w')) // Hack to create a blank file
+			texture.save(false)
+			texture.saved = true
+		}
+	}
+
+	texture.path = newPath
+	if(!texture.path.endsWith('.png'))
+		texture.path = texture.path + ".png"
+
+	texture.saved = true
+
+	return getTextureReference(texture)
 }
 
 export function getModelPath(modelPath: string, modelName: string) {
