@@ -216,7 +216,7 @@ Blockbench.on('select_mode', () => {
 // Dirty
 document.body.addEventListener('click', () => {
 	refreshIcons()
-}, true); 
+}, true);
 
 // @ts-ignore
 Blockbench.on('unselect_project', () => {
