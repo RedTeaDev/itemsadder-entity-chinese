@@ -2,6 +2,11 @@ import * as path from 'path'
 import * as fs from 'fs'
 import { normalizePath } from './misc';
 
+export function isInternalModel(settings) {
+    // @ts-ignore
+    return settings.iaentitymodel.namespace === "iainternal"
+}
+
 export function getModelExportFolder(settings) {
     let fileName = Project.save_path.replace(/\\/g, '/').split('/').pop()
     let dirPath = Project.save_path.slice(0, -fileName.length - 1)
@@ -22,7 +27,6 @@ export function getModelExportFolder(settings) {
 
     return modelsPath
 }
-
 
 export function getTexturesExportFolder(settings) {
     let fileName = Project.save_path.replace(/\\/g, '/').split('/').pop()

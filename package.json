@@ -1,6 +1,6 @@
 {
 	"name": "itemsadder-entity",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "",
 	"main": "index.js",
 	"scripts": {
@@ -10,7 +10,6 @@
 		"rollup": "rollup --config ./config/dev.animated-java.rollup.config.js",
 		"dev": "node dist/tools/scripts/watch.js",
 		"build:app": "node dist/tools/scripts/build.js",
-		"build:worker": "rollup --config ./lang-mc-worker/rollup.config.js",
 		"build": "yarn build:scripts && yarn build:worker && yarn build:app",
 		"lint": "prettier --write .",
 		"ci:upload": "node ./tools/distribute.js"

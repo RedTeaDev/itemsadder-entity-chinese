@@ -134,9 +134,11 @@ async function computeAnimationData(
 	// Object.values(variantModels).forEach(variant => Object.entries(variant).forEach(([k,v]) => flatVariantModels[k] = v))
 	// console.log('Flat Variant Models:', flatVariantModels)
 
-	await exportRigModels(models, variants.variantModels, scaleModels)
-	if (settings.iaentitymodel.transparentTexturePath) {
-		await exportTransparentTexture()
+	if(!isInternalModel(settings)) {
+		await exportRigModels(models, variants.variantModels, scaleModels)
+		if (settings.iaentitymodel.transparentTexturePath) {
+			await exportTransparentTexture()
+		}
 	}
 
 	const data = {
@@ -167,6 +169,34 @@ const menu: any = new BarMenu(
 )
 menu.label.style.display = 'none'
 document.querySelector('#menu_bar').appendChild(menu.label)
+
+
+function hideEditPaintTabs() {
+	// @ts-ignore
+	Modes.options.animate.select()
+	// @ts-ignore
+	document.querySelector("#mode_selector > li:nth-child(1)").style.display = "none"
+	// @ts-ignore
+	document.querySelector("#mode_selector > li:nth-child(2)").style.display = "none"
+	// @ts-ignore
+	document.querySelector("div.tool.resize_tool").style.display = "none"
+	// @ts-ignore
+	document.querySelector("div.tool.pivot_tool").style.display = "none"
+}
+
+function restoreEditPaintTabs() {
+	// @ts-ignore
+	Modes.options.edit.select()
+	// @ts-ignore
+	document.querySelector("#mode_selector > li:nth-child(1)").style.removeProperty("display")
+	// @ts-ignore
+	document.querySelector("#mode_selector > li:nth-child(2)").style.removeProperty("display")
+	// @ts-ignore
+	document.querySelector("div.tool.resize_tool").style.removeProperty("display")
+	// @ts-ignore
+	document.querySelector("div.tool.pivot_tool").style.removeProperty("display")
+}
+
 // @ts-ignore
 Blockbench.on('select_project', () => {
 	queueMicrotask(() => {
@@ -182,11 +212,20 @@ Blockbench.on('select_project', () => {
 			// Hide the "variable placeholders" panel under the keyframe coords 
 			// @ts-ignore
 			Interface.Panels.variable_placeholders.node.style.visibility = "hidden"
+
+			if(isInternalModel(settings)) {
+				hideEditPaintTabs()
+			}
+			else {
+				restoreEditPaintTabs()
+			}
 		}
 		else {
 			// Show the "variable placeholders" panel under the keyframe coords
 			// @ts-ignore
 			Interface.Panels.variable_placeholders.node.style.visibility = "visible"
+
+			restoreEditPaintTabs()
 		}
 	})
 })
@@ -224,7 +263,7 @@ Blockbench.on('unselect_project', () => {
 })
 // @ts-ignore
 import logo from './assets/itemsadder_icon.png'
-import { refreshIcons } from './util/utilz'
+import {isInternalModel, refreshIcons} from './util/utilz'
 import { safeFunctionName } from './util/replace'
 menu.label.innerHTML = tl('iaentitymodel.menubar.dropdown')
 let img = document.createElement('img')
@@ -236,12 +275,13 @@ img.style.top = '2px'
 img.style.borderRadius = '8px'
 img.style.marginRight = '5px'
 menu.label.prepend(img)
+
 MenuBar.addAction(
 	CustomAction('iaentitymodel_settings', {
 		icon: 'settings',
 		category: 'iaentitymodel',
 		name: tl('iaentitymodel.menubar.settings'),
-		condition: () => modelFormat.id === Format.id,
+		condition: () => modelFormat.id === Format.id && !isInternalModel(settings),
 		click: function () {
 			show_settings()
 		},

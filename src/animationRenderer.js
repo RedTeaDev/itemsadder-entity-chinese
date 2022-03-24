@@ -11,6 +11,8 @@ import { gunzipSync, gzipSync } from 'zlib'
 import { tl } from './util/intl'
 import { format, safeFunctionName } from './util/replace'
 import { isSceneBased } from './util/hasSceneAsParent'
+import {Euler} from "three";
+import {isInternalModel} from "./util/utilz";
 store.set('staticAnimationUuid', '138747e7-2de0-4130-b900-9275ca0e6333')
 
 function setAnimatorTime(time) {
@@ -45,8 +47,10 @@ function getRotations(animation) {
 
 		const prevQuat = obj3d.quaternion.clone()
 		if(group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot") {
-			//obj3d.applyQuaternion(new THREE.Quaternion().setFromEuler(new Euler(0, 0, -45, 'ZYX')))
-			obj3d.rotateZ(-0.785398); // -45
+		// 	obj3d.applyQuaternion(new THREE.Quaternion().setFromEuler(new Euler(0, 0, -10, 'ZYX')))
+			if(!isInternalModel(settings))
+				obj3d.rotateZ(-0.785398); // -45
+		// 	obj3d.rotateX(-0.261799); // -15
 		}
 		const worldQuat = obj3d.getWorldQuaternion(new THREE.Quaternion())
 		const e = new THREE.Euler(1, 1, 1, 'ZYX').setFromQuaternion(worldQuat)
@@ -71,9 +75,16 @@ function getPositions() {
 		let prevPos = group.mesh.position.clone();
 		if(group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot") {
 			// TODO: is this wrong? may I need to use relative position? entity should be in T-pose, so I might not need to worry.
-			group.mesh.position.x -= 8.75
-			group.mesh.position.y -= 2
-			group.mesh.position.z += -4
+
+			if(isInternalModel(settings)) {
+				group.mesh.position.x -= 1
+				group.mesh.position.y += 10
+				group.mesh.position.z += 0.5
+			} else {
+				group.mesh.position.x -= 8.75
+				group.mesh.position.y -= 2
+				group.mesh.position.z += -4
+			}
 		}
 
 		let pos = group.mesh.getWorldPosition(new THREE.Vector3())
@@ -250,7 +261,7 @@ async function renderAnimation(options) {
 
 	if (options.generate_static_animation) {
 		static_animation = new Animation({
-			name: 'iaentitymodel.staticSnimation',
+			name: 'iaentitymodel.staticAnimation',
 			snapping: 20,
 			length: 0,
 		}).add(false)

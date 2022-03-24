@@ -252,6 +252,8 @@ async function createAnimationFile(
 			if(boneName === "hitbox" || bone.boneType === "hitbox" || bone.boneType === "eyesHeight")
 				continue
 
+			let scaledPosRot = staticFrame[boneName]
+
 			let boneData = {
 				name: boneName,
 				boneType: bone.boneType,
@@ -259,14 +261,14 @@ async function createAnimationFile(
 				maxHeadRotY: bone.maxHeadRotY,
 				parents: [],
 				pos: [
-					safeGetVec(bone, "position", "x"),
-					safeGetVec(bone, "position", "y"),
-					safeGetVec(bone, "position", "z")
+					roundToN(scaledPosRot.pos.x, 10000),
+					roundToN(scaledPosRot.pos.y + headYOffset, 10000),
+					roundToN(scaledPosRot.pos.z, 10000)
 				],
 				rot: [
-					safeGetVec(bone, "rotation", "x"),
-					safeGetVec(bone, "rotation", "y"),
-					safeGetVec(bone, "rotation", "z")
+					roundToN(scaledPosRot.rot.x, 10000),
+					roundToN(scaledPosRot.rot.y, 10000),
+					roundToN(scaledPosRot.rot.z, 10000)
 				],
 				scales: scaleModels[boneName] !== undefined ? Object.getOwnPropertyNames(scaleModels[boneName]) : ["1-1-1"]
 			};
@@ -284,7 +286,6 @@ async function createAnimationFile(
 
 			generatedAnimationData.bones.push(boneData);
 		}
-
 
 		// Hitbox
 		{
