@@ -7,11 +7,18 @@ export function isInternalModel(settings) {
     return settings.iaentitymodel.namespace === "iainternal"
 }
 
+export function getProjectFolder() {
+    let fileName = Project.save_path.replace(/\\/g, '/').split('/').pop()
+    let dirPath = Project.save_path.slice(0, -fileName.length - 1)
+
+    return path.normalize(dirPath)
+}
+
 export function getModelExportFolder(settings) {
     let fileName = Project.save_path.replace(/\\/g, '/').split('/').pop()
     let dirPath = Project.save_path.slice(0, -fileName.length - 1)
 
-	dirPath = path.normalize(dirPath);
+	dirPath = path.normalize(dirPath)
 
     const modelsPath = normalizePath(path.join(
 		dirPath,

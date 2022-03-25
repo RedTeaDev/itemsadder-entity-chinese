@@ -2,8 +2,6 @@ import * as EVENTS from '../constants/events'
 import { format as modelFormat } from '../modelFormat'
 import { bus } from '../util/bus'
 import { safeFunctionName } from '../util/replace'
-import { wrapNumber } from '../util/misc'
-import { CustomError } from '../util/customError'
 import { settings } from '../settings'
 import { getProjectSaveFolder } from '../util/utilz'
 
@@ -32,6 +30,8 @@ ModelFormat.prototype.convertTo = function convertTo() {
 	
 	// Box UV
 	if (!this.optional_box_uv) Project.box_uv = this.box_uv
+
+	fixPivots()
 
 	//Bone Rig
 	/*if (!Format.bone_rig && old_format.bone_rig) {
@@ -76,11 +76,11 @@ ModelFormat.prototype.convertTo = function convertTo() {
 	}
 
 	//Rotate Cubes
-	if (!Format.rotate_cubes && old_format.rotate_cubes) {
-		Cube.all.forEach((cube) => {
-			cube.rotation.V3_set(0, 0, 0)
-		})
-	}
+	// if (!Format.rotate_cubes && old_format.rotate_cubes) {
+	// 	Cube.all.forEach((cube) => {
+	// 		cube.rotation.V3_set(0, 0, 0)
+	// 	})
+	// }
 
 	//Meshes
 	if (!Format.meshes && old_format.meshes) {
@@ -216,3 +216,18 @@ ModelFormat.prototype.convertTo = function convertTo() {
 bus.on(EVENTS.LIFECYCLE.CLEANUP, () => {
 	ModelFormat.prototype.convertTo = oldConvertFunc
 })
+
+function fixPivots() {
+
+	// Outliner.elements.forEach(function (element) {
+	// 	Outliner.selected.length = 0
+	// 	Outliner.selected.push(element)
+	// 	// @ts-ignore
+	// 	origin2geometry()
+	// })
+	Cube.all.forEach(function (cube) {
+		Outliner.selected.length = 0
+		Outliner.selected.push(cube)
+		origin2geometry()
+	})
+}

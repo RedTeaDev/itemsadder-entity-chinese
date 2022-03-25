@@ -7,7 +7,7 @@ import { removeKeyGently } from '../util/misc'
 import { generateTree } from '../util/treeGen'
 import { CustomError } from '../util/customError'
 import { settings } from '../settings'
-import { getModelExportFolder } from '../util/utilz'
+import {getModelExportFolder, getProjectFolder, isInternalModel} from '../util/utilz'
 import type * as bc from '../ui/mods/boneConfig'
 
 interface vanillaAnimationExporterSettings {
@@ -30,8 +30,6 @@ async function createAnimationFile(
 
 	const staticAnimationUuid = store.get('staticAnimationUuid')
 	const staticFrame = animations[staticAnimationUuid].frames[0].bones
-
-	fixPivots()
 
 	animations = removeKeyGently(staticAnimationUuid, animations)
 
@@ -328,11 +326,18 @@ async function exportAnimationFile(
 ) {
 	console.log("settings", settings)
 
-	const modelExportFolder = getModelExportFolder(settings)
-	Blockbench.writeFile(modelExportFolder + "/" + ".metadata", {
-		content: generated.animationFile,
-		custom_writer: null,
-	})
+	if(isInternalModel(settings)) {
+		Blockbench.writeFile(getProjectFolder() + "/" + ".player_animations", {
+			content: generated.animationFile,
+			custom_writer: null,
+		})
+	}
+	else {
+		Blockbench.writeFile(getModelExportFolder(settings) + "/" + ".metadata", {
+			content: generated.animationFile,
+			custom_writer: null,
+		})
+	}
 }
 
 async function animationExport(data: any) {
@@ -352,16 +357,6 @@ async function animationExport(data: any) {
 	await exportAnimationFile(generated, data.settings, exporterSettings)
 
 	Blockbench.showQuickMessage(tl('iaentitymodel.popups.successfullyExported'))
-}
-
-function fixPivots() {
-	
-	 Outliner.elements.forEach(function(element) {
-		Outliner.selected.length = 0
-		Outliner.selected.push(element)
-        // @ts-ignore
-        origin2geometry()
-    })
 }
 
 function safeGetVec(obj, key, subKey) {
