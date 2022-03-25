@@ -1,7 +1,8 @@
 import { CustomAction } from '../../util/customAction'
 import { tl } from '../../util/intl'
-import { refreshIcons } from '../../util/utilz'
+import {isInternalModel, refreshIcons} from '../../util/utilz'
 import { isCustomFormat } from '../../modelFormat'
+import { settings } from '../../settings'
 
 export type AJGroup = {
 	nbt: string
@@ -17,6 +18,19 @@ export type AJGroup = {
 	maxHeadRotY: number
 } & Group
 
+const internalForm = {
+	boneType: {
+		type: 'radio',
+		label: tl(
+			'iaentitymodel.dialogs.boneConfig.boneType'
+		),
+		value: false,
+		options: {
+			"normal": tl('iaentitymodel.dialogs.boneConfig.normal'),
+			"locator": tl('iaentitymodel.dialogs.boneConfig.locator'),
+		}
+	}
+} as { [formElement: string]: '_' | DialogFormElement }
 
 const form1 = {
 	boneType: {
@@ -76,9 +90,12 @@ function click (ev: any) {
 	const selected = Group.selected as AJGroup
 
 	let form = form1;
-	if(selected.boneType === "head")
-		form = form2;
-	
+	if(isInternalModel(settings)) {
+		form = internalForm
+	} else {
+		if (selected.boneType === "head")
+			form = form2;
+	}
 	const dialog = new Dialog({
 		title: tl('iaentitymodel.dialogs.boneConfig.title'),
 		id: 'boneConfig',

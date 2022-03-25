@@ -384,6 +384,7 @@ async function renderAnimation(options) {
 					frames,
 					maxDistance,
 					animType: animation.animType,
+					canPlayerMove: animation.canPlayerMove,
 					name: animation.name,
 					loopMode: animation.loop,
 					length: animation.length

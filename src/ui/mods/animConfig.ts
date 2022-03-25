@@ -1,5 +1,7 @@
 import { tl} from '../../util/intl'
 import { isCustomFormat, format as modelFormat } from '../../modelFormat'
+import {isInternalModel} from "../../util/utilz";
+import { settings } from '../../settings'
 
 // Properties registration to make Blockbench save them in the project file
 new Property(Animation, 'string', 'animType', {
@@ -7,7 +9,11 @@ new Property(Animation, 'string', 'animType', {
 	exposed: true,
 	condition: (val: any) => val !== undefined && val !== ""
 })
-
+new Property(Animation, 'string', 'canPlayerMove', {
+	default: () => undefined,
+	exposed: true,
+	condition: (val: any) => val !== undefined && val !== ""
+})
 
 const refreshAnimIcons = () => {
 	// @ts-ignore
@@ -29,7 +35,7 @@ const refreshAnimIcons = () => {
 	})
 }
 
-const handleClick = (animation, name) => {
+const handleClick_animType = (animation, name) => {
 
 	// Make sure only one animation has this type set
 	if(name != "other") {
@@ -49,19 +55,36 @@ const handleClick = (animation, name) => {
 	refreshAnimIcons()
 }
 
+const handleClick_canPlayerMove = (animation, val) => {
+
+	if(animation.canPlayerMove != val) {
+		Project.saved = false
+		animation.canPlayerMove = val
+	}
+}
+
 // @ts-ignore
 Animation.prototype.menu.structure.splice(12, 0, '_')
+
+let isCustomFormatAndNotInternal = () => isCustomFormat() && !isInternalModel(settings)
+let isInternalModel_ = () => isInternalModel(settings)
+
 // @ts-ignore
 Animation.prototype.menu.structure.splice(13, 0, {name: tl('iaentitymodel.menu.animation.animType.title'), icon: 'movie', children: [
-	{name: tl('iaentitymodel.menu.animation.animType.value.other'), icon: animation => (animation.animType == 'other' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick(animation, "other") }, condition: isCustomFormat},
-	{name: tl('iaentitymodel.menu.animation.animType.value.idle'), icon: animation => (animation.animType == 'idle' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick(animation, "idle") }, condition: isCustomFormat},
-	{name: tl('iaentitymodel.menu.animation.animType.value.walk'), icon: animation => (animation.animType == 'walk' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick(animation, "walk") }, condition: isCustomFormat},
-	{name: tl('iaentitymodel.menu.animation.animType.value.attack'), icon: animation => (animation.animType == 'attack' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick(animation, "attack") }, condition: isCustomFormat},
-	{name: tl('iaentitymodel.menu.animation.animType.value.death'), icon: animation => (animation.animType == 'death' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick(animation, "death") }, condition: isCustomFormat},
-	{name: tl('iaentitymodel.menu.animation.animType.value.fly'), icon: animation => (animation.animType == 'fly' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick(animation, "fly") }, condition: isCustomFormat},
+	{name: tl('iaentitymodel.menu.animation.animType.value.other'), icon: animation => (animation.animType == 'other' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick_animType(animation, "other") }, condition: isCustomFormatAndNotInternal},
+	{name: tl('iaentitymodel.menu.animation.animType.value.idle'), icon: animation => (animation.animType == 'idle' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick_animType(animation, "idle") }, condition: isCustomFormatAndNotInternal},
+	{name: tl('iaentitymodel.menu.animation.animType.value.walk'), icon: animation => (animation.animType == 'walk' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick_animType(animation, "walk") }, condition: isCustomFormatAndNotInternal},
+	{name: tl('iaentitymodel.menu.animation.animType.value.attack'), icon: animation => (animation.animType == 'attack' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick_animType(animation, "attack") }, condition: isCustomFormatAndNotInternal},
+	{name: tl('iaentitymodel.menu.animation.animType.value.death'), icon: animation => (animation.animType == 'death' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick_animType(animation, "death") }, condition: isCustomFormatAndNotInternal},
+	{name: tl('iaentitymodel.menu.animation.animType.value.fly'), icon: animation => (animation.animType == 'fly' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick_animType(animation, "fly") }, condition: isCustomFormatAndNotInternal},
 ]})
 // @ts-ignore
-Animation.prototype.menu.structure.splice(14, 0, '_')
+Animation.prototype.menu.structure.splice(14, 0, {name: tl("Can Player Move"), icon: 'movie', children: [
+	{name: tl("True"), icon: animation => (animation.canPlayerMove == 'true' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick_canPlayerMove(animation, "true") }, condition: isInternalModel_},
+	{name: tl("False"), icon: animation => (animation.canPlayerMove == 'false' ? 'radio_button_checked' : 'radio_button_unchecked'), click(animation) { handleClick_canPlayerMove(animation, "false") }, condition: isInternalModel_},
+]})
+// @ts-ignore
+Animation.prototype.menu.structure.splice(15, 0, '_')
 
 // @ts-ignore
 Blockbench.on('select_project', () => {

@@ -180,6 +180,7 @@ export type RenderedAnimation = {
 	frames: Frame[]
 	maxDistance: number
 	animType: string
+	canPlayerMove: boolean
 	name: string
 	loopMode: 'loop' | 'hold' | 'once',
 	length: number

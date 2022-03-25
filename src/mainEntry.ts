@@ -172,33 +172,49 @@ document.querySelector('#menu_bar').appendChild(menu.label)
 
 let prevAnimationTabTitle = "ANIMATIONS";
 function hideEditPaintTabs() {
-	// @ts-ignore
-	Modes.options.animate.select()
-	// @ts-ignore
-	document.querySelector("#mode_selector").style.display = "none"
+	// @ts-ignore // Hide the texture editor tab
+	document.querySelector("#mode_selector > li:nth-child(2)").style.display = "none"
 	// @ts-ignore
 	document.querySelector("div.tool.resize_tool").style.display = "none"
 	// @ts-ignore
 	document.querySelector("div.tool.pivot_tool").style.display = "none"
 
 	// @ts-ignore
-	prevAnimationTabTitle = document.querySelector("#animations > h3 > label").innerText
-	// @ts-ignore
-	document.querySelector("#animations > h3 > label").innerText = "PLAYER EMOTES"
+	if(Modes.options.edit.selected) {
+		// @ts-ignore // Hide the add cube button
+		document.querySelector("#outliner > div > div > div > div.content > div.tool.add_cube").style.display = "none"
+		// @ts-ignore // Hide the textures bottom left panel
+		document.querySelector("#textures").style.display = "none"
+		// @ts-ignore // Hide the UV bottom left panel
+		document.querySelector("#uv").style.display = "none"
+
+		// @ts-ignore
+		prevAnimationTabTitle = document.querySelector("#animations > h3 > label").innerText
+		// @ts-ignore
+		document.querySelector("#animations > h3 > label").innerText = "PLAYER EMOTES"
+	}
 }
 
 function restoreEditPaintTabs() {
+	// @ts-ignore // Show the texture editor tab
+	document.querySelector("#mode_selector > li:nth-child(2)")?.style.removeProperty("display")
 	// @ts-ignore
-	Modes.options.edit.select()
+	document.querySelector("div.tool.resize_tool")?.style.removeProperty("display")
 	// @ts-ignore
-	document.querySelector("#mode_selector").style.removeProperty("display")
-	// @ts-ignore
-	document.querySelector("div.tool.resize_tool").style.removeProperty("display")
-	// @ts-ignore
-	document.querySelector("div.tool.pivot_tool").style.removeProperty("display")
+	document.querySelector("div.tool.pivot_tool")?.style.removeProperty("display")
 
 	// @ts-ignore
-	document.querySelector("#animations > h3 > label").innerText = prevAnimationTabTitle
+	if(Modes.options.edit.selected) {
+		// @ts-ignore // Show the add cube button
+		document.querySelector("#outliner > div > div > div > div.content > div.tool.add_cube")?.style.removeProperty("display")
+		// @ts-ignore // Show the textures bottom left panel
+		document.querySelector("#textures")?.style.removeProperty("display")
+		// @ts-ignore // Show the UV bottom left panel
+		document.querySelector("#uv")?.style.removeProperty("display")
+
+		// @ts-ignore
+		document.querySelector("#animations > h3 > label").innerText = prevAnimationTabTitle
+	}
 }
 
 // @ts-ignore
@@ -218,9 +234,13 @@ Blockbench.on('select_project', () => {
 			Interface.Panels.variable_placeholders.node.style.visibility = "hidden"
 
 			if(isInternalModel(settings)) {
+				// @ts-ignore
+				Modes.options.animate.select()
 				hideEditPaintTabs()
 			}
 			else {
+				// @ts-ignore
+				Modes.options.edit.select()
 				restoreEditPaintTabs()
 			}
 		}
@@ -229,6 +249,8 @@ Blockbench.on('select_project', () => {
 			// @ts-ignore
 			Interface.Panels.variable_placeholders.node.style.visibility = "visible"
 
+			// @ts-ignore
+			Modes.options.edit.select()
 			restoreEditPaintTabs()
 		}
 	})
@@ -249,11 +271,21 @@ Blockbench.on('group_elements', () => {
 Blockbench.on('add_cube', () => {
 	if(Format.id === modelFormat.id) {
 		refreshIcons()
+
+		if(isInternalModel(settings)) {
+			alert("This is not currently supported. You can only add bones and mark them to `locator`. Please delete the cube.")
+		}
 	}
 })
 
 Blockbench.on('select_mode', () => {
 	refreshIcons()
+	if(isInternalModel(settings)) {
+		hideEditPaintTabs()
+	}
+	else {
+		restoreEditPaintTabs()
+	}
 })
 
 // Dirty
