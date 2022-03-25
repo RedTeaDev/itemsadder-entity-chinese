@@ -170,31 +170,35 @@ const menu: any = new BarMenu(
 menu.label.style.display = 'none'
 document.querySelector('#menu_bar').appendChild(menu.label)
 
-
+let prevAnimationTabTitle = "ANIMATIONS";
 function hideEditPaintTabs() {
 	// @ts-ignore
 	Modes.options.animate.select()
 	// @ts-ignore
-	document.querySelector("#mode_selector > li:nth-child(1)").style.display = "none"
-	// @ts-ignore
-	document.querySelector("#mode_selector > li:nth-child(2)").style.display = "none"
+	document.querySelector("#mode_selector").style.display = "none"
 	// @ts-ignore
 	document.querySelector("div.tool.resize_tool").style.display = "none"
 	// @ts-ignore
 	document.querySelector("div.tool.pivot_tool").style.display = "none"
+
+	// @ts-ignore
+	prevAnimationTabTitle = document.querySelector("#animations > h3 > label").innerText
+	// @ts-ignore
+	document.querySelector("#animations > h3 > label").innerText = "PLAYER EMOTES"
 }
 
 function restoreEditPaintTabs() {
 	// @ts-ignore
 	Modes.options.edit.select()
 	// @ts-ignore
-	document.querySelector("#mode_selector > li:nth-child(1)").style.removeProperty("display")
-	// @ts-ignore
-	document.querySelector("#mode_selector > li:nth-child(2)").style.removeProperty("display")
+	document.querySelector("#mode_selector").style.removeProperty("display")
 	// @ts-ignore
 	document.querySelector("div.tool.resize_tool").style.removeProperty("display")
 	// @ts-ignore
 	document.querySelector("div.tool.pivot_tool").style.removeProperty("display")
+
+	// @ts-ignore
+	document.querySelector("#animations > h3 > label").innerText = prevAnimationTabTitle
 }
 
 // @ts-ignore

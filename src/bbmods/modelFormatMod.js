@@ -26,8 +26,9 @@ ModelFormat.prototype.convertTo = function convertTo() {
 		let fileName = Project.save_path.replace(/\\/g, '/').split('/').pop().split('.')[0]
 		Project.name = fileName
 	}
+	settings.iaentitymodel.namespace = "custom"
 	settings.iaentitymodel.projectName = safeFunctionName(Project.name)
-	
+
 	// Box UV
 	if (!this.optional_box_uv) Project.box_uv = this.box_uv
 
@@ -209,8 +210,13 @@ ModelFormat.prototype.convertTo = function convertTo() {
 	Project.save_path = Project.export_path
 
 	// Hacky trick to show the ItemsAdder menu on top
+	let selectedProjTabIndex = 0;
+	ModelProject.all.forEach(function (proj) {
+		if(!proj.selected)
+			selectedProjTabIndex++;
+	})
 	Interface.tab_bar.openNewTab()
-	ModelProject.all[0].select()
+	ModelProject.all[selectedProjTabIndex].select()
 }
 
 bus.on(EVENTS.LIFECYCLE.CLEANUP, () => {
