@@ -229,7 +229,7 @@ async function createAnimationFile(
 
 			const finalAnimation = {
 				name: animation.name,
-				type: animation["animType"] ? animation["animType"] : "other",
+				animType: animation["animType"] ? animation["animType"] : "other",
 				canPlayerMove: animation.canPlayerMove,
 				maxDistance: animation.maxDistance,
 				loopMode: animation.loopMode,

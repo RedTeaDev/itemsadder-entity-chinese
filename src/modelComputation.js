@@ -9,7 +9,7 @@ import './overrides/overrides'
 import { CustomError } from './util/customError'
 import {  safeFunctionName } from './util/replace'
 import { isSceneBased } from './util/hasSceneAsParent'
-import { getModelExportFolder } from './util/utilz'
+import {getModelExportFolder, isInternalModel} from './util/utilz'
 import { roundScale } from './util/misc'
 
 function getMCPath(raw) {
@@ -261,7 +261,8 @@ async function computeModels(cubeData) {
 	
 	// Crap to create data export folder before everything is done.
 	// To allow the user to save the textures
-	getModelExportFolder(settings);
+	if(!isInternalModel(settings))
+		getModelExportFolder(settings);
 
 	const models = {}
 

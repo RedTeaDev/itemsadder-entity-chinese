@@ -243,6 +243,10 @@ Blockbench.on('select_project', () => {
 				Modes.options.edit.select()
 				restoreEditPaintTabs()
 			}
+
+			// Hide the sus bone
+			// @ts-ignore
+			document.querySelector("#\\37 7440795-2e48-1bbd-3fee-ed8401fb4688").style.display = "none"
 		}
 		else {
 			// Show the "variable placeholders" panel under the keyframe coords
