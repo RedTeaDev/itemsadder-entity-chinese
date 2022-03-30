@@ -170,28 +170,38 @@ const menu: any = new BarMenu(
 menu.label.style.display = 'none'
 document.querySelector('#menu_bar').appendChild(menu.label)
 
+function safeQuerySelector(selector, fallback = undefined) {
+	let a = document.querySelector(selector)
+	if(!a && fallback)
+		a = document.querySelector(fallback)
+	return a
+}
+
 let prevAnimationTabTitle = "ANIMATIONS";
 function hideEditPaintTabs() {
 	// @ts-ignore // Hide the texture editor tab
 	document.querySelector("#mode_selector > li:nth-child(2)").style.display = "none"
 	// @ts-ignore
-	document.querySelector("div.tool.resize_tool").style.display = "none"
+	document.querySelector(".tool.resize_tool").style.display = "none"
 	// @ts-ignore
-	document.querySelector("div.tool.pivot_tool").style.display = "none"
+	document.querySelector(".tool.pivot_tool").style.display = "none"
 
 	// @ts-ignore
 	if(Modes.options.edit.selected) {
 		// @ts-ignore // Hide the add cube button
-		document.querySelector("#outliner > div > div > div > div.content > div.tool.add_cube").style.display = "none"
+		document.querySelector(".tool.add_cube").style.display = "none"
 		// @ts-ignore // Hide the textures bottom left panel
-		document.querySelector("#textures").style.display = "none"
+		safeQuerySelector("#textures", "#panel_textures").style.display = "none"
 		// @ts-ignore // Hide the UV bottom left panel
-		document.querySelector("#uv").style.display = "none"
+		safeQuerySelector("#uv", "#panel_uv").style.display = "none"
 
-		// @ts-ignore
-		prevAnimationTabTitle = document.querySelector("#animations > h3 > label").innerText
-		// @ts-ignore
-		document.querySelector("#animations > h3 > label").innerText = "PLAYER EMOTES"
+		let animationsTitle = safeQuerySelector("#animations > h3 > label", "#panel_animations > h3 > label > span")
+		if(animationsTitle) {
+			// @ts-ignore
+			prevAnimationTabTitle = animationsTitle.innerText
+			// @ts-ignore
+			animationsTitle.innerText = "PLAYER EMOTES"
+		}
 	}
 }
 
@@ -199,21 +209,24 @@ function restoreEditPaintTabs() {
 	// @ts-ignore // Show the texture editor tab
 	document.querySelector("#mode_selector > li:nth-child(2)")?.style.removeProperty("display")
 	// @ts-ignore
-	document.querySelector("div.tool.resize_tool")?.style.removeProperty("display")
+	document.querySelector(".tool.resize_tool")?.style.removeProperty("display")
 	// @ts-ignore
-	document.querySelector("div.tool.pivot_tool")?.style.removeProperty("display")
+	document.querySelector(".tool.pivot_tool")?.style.removeProperty("display")
 
 	// @ts-ignore
 	if(Modes.options.edit.selected) {
 		// @ts-ignore // Show the add cube button
-		document.querySelector("#outliner > div > div > div > div.content > div.tool.add_cube")?.style.removeProperty("display")
+		document.querySelector(".tool.add_cube")?.style.removeProperty("display")
 		// @ts-ignore // Show the textures bottom left panel
-		document.querySelector("#textures")?.style.removeProperty("display")
+		safeQuerySelector("#textures", "#panel_textures")?.style.removeProperty("display")
 		// @ts-ignore // Show the UV bottom left panel
-		document.querySelector("#uv")?.style.removeProperty("display")
+		safeQuerySelector("#uv", "#panel_uv")?.style.removeProperty("display")
 
-		// @ts-ignore
-		document.querySelector("#animations > h3 > label").innerText = prevAnimationTabTitle
+		let animationsTitle = safeQuerySelector("#animations > h3 > label", "#panel_animations > h3 > label > span")
+		if(animationsTitle) {
+			// @ts-ignore
+			animationsTitle.innerText = prevAnimationTabTitle
+		}
 	}
 }
 
