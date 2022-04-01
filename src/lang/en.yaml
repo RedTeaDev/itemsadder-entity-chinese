@@ -416,7 +416,10 @@ iaentitymodel:
             body:
               - You haven't made any animations!
               - You'll need to create some animations in the animation tab before you can export using the animation exporter.
-
+          markerNoLoopAnim:
+            message: This animation "Loop Mode" is not set as "Loop". Please change the value to "Loop" before setting markers.
+          tooManyMarkers:
+            message: This animation already contains 2 "Loop Start/End" Markers! Right click them to delete if needed.
       settings:
         frameScoreboardObjective:
           title: Frame Scoreboard
@@ -432,3 +435,5 @@ iaentitymodel:
           title: Animation Loop Mode Scoreboard
           description:
             - The name of the scoreboard objective used to control the looping behaviour of each animation
+      other:
+        addLoopMarker: Add Loop Start/End marker

@@ -238,6 +238,33 @@ async function createAnimationFile(
 				effects: effects
 			}
 
+			// @ts-ignore
+			let markers = Animation.all.find(x => x.name === finalAnimation.name)?.markers
+			if(markers) {
+				let markerStart;
+				let markerEnd;
+				markers.forEach(marker => {
+					if(marker.color === -1) {
+						if(!markerStart) {
+							markerStart = marker
+						} else if(!markerEnd) {
+							markerEnd = marker
+							if(markerEnd.time < markerStart.time) {
+								let tmp = markerStart
+								markerStart = markerEnd
+								markerEnd = tmp
+							}
+						}
+					}
+				})
+
+				if(markerStart) {
+					finalAnimation["loopStartTime"] = markerStart.time
+				}
+				if(markerEnd) {
+					finalAnimation["loopEndTime"] = markerEnd.time
+				}
+			}
 			console.log('Generated animation:', finalAnimation)
 
 			generatedAnimationData.animations.push(finalAnimation);
