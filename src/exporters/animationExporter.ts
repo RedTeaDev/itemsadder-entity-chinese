@@ -333,7 +333,7 @@ async function createAnimationFile(
 			if(tmp !== undefined && tmp.children.length > 0)
 			{
 				generatedAnimationData["eyes_height"] = {
-					height: tmp.children[0]["origin"].y
+					height: tmp.children[0]["origin"][1]
 				}
 			}
 		}
