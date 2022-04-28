@@ -6,7 +6,13 @@ export function animation(a) {
 			hash.update('kf;')
 			hash.update(v.time + ');')
 			v.data_points.forEach((dp) => {
-				hash.update(`${dp.x};${dp.y};${dp.z};${dp.script_string};`)
+				// Iterate the datapoint entry object keys
+				for (const [key, value] of Object.entries(dp)) {
+					// Ignore the keyframe object, I don't need it to be hashed
+					if(key !== "keyframe") {
+						hash.update(`${key}(${value});`)
+					}
+				}
 			})
 		})
 	}
@@ -38,6 +44,14 @@ export function animation(a) {
 	hash.update('blndw;' + a.blend_weight)
 	hash.update('snp;' + a.snapping)
 	hash.update('animtup;' + a.anim_time_update)
+	hash.update('animType;' + a.animType)
+	hash.update('canPlayerMove;' + a.canPlayerMove)
+	hash.update('loopMode;' + a.loopMode)
+
+	for (let [i, marker] of a.markers.entries()) {
+		hash.update(`markers_${i}(${marker.color}_${marker.time});`)
+	}
+
 	return hash.digest('hex')
 }
 
@@ -50,6 +64,9 @@ export function boneStructure() {
 		hash.update(`pos;(${group.origin.join(',')})`)
 		hash.update(`rot;(${group.rotation.join(',')})`)
 		hash.update(`vis;${group.visibility}`)
+		hash.update(`boneType;${group.boneType}`)
+		hash.update(`maxHeadRotX;${group.maxHeadRotX}`)
+		hash.update(`maxHeadRotY;${group.maxHeadRotY}`)
 	}
 
 	function recurse(children) {
