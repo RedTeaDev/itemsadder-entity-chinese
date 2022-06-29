@@ -23,6 +23,7 @@ iaentitymodel:
     exportInProgress: Export in Progress!
     noExporterSelected: No Exporter Selected!
     successfullyExported: Export Successful!
+    projectNotSaved: Please save the project before exporting!
 
   progress:
     animationRendering: Rendering Animations... %currents/%totals
@@ -40,6 +41,10 @@ iaentitymodel:
         mustBeString: Value must be a string
         missingFormatString: Value missing required %notFound formatting string
         invalidEntityTag: Value is not a valid entity tag
+
+    playerAnimationsName:
+      errors:
+        invalidFunctionName: Player animations file is not valid!
 
     namespace:
       title: Entity Namespace

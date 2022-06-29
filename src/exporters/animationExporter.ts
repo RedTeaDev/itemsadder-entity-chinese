@@ -355,12 +355,11 @@ async function exportAnimationFile(
 	console.log("settings", settings)
 
 	if(isInternalModel(settings)) {
-		Blockbench.writeFile(getProjectFolder() + "/" + ".player_animations", {
+		Blockbench.writeFile(getProjectFolder() + "/" + Project.name + ".player_animations", {
 			content: generated.animationFile,
 			custom_writer: null,
 		})
-	}
-	else {
+	} else {
 		Blockbench.writeFile(getModelExportFolder(settings) + "/" + ".metadata", {
 			content: generated.animationFile,
 			custom_writer: null,

@@ -236,10 +236,6 @@ Blockbench.on('select_project', () => {
 		console.log('selected', Format.id !== modelFormat.id)
 		menu.label.style.display = Format.id !== modelFormat.id ? 'none' : 'inline-block'
 
-		// Set the current projectName
-		if(settings.iaentitymodel.projectName === undefined || settings.iaentitymodel.projectName === "")
-			settings.iaentitymodel.projectName = safeFunctionName(Project.name)
-
 		if(Format.id === modelFormat.id) {
 			refreshIcons()
 			// Hide the "variable placeholders" panel under the keyframe coords 
@@ -259,7 +255,15 @@ Blockbench.on('select_project', () => {
 
 			// Hide the sus bone
 			// @ts-ignore
-			document.querySelector("#\\37 7440795-2e48-1bbd-3fee-ed8401fb4688").style.display = "none"
+			let susbone = document.querySelector("#\\37 7440795-2e48-1bbd-3fee-ed8401fb4688");
+			if(susbone) {
+				// @ts-ignore
+				susbone.style.display = "none"
+
+				// @ts-ignore
+				Group.uuids['77440795-2e48-1bbd-3fee-ed8401fb4688'].children.forEach(c => c.visibility = false);
+				Canvas.updateVisibility()
+			}
 		}
 		else {
 			// Show the "variable placeholders" panel under the keyframe coords
@@ -349,6 +353,11 @@ MenuBar.addAction(
 		icon: 'insert_drive_file',
 		condition: () => modelFormat.id === Format.id,
 		click: () => {
+			if(!Project.saved || (!Project.save_path || Project.save_path === "")) {
+				Blockbench.showQuickMessage(tl('iaentitymodel.popups.projectNotSaved'))
+				return;
+			}
+
 			// Call the selected exporter.
 			// @ts-ignore
 			store.getStore('exporters').get("vanillaAnimationExporter")()

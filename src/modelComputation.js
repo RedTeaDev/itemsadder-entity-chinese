@@ -311,7 +311,7 @@ async function computeModels(cubeData) {
 				})
 				const modelName = safeFunctionName(group.name)
 				models[modelName] = {
-					textures: getTexturesOnGroup(group),
+					textures: isInternalModel(settings) ? {} : getTexturesOnGroup(group),
 					elements,
 				}
 			} else {
@@ -321,7 +321,7 @@ async function computeModels(cubeData) {
 					elements.push({})
 					const modelName = safeFunctionName(group.name)
 					models[modelName] = {
-						textures: getTexturesOnGroup(group),
+						textures: {},
 						elements,
 					}
 				}

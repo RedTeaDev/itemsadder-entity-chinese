@@ -59,6 +59,11 @@ const RenderTemplates = {
 								paddingLeft: '9px',
 							}}
 							onClick={() => {
+								// let def = DefaultSettings[namespace][name].default
+								// settings.set(
+								// 	`${namespace}.${name}`,
+								// 	typeof def === 'function' ? def() : def
+								// )
 								settings.set(
 									`${namespace}.${name}`,
 									DefaultSettings[namespace][name].default
@@ -230,15 +235,17 @@ const SettingInput = ({ namespace, name, template }) => {
 					})
 				)
 			})
-			setIsVisible(
-				(typeof isVis === 'function' && isVis(settings)) || !isVis
-			)
 		}
 		return () => watchers.forEach((cb) => cb())
 	}, [])
 	useEffect(() => {
 		setIsValid(settings.getUpdateDescriptor(namespace, name, value).isValid)
 	}, [value])
+	// useEffect(() => {
+	// 	setIsVisible(
+	// 		(typeof isVis === 'function' && isVis(settings)) || !isVis
+	// 	)
+	// })
 	let error = settings.getUpdateDescriptor(namespace, name, value).error
 	const children = (
 		<label

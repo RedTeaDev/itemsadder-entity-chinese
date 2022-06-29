@@ -7,6 +7,11 @@ export function isInternalModel(settings) {
     return settings.iaentitymodel.namespace === "iainternal"
 }
 
+export function isInternalPlayerModel(settings) {
+    // @ts-ignore
+    return settings.iaentitymodel.namespace === "iainternal" && settings.iaentitymodel.projectName === "player"
+}
+
 export function getProjectFolder() {
     let fileName = Project.save_path.replace(/\\/g, '/').split('/').pop()
     let dirPath = Project.save_path.slice(0, -fileName.length - 1)
@@ -30,7 +35,9 @@ export function getModelExportFolder(settings) {
 	))
 
     // Dirty way
-    fs.mkdirSync(modelsPath, { recursive: true })
+    if(!isInternalModel(settings)) {
+        fs.mkdirSync(modelsPath, {recursive: true})
+    }
 
     return modelsPath
 }
@@ -51,7 +58,9 @@ export function getTexturesExportFolder(settings) {
 	))
 
     // Dirty way
-    fs.mkdirSync(texturesPath, { recursive: true })
+    if(!isInternalModel(settings)) {
+        fs.mkdirSync(texturesPath, {recursive: true})
+    }
 
     return texturesPath
 }

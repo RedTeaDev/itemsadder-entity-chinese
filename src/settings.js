@@ -4,8 +4,10 @@ import { safeFunctionName } from './util/replace'
 import { Path } from './util/path'
 import * as pathjs from 'path'
 import { getModelPath } from './util/minecraft/resourcepack'
-import { Items } from './util/minecraft/items'
+// import { Items } from './util/minecraft/items'
 import { tl } from './util/intl'
+import {isInternalPlayerModel} from './util/utilz'
+import {format} from "./modelFormat";
 
 function genericEmptyErrorText() {
 	return tl('iaentitymodel.settings.generic.errors.emptyValue')
@@ -14,6 +16,34 @@ export let ForeignSettingTranslationKeys = {}
 const UNASSIGNED = Symbol('UNASSIGNED_CACHE')
 export const DefaultSettings = {
 	iaentitymodel: {
+		// playerAnimationsName: {
+		// 	get title() {
+		// 		return tl('iaentitymodel.settings.playerAnimationsName.title')
+		// 	},
+		// 	get description() {
+		// 		return tl('iaentitymodel.settings.playerAnimationsName.description')
+		// 	},
+		// 	type: 'text',
+		// 	default: '_undefined_default',
+		// 	onUpdate(d) {
+		// 		if (d.value !== '') {
+		// 			if (d.value !== safeFunctionName(d.value)) {
+		// 				d.isValid = false
+		// 				d.error = tl(
+		// 					'iaentitymodel.settings.playerAnimationsName.errors.invalidFunctionName'
+		// 				)
+		// 			}
+		// 		} else {
+		// 			d.isValid = false
+		// 			d.error = genericEmptyErrorText()
+		// 		}
+		// 		return d
+		// 	},
+		// 	isVisible(s) {
+		// 		return isInternalPlayerModel(settings);
+		// 	},
+		// 	dependencies: ['iaentitymodel.namespace'],
+		// },
 		namespace: {
 			get title() {
 				return tl('iaentitymodel.settings.namespace.title')
@@ -37,6 +67,10 @@ export const DefaultSettings = {
 				}
 				return d
 			},
+			// isVisible(s) {
+			// 	return !isInternalPlayerModel(settings);
+			// },
+			// dependencies: ['iaentitymodel.namespace'],
 		},
 		projectName: {
 			get title() {
@@ -61,6 +95,10 @@ export const DefaultSettings = {
 				}
 				return d
 			},
+			// isVisible(s) {
+			// 	return !isInternalPlayerModel(settings);
+			// },
+			// dependencies: ['iaentitymodel.namespace'],
 		},
 		modelScalingMode: {
 			get title() {
@@ -88,6 +126,10 @@ export const DefaultSettings = {
 				}
 				return d
 			},
+			// isVisible(s) {
+			// 	return !isInternalPlayerModel(settings);
+			// },
+			// dependencies: ['iaentitymodel.namespace'],
 		},
 		rotationMode: {
 			get title() {
@@ -104,7 +146,10 @@ export const DefaultSettings = {
 				smooth: 'iaentitymodel.settings.rotationMode.options.smooth',
 				precise: 'iaentitymodel.settings.rotationMode.options.precise',
 			},
-			global: false,
+			// isVisible(s) {
+			// 	return !isInternalPlayerModel(settings);
+			// },
+			// dependencies: ['iaentitymodel.namespace'],
 		},
 		useCache: {
 			get title() {
@@ -119,6 +164,9 @@ export const DefaultSettings = {
 				return d
 			},
 			global: true,
+			// isVisible(s) {
+			// 	return !isInternalPlayerModel(settings);
+			// }
 		},
 		cacheMode: {
 			get title() {
@@ -137,8 +185,9 @@ export const DefaultSettings = {
 				d.isValid = Boolean(this.options[d.value])
 				return d
 			},
-			isVisible(settings) {
-				return settings.iaentitymodel.useCache
+			isVisible(s) {
+				return s.iaentitymodel.useCache
+					// && !isInternalPlayerModel(settings)
 			},
 			dependencies: ['iaentitymodel.useCache'],
 			global: true,
