@@ -81,6 +81,8 @@ export function refreshIcons() {
                 group["icon"] = "fa fa-smile"
             else if(group["boneType"] === "leftHandPivot")
                 group["icon"] = "fa fa-hand-point-left"
+            else if(group["boneType"] === "hatPivot")
+                group["icon"] = "fa fa-hat-wizard"
             else if(group["boneType"] === "rightHandPivot")
                 group["icon"] = "fa fa-hand-point-right"
             else if(group["boneType"] === "mount")

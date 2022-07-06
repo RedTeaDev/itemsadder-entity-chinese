@@ -316,7 +316,7 @@ async function computeModels(cubeData) {
 				}
 			} else {
 				// Check if it's a special bone and must be exported even if empty
-				if(group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot" || group.boneType === "mount" || group.boneType === "locator" || group.boneType === "hitbox" || group.boneType === "eyesHeight") {
+				if(group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot" || group.boneType === "hatPivot" || group.boneType === "mount" || group.boneType === "locator" || group.boneType === "hitbox" || group.boneType === "eyesHeight") {
 					const elements = []
 					elements.push({})
 					const modelName = safeFunctionName(group.name)
@@ -408,7 +408,7 @@ export function computeBones(models, animations) {
 
 	// Manually add also special bones, since they don't have any mesh inside
 	for (const group of Project.groups) {
-		if(group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot" || group.boneType === "mount" || group.boneType === "locator" || group.boneType === "hitbox" || group.boneType === "eyesHeight") {
+		if(group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot" || group.boneType === "hatPivot" || group.boneType === "mount" || group.boneType === "locator" || group.boneType === "hitbox" || group.boneType === "eyesHeight") {
 			console.log("Special bone: ", group)
 			bones[group.name] = group;
 		}

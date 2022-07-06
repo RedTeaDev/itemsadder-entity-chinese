@@ -180,20 +180,20 @@ function safeQuerySelector(selector, fallback = undefined) {
 let prevAnimationTabTitle = "ANIMATIONS";
 function hideEditPaintTabs() {
 	// @ts-ignore // Hide the texture editor tab
-	document.querySelector("#mode_selector > li:nth-child(2)").style.display = "none"
+	safeQuerySelector("#mode_selector > li:nth-child(2)")?.style.setProperty("display",  "none")
 	// @ts-ignore
-	document.querySelector(".tool.resize_tool").style.display = "none"
+	safeQuerySelector(".tool.resize_tool")?.style.setProperty("display",  "none")
 	// @ts-ignore
-	document.querySelector(".tool.pivot_tool").style.display = "none"
+	safeQuerySelector(".tool.pivot_tool")?.style.setProperty("display",  "none")
 
 	// @ts-ignore
 	if(Modes.options.edit.selected) {
 		// @ts-ignore // Hide the add cube button
-		document.querySelector(".tool.add_cube").style.display = "none"
+		safeQuerySelector(".tool.add_cube")?.style.setProperty("display",  "none")
 		// @ts-ignore // Hide the textures bottom left panel
-		safeQuerySelector("#textures", "#panel_textures").style.display = "none"
+		safeQuerySelector("#textures", "#panel_textures")?.style.setProperty("display",  "none")
 		// @ts-ignore // Hide the UV bottom left panel
-		safeQuerySelector("#uv", "#panel_uv").style.display = "none"
+		safeQuerySelector("#uv", "#panel_uv")?.style.setProperty("display",  "none")
 
 		let animationsTitle = safeQuerySelector("#animations > h3 > label", "#panel_animations > h3 > label > span")
 		if(animationsTitle) {
@@ -207,16 +207,16 @@ function hideEditPaintTabs() {
 
 function restoreEditPaintTabs() {
 	// @ts-ignore // Show the texture editor tab
-	document.querySelector("#mode_selector > li:nth-child(2)")?.style.removeProperty("display")
+	safeQuerySelector("#mode_selector > li:nth-child(2)")?.style.removeProperty("display")
 	// @ts-ignore
-	document.querySelector(".tool.resize_tool")?.style.removeProperty("display")
+	safeQuerySelector(".tool.resize_tool")?.style.removeProperty("display")
 	// @ts-ignore
-	document.querySelector(".tool.pivot_tool")?.style.removeProperty("display")
+	safeQuerySelector(".tool.pivot_tool")?.style.removeProperty("display")
 
 	// @ts-ignore
 	if(Modes.options.edit.selected) {
 		// @ts-ignore // Show the add cube button
-		document.querySelector(".tool.add_cube")?.style.removeProperty("display")
+		safeQuerySelector(".tool.add_cube")?.style.removeProperty("display")
 		// @ts-ignore // Show the textures bottom left panel
 		safeQuerySelector("#textures", "#panel_textures")?.style.removeProperty("display")
 		// @ts-ignore // Show the UV bottom left panel
@@ -230,6 +230,17 @@ function restoreEditPaintTabs() {
 	}
 }
 
+function restoreHiddenUI() {
+	// Show the "variable placeholders" panel under the keyframe coords
+	// @ts-ignore
+	Interface.Panels.variable_placeholders.node.style.visibility = "visible"
+
+	// @ts-ignore
+	Modes.options.edit.select()
+	restoreEditPaintTabs()
+}
+global.LONEDEV_DEBUG_restoreHiddenUI = restoreHiddenUI
+
 // @ts-ignore
 Blockbench.on('select_project', () => {
 	queueMicrotask(() => {
@@ -237,42 +248,38 @@ Blockbench.on('select_project', () => {
 		menu.label.style.display = Format.id !== modelFormat.id ? 'none' : 'inline-block'
 
 		if(Format.id === modelFormat.id) {
-			refreshIcons()
-			// Hide the "variable placeholders" panel under the keyframe coords 
-			// @ts-ignore
-			Interface.Panels.variable_placeholders.node.style.visibility = "hidden"
 
-			if(isInternalModel(settings)) {
+			if(!global?.LONEDEV_DEBUG) {
+				refreshIcons()
+				// Hide the "variable placeholders" panel under the keyframe coords
 				// @ts-ignore
-				Modes.options.animate.select()
-				hideEditPaintTabs()
-			}
-			else {
-				// @ts-ignore
-				Modes.options.edit.select()
-				restoreEditPaintTabs()
-			}
+				Interface.Panels.variable_placeholders.node.style.visibility = "hidden"
 
-			// Hide the sus bone
-			// @ts-ignore
-			let susbone = document.querySelector("#\\37 7440795-2e48-1bbd-3fee-ed8401fb4688");
-			if(susbone) {
-				// @ts-ignore
-				susbone.style.display = "none"
+				if (isInternalModel(settings)) {
+					// @ts-ignore
+					Modes.options.animate.select()
+					hideEditPaintTabs()
+				} else {
+					// @ts-ignore
+					Modes.options.edit.select()
+					restoreEditPaintTabs()
+				}
 
+				// Hide the sus bone
 				// @ts-ignore
-				Group.uuids['77440795-2e48-1bbd-3fee-ed8401fb4688'].children.forEach(c => c.visibility = false);
-				Canvas.updateVisibility()
+				let susbone = document.querySelector("#\\37 7440795-2e48-1bbd-3fee-ed8401fb4688");
+				if (susbone) {
+					// @ts-ignore
+					susbone.style.setProperty("display",  "none")
+
+					// @ts-ignore
+					Group.uuids['77440795-2e48-1bbd-3fee-ed8401fb4688'].children.forEach(c => c.visibility = false);
+					Canvas.updateVisibility()
+				}
 			}
 		}
 		else {
-			// Show the "variable placeholders" panel under the keyframe coords
-			// @ts-ignore
-			Interface.Panels.variable_placeholders.node.style.visibility = "visible"
-
-			// @ts-ignore
-			Modes.options.edit.select()
-			restoreEditPaintTabs()
+			restoreHiddenUI()
 		}
 	})
 })

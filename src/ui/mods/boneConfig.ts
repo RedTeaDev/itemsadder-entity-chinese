@@ -41,6 +41,7 @@ const form1 = {
 		 value: false,
 		options: {
 			"normal": tl('iaentitymodel.dialogs.boneConfig.normal'),
+			"hatPivot": tl('iaentitymodel.dialogs.boneConfig.hatPivot'),
 			"leftHandPivot": tl('iaentitymodel.dialogs.boneConfig.leftHandPivot'),
 			"rightHandPivot": tl('iaentitymodel.dialogs.boneConfig.rightHandPivot'),
 			"mount": tl('iaentitymodel.dialogs.boneConfig.mount'),
