@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom'
 import ReactIs from 'react-is'
 import url from '@rollup/plugin-url'
 import yaml from '@rollup/plugin-yaml'
+import json from '@rollup/plugin-json';
 import typescript from 'rollup-plugin-typescript2'
 import replace from 'rollup-plugin-replace'
 
@@ -21,6 +22,7 @@ export default {
 		}),
 		typescript(),
 		yaml(),
+		json(),
 		url({
 			include: [
 				'**/*.svg',
