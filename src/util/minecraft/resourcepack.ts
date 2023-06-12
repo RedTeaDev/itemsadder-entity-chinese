@@ -7,8 +7,8 @@ import { normalizePath } from '../misc'
 import { getTexturesExportFolder } from '../utilz'
 import { settings } from '../../settings'
 
-function getTextureReference(texture: any) {
-	const parts = texture.path.split(path.sep)
+function getTextureReferenceByPath(pathStr: string, name : string) {
+	const parts = pathStr.split(path.sep)
 	const assetsIndex = parts.indexOf('assets')
 	if (assetsIndex) {
 		const relative = parts.slice(assetsIndex + 1) // Remove 'assets' and everything before it from the path
@@ -28,7 +28,7 @@ function getTextureReference(texture: any) {
 			}
 		}
 	}
-	console.log('Failed to generate path for:', texture)
+	console.log('Failed to generate path for:', pathStr)
 	throw new CustomError('Unable to generate texture path', {
 		dialog: {
 			id: 'iaentitymodel.dialogs.errors.unableToGenerateTexturePath',
@@ -39,7 +39,7 @@ function getTextureReference(texture: any) {
 				tl(
 					'iaentitymodel.dialogs.errors.unableToGenerateTexturePath.body',
 					{
-						textureName: texture.name,
+						textureName: name,
 					}
 				),
 			],
@@ -47,6 +47,10 @@ function getTextureReference(texture: any) {
 			singleButton: true,
 		},
 	})
+}
+
+function getTextureReference(texture: TextureData) {
+	return getTextureReferenceByPath(texture.path, texture.name);
 }
 
 export function getTexturePath(texture: any) {
@@ -76,7 +80,7 @@ export function getTexturePath(texture: any) {
 		}
 	}
 
-	return getTextureReference(texture)
+	return getTextureReferenceByPath(newPath, texture.name)
 }
 
 /***
