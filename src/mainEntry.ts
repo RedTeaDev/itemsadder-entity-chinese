@@ -1,5 +1,7 @@
 import type * as aj from './iaentitymodel'
 
+import * as fs from 'fs'
+
 import { tl, intl } from './util/intl'
 // @ts-ignore
 import lang_cz from './lang/cz.yaml'
@@ -57,6 +59,8 @@ import { CustomAction } from './util/customAction'
 import { format as modelFormat } from './modelFormat'
 import { renderAnimation } from './animationRenderer'
 import { DefaultSettings, settings } from './settings'
+import {getModelExportFolder, needsToExportJsonsModels, isInternalElement} from "./util/utilz";
+
 // import { makeArmorStandModel } from './makeArmorStandModel'
 
 import {
@@ -111,6 +115,30 @@ async function computeAnimationData(
 ) {
 	console.groupCollapsed('Compute Animation Data')
 
+	if(isInternalModel(settings)) {
+		// Or getModelExportFolder won't work
+		if(!Project.save_path) {
+			return;
+		}
+
+		const modelExportFolder = getModelExportFolder(settings)
+		// Both files exists and it's not good!
+		if(
+			(needsToExportJsonsModels(settings) && fs.existsSync(`${modelExportFolder}/.player_animations`)) ||
+			(!needsToExportJsonsModels(settings) && fs.existsSync(`${modelExportFolder}/.player_advanced_animations`))
+		) {
+			// Delete all useless files.
+			fs.readdirSync(
+				modelExportFolder
+			).forEach(f => {
+				// To be 100% sure we are not deleting files which the user might have put there because they are an idiot.
+				if(f.endsWith(".json") || f.endsWith(".player_animations") || f.endsWith(".player_advanced_animations")) {
+					fs.rmSync(`${modelExportFolder}/${f}`)
+				}
+			});
+		}
+	}
+
 	const animations = (await renderAnimation(options)) as aj.Animations
 	const cubeData: aj.CubeData = computeElements()
 	const models: aj.ModelObject = await computeModels(cubeData)
@@ -134,7 +162,8 @@ async function computeAnimationData(
 	// Object.values(variantModels).forEach(variant => Object.entries(variant).forEach(([k,v]) => flatVariantModels[k] = v))
 	// console.log('Flat Variant Models:', flatVariantModels)
 
-	if(!isInternalModel(settings)) {
+	//if(!isInternalModel(settings)) {
+	if(needsToExportJsonsModels(settings)) {
 		await exportRigModels(models, variants.variantModels, scaleModels)
 		if (settings.iaentitymodel.transparentTexturePath) {
 			await exportTransparentTexture()
@@ -255,15 +284,15 @@ Blockbench.on('select_project', () => {
 				// @ts-ignore
 				Interface.Panels.variable_placeholders.node.style.visibility = "hidden"
 
-				if (isInternalModel(settings)) {
+				/*if (isInternalModel(settings)) {
 					// @ts-ignore
 					Modes.options.animate.select()
 					hideEditPaintTabs()
-				} else {
+				} else {*/
 					// @ts-ignore
 					Modes.options.edit.select()
 					restoreEditPaintTabs()
-				}
+				//}
 
 				// Hide the sus bone
 				// @ts-ignore
@@ -300,20 +329,41 @@ Blockbench.on('add_cube', () => {
 	if(Format.id === modelFormat.id) {
 		refreshIcons()
 
-		if(isInternalModel(settings)) {
+		/*if(isInternalModel(settings)) {
 			alert("This is not currently supported. You can only add bones and mark them to `locator`. Please delete the cube.")
-		}
+		}*/
 	}
 })
 
+
+{
+	// Intercept removal of element and cancel it if it's an internal element.
+	let old = OutlinerNode.prototype.remove;
+    OutlinerNode.prototype.remove = new Proxy(old, {
+      apply: function(target, thisArg, argumentsList) {
+        console.log("Tried to remove an element.");
+		if(isInternalElement(thisArg.name) || isInternalElement(thisArg.parent.name))
+		{
+			console.log("Cancelled removal of internal bone.");
+			alert("You can't delete builtin entity bones.")
+			// Use exception instead of return to cancel the whole chain removal of sub-elements
+			// or it would spam one msgbox for each child element.
+			throw new Error('You can\'t delete builtin entity bones.'); 
+		}
+
+        return target.call(thisArg);
+      }
+    });
+}
+
 Blockbench.on('select_mode', () => {
 	refreshIcons()
-	if(isInternalModel(settings)) {
+	/*if(isInternalModel(settings)) {
 		hideEditPaintTabs()
 	}
-	else {
+	else {*/
 		restoreEditPaintTabs()
-	}
+	//}
 })
 
 // Dirty
@@ -345,7 +395,7 @@ MenuBar.addAction(
 		icon: 'settings',
 		category: 'iaentitymodel',
 		name: tl('iaentitymodel.menubar.settings'),
-		condition: () => modelFormat.id === Format.id && !isInternalModel(settings),
+		condition: () => modelFormat.id === Format.id /*&& !isInternalModel(settings)*/,
 		click: function () {
 			show_settings()
 		},

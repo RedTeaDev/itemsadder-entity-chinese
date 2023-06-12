@@ -4,12 +4,47 @@ import { normalizePath } from './misc';
 
 export function isInternalModel(settings) {
     // @ts-ignore
-    return settings.iaentitymodel.namespace === "iainternal"
+    //return settings.iaentitymodel.namespace === "iainternal" // TODO: make this better...
+    return isPlayerModel(settings) // TODO: make this better...
 }
 
 export function isInternalPlayerModel(settings) {
     // @ts-ignore
-    return settings.iaentitymodel.namespace === "iainternal" && settings.iaentitymodel.projectName === "player"
+    //return settings.iaentitymodel.namespace === "iainternal" && settings.iaentitymodel.projectName === "player" // TODO: make this better...
+    return isPlayerModel(settings) // TODO: make this better...
+}
+
+export function isPlayerModel(settings) {
+    // @ts-ignore
+    //return settings.iaentitymodel.namespace === "iainternal" && settings.iaentitymodel.projectName === "player" // TODO: make this better...
+    let res = false;
+    Group.all.forEach((group) => {
+		if(isInternalElement(group.name))
+        {
+            res = true;
+            return;
+        }
+	})
+    return res
+}
+
+export function needsToExportJsonsModels(settings) {
+    // @ts-ignore
+    return !isInternalModel(settings) || settings.iaentitymodel.addsAdditionalModels;
+}
+
+export function isInternalElement(name) {
+    switch (name) {
+        case "parm_left_3":
+        case "parm_right_4":
+        case "pbody_2":
+        case "phead_0":
+        case "pleg_left_1":
+        case "pleg_right_5":
+        case "sus_6":
+            return true;
+    }
+    return false;
 }
 
 export function getProjectFolder() {
@@ -35,9 +70,9 @@ export function getModelExportFolder(settings) {
 	))
 
     // Dirty way
-    if(!isInternalModel(settings)) {
+    //if(!isInternalModel(settings)) {
         fs.mkdirSync(modelsPath, {recursive: true})
-    }
+    //}
 
     return modelsPath
 }
@@ -58,11 +93,34 @@ export function getTexturesExportFolder(settings) {
 	))
 
     // Dirty way
-    if(!isInternalModel(settings)) {
+    //if(!isInternalModel(settings)) {
         fs.mkdirSync(texturesPath, {recursive: true})
-    }
+    //}
 
     return texturesPath
+}
+
+export function fixMinecraftTexturesReferences() {
+    Texture.all.forEach((t : Texture) => {
+        // Make sure if a texture is a Minecraft texture it does get marked as it, to avoid exporting it later.
+        // @ts-ignore
+        let tmpPath = t.path.replaceAll("\\", "/");
+        let texturesPartialPath = "/assets/minecraft/textures/";
+        if(tmpPath.includes(texturesPartialPath)) {
+            // @ts-ignore
+            t.namespace = "minecraft";
+            // @ts-ignore
+            t.folder = tmpPath.split(texturesPartialPath)[1].split("/")[0];
+        } else {
+            // @ts-ignore
+            if(t.namespace === "minecraft") {
+                // @ts-ignore
+                t.namespace = "";
+                // @ts-ignore
+                t.folder = "";
+            }
+        }
+    })
 }
 
 export function getProjectSaveFolder() {

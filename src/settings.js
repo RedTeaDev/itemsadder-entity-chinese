@@ -6,7 +6,7 @@ import * as pathjs from 'path'
 import { getModelPath } from './util/minecraft/resourcepack'
 // import { Items } from './util/minecraft/items'
 import { tl } from './util/intl'
-import {isInternalPlayerModel} from './util/utilz'
+import {isPlayerModel, getModelExportFolder} from './util/utilz'
 import {format} from "./modelFormat";
 
 function genericEmptyErrorText() {
@@ -99,6 +99,21 @@ export const DefaultSettings = {
 			// 	return !isInternalPlayerModel(settings);
 			// },
 			// dependencies: ['iaentitymodel.namespace'],
+		},
+		addsAdditionalModels: {
+			get title() {
+				return tl('iaentitymodel.settings.addsAdditionalModels.title')
+			},
+			get description() {
+				return tl('iaentitymodel.settings.addsAdditionalModels.description')
+			},
+			type: 'checkbox',
+			onUpdate(d) {
+				return d
+			},
+			isVisible(s) {
+			 	return isPlayerModel(settings);
+			}
 		},
 		modelScalingMode: {
 			get title() {

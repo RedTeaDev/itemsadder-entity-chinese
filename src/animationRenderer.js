@@ -12,7 +12,7 @@ import { tl } from './util/intl'
 import { format, safeFunctionName } from './util/replace'
 import { isSceneBased } from './util/hasSceneAsParent'
 import {Euler} from "three";
-import {isInternalModel} from "./util/utilz";
+import {isInternalModel, needsToExportJsonsModels} from "./util/utilz";
 store.set('staticAnimationUuid', '138747e7-2de0-4130-b900-9275ca0e6333')
 
 function setAnimatorTime(time) {
@@ -49,7 +49,7 @@ function getRotations(animation) {
 		if(group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot" || group.boneType === "hatPivot") {
 		// 	obj3d.applyQuaternion(new THREE.Quaternion().setFromEuler(new Euler(0, 0, -10, 'ZYX')))
 			if(!isInternalModel(settings))
-				obj3d.rotateZ(-0.785398); // -45
+				obj3d.rotateZ(-0.785398); // -45 // TODO: wtf is this? I should have commented that hardcoded fix.
 		// 	obj3d.rotateX(-0.261799); // -15
 		}
 		const worldQuat = obj3d.getWorldQuaternion(new THREE.Quaternion())

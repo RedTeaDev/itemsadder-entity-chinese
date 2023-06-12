@@ -8,7 +8,7 @@ import { settings } from './settings'
 import { CustomError } from './util/customError'
 // @ts-ignore
 import transparent from './assets/transparent.png'
-import { getModelExportFolder, toJson } from './util/utilz'
+import { getModelExportFolder, isInternalElement, toJson } from './util/utilz'
 
 // Exports the model.json rig files
 async function exportRigModels(
@@ -125,7 +125,7 @@ async function exportRigModels(
 							{ intentional: true, silent: true }
 						)
 					)
-				},
+				}
 			}).show()
 		})
 	}
@@ -134,6 +134,19 @@ async function exportRigModels(
 	console.group('Details')
 
 	for (const [name, model] of Object.entries(models)) {
+
+		// Dirty shit to skip generating JSON models for internal bones.
+		if(isInternalElement(name)) {
+			continue;
+		}
+
+		// Dirty shit to skip generating JSON models for empty bones (most likely utility bones)
+		if(!model.elements || model.elements.length == 0 || (model.elements.length == 1 && JSON.stringify(model.elements[0]) === '{}'))
+		{
+			console.log(`Skipped export of empty bone: ${name}`);
+			continue;
+		}
+
 		// Get the model's file path
 		const modelFilePath = path.join(
 			modelExportFolder,
@@ -159,6 +172,14 @@ async function exportRigModels(
 	for (const [modelName, scales] of Object.entries(scaleModels)) {
 		// Export the models
 		for (const [scale, model] of Object.entries(scales)) {
+
+			// Dirty shit to skip generating JSON models for empty bones (most likely utility bones)
+			let mm = models[modelName];
+			if(!mm.elements || mm.elements.length == 0 || (mm.elements.length == 1 && JSON.stringify(mm.elements[0]) === '{}'))
+			{
+				continue;
+			}
+
 			// Get the model's file path
 			const modelFilePath = path.join(
 				getModelExportFolder(settings),

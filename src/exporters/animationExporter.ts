@@ -7,7 +7,7 @@ import { removeKeyGently } from '../util/misc'
 import { generateTree } from '../util/treeGen'
 import { CustomError } from '../util/customError'
 import { settings } from '../settings'
-import {getModelExportFolder, getProjectFolder, isInternalModel} from '../util/utilz'
+import {getModelExportFolder, getProjectFolder, isInternalModel, needsToExportJsonsModels} from '../util/utilz'
 import type * as bc from '../ui/mods/boneConfig'
 
 interface vanillaAnimationExporterSettings {
@@ -354,17 +354,19 @@ async function exportAnimationFile(
 ) {
 	console.log("settings", settings)
 
-	if(isInternalModel(settings)) {
-		Blockbench.writeFile(getProjectFolder() + "/" + Project.name + ".player_animations", {
-			content: generated.animationFile,
-			custom_writer: null,
-		})
-	} else {
-		Blockbench.writeFile(getModelExportFolder(settings) + "/" + ".metadata", {
-			content: generated.animationFile,
-			custom_writer: null,
-		})
+	let extension = ".metadata";
+	if(isInternalModel(settings))
+	{
+		if(needsToExportJsonsModels(settings))
+			extension = ".player_advanced_animations";
+		else
+			extension = ".player_animations";
 	}
+
+	Blockbench.writeFile(getModelExportFolder(settings) + "/" + extension, {
+		content: generated.animationFile,
+		custom_writer: null,
+	})
 }
 
 async function animationExport(data: any) {

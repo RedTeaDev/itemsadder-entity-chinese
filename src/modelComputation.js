@@ -9,7 +9,7 @@ import './overrides/overrides'
 import { CustomError } from './util/customError'
 import {  safeFunctionName } from './util/replace'
 import { isSceneBased } from './util/hasSceneAsParent'
-import {getModelExportFolder, isInternalModel} from './util/utilz'
+import { fixMinecraftTexturesReferences, getModelExportFolder, isInternalModel } from './util/utilz'
 import { roundScale } from './util/misc'
 
 function getMCPath(raw) {
@@ -241,11 +241,16 @@ function getTexturesOnGroup(group) {
 		.filter((c) => c instanceof Cube)
 		.forEach((cube) => {
 			for (const [faceName, face] of Object.entries(cube.faces)) {
+				
+				// UUID of the builtin player texture, no need to export it.
+				if(face.texture === 'e10a3209-9ffd-9d01-d2d9-0dd09446ec62')
+					continue;
+
 				const texture = getTextureByUUID(face.texture)
 				if (texture) {
 					if (!textures[`${texture.id}`]) {
-						textures[`${texture.id}`] =
-							resourcepack.getTexturePath(texture)
+						textures[`${texture.id}`] = resourcepack.getTexturePath(texture)
+						console.log(`Found texture id '${texture.id}', uuid '${face.texture}, name ${texture.name}`)
 					}
 				} else {
 					console.log(`Unable to find texture ${face.texture}`)
@@ -261,8 +266,10 @@ async function computeModels(cubeData) {
 	
 	// Crap to create data export folder before everything is done.
 	// To allow the user to save the textures
-	if(!isInternalModel(settings))
+	//if(!isInternalModel(settings))
 		getModelExportFolder(settings);
+
+	fixMinecraftTexturesReferences();
 
 	const models = {}
 
@@ -311,7 +318,7 @@ async function computeModels(cubeData) {
 				})
 				const modelName = safeFunctionName(group.name)
 				models[modelName] = {
-					textures: isInternalModel(settings) ? {} : getTexturesOnGroup(group),
+					textures: /*isInternalModel(settings) ? {} :*/ getTexturesOnGroup(group),
 					elements,
 				}
 			} else {

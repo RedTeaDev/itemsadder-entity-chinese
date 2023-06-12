@@ -7,6 +7,10 @@ import { tl } from './util/intl'
 import * as basePlayerModelExamples from './assets/player_emote_examples.json';
 import * as basePlayerModelBlank from './assets/player_emote_blank.json';
 
+import { fixMinecraftTexturesReferences } from './util/utilz'
+
+let sus = {};
+
 const FORMATV = '0.0'
 const codec = new Codec('iaentitymodel', {
 	load_filter: {
@@ -97,6 +101,8 @@ const codec = new Codec('iaentitymodel', {
 			model.elements.push(obj)
 		})
 		model.outliner = compileGroups(true)
+
+		fixMinecraftTexturesReferences();
 
 		model.textures = []
 		Texture.all.forEach((tex) => {
@@ -299,6 +305,19 @@ const codec = new Codec('iaentitymodel', {
 		Canvas.updateAll()
 
 		console.groupEnd('Parse .iaentitymodel')
+
+		setTimeout(function() {
+			// Hacky trick to refresh the model settings otherwise they would be the default ones for some reason.
+			// This is useful only in case the project was opened directly double clicking the file.
+			// Cause of this issue is unknown.
+			let selectedProjTabIndex = 0;
+			ModelProject.all.forEach(function (proj) {
+				if(!proj.selected)
+					selectedProjTabIndex++;
+			})
+			Interface.tab_bar.openNewTab()
+			ModelProject.all[selectedProjTabIndex].select()
+		  }, 500);
 	},
 })
 const format = new ModelFormat({

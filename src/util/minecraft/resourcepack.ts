@@ -52,6 +52,10 @@ function getTextureReference(texture: any) {
 export function getTexturePath(texture: any) {
 	console.log('Saving texture:', texture)
 
+	if(texture.namespace === "minecraft") {
+		return getTextureReference(texture)
+	}
+
 	let texturesFolder = getTexturesExportFolder(settings)
 	let newPath = path.join(texturesFolder, texture.name.toLowerCase())
 
@@ -62,7 +66,7 @@ export function getTexturePath(texture: any) {
 					console.error(err)
 					return
 				}
-				console.log('Copied texture to valid path', newPath)
+				console.log('Copied texture to export path', newPath)
 			});
 		} else {
 			texture.saved = false
@@ -71,12 +75,6 @@ export function getTexturePath(texture: any) {
 			texture.saved = true
 		}
 	}
-
-	texture.path = newPath
-	if(!texture.path.endsWith('.png'))
-		texture.path = texture.path + ".png"
-
-	texture.saved = true
 
 	return getTextureReference(texture)
 }

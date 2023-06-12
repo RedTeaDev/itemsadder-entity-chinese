@@ -5,6 +5,8 @@ import { ERROR } from '../../util/errors'
 import events from '../../constants/events'
 import React, { useEffect, useRef, useState } from 'react'
 import { DefaultSettings, settings, ForeignSettingTranslationKeys } from '../../settings'
+import { isInternalModel, getModelExportFolder } from '../../util/utilz'
+import { debug } from 'console'
 
 const dialog = electron.dialog
 let updateSettingsUiActions = {}
@@ -236,6 +238,13 @@ const SettingInput = ({ namespace, name, template }) => {
 				)
 			})
 		}
+
+		if(typeof isVis === 'function') {
+			watchers.push(settings.watch(`${namespace}.${name}`, () => {
+				setIsVisible(isVis(settings));
+			}));
+		}
+
 		return () => watchers.forEach((cb) => cb())
 	}, [])
 	useEffect(() => {

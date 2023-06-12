@@ -87,6 +87,11 @@ iaentitymodel:
       description:
         - Only re-render changed animations
 
+    addsAdditionalModels:
+      title: Allow additional models in player animation
+      description:
+        - Enable this if you added some new bones/models to the scene (for example accessories, other entities, items...)
+
     cacheMode:
       title: Animation Cache Mode
       description:
