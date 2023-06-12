@@ -79,6 +79,10 @@ export function getTexturePath(texture: any) {
 	return getTextureReference(texture)
 }
 
+/***
+ * Returns the Minecraft notation of a model path.
+ * For example returns: `my_items:item/sword_1` from `project/assets/my_items/textures/item/sword_1.png`
+ */
 export function getModelPath(modelPath: string, modelName: string) {
 	console.log(modelPath)
 	const parts = modelPath.split(path.sep)
