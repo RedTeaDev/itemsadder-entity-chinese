@@ -172,6 +172,10 @@ async function exportRigModels(
 	for (const [modelName, scales] of Object.entries(scaleModels)) {
 		// Export the models
 		for (const [scale, model] of Object.entries(scales)) {
+			
+			// 1,1,1 I can skip since I'd use the normal model already added previously.
+			// 0,0,0 I won't even need this model at all ingame since I won't spawn anything for that frame.
+			if(scale === "1-1-1" || scale === "0-0-0") continue;
 
 			// Dirty shit to skip generating JSON models for empty bones (most likely utility bones)
 			let mm = models[modelName];
