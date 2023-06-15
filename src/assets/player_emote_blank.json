@@ -6,7 +6,7 @@
     "box_uv": false,
     "settings": {
       "iaentitymodel": {
-        "namespace": "iainternal",
+        "namespace": "custom",
         "projectName": "player",
         "modelScalingMode": "3x3x3",
         "rotationMode": "precise"

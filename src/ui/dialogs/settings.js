@@ -8,6 +8,8 @@ import { DefaultSettings, settings, ForeignSettingTranslationKeys } from '../../
 import { isInternalModel, getModelExportFolder } from '../../util/utilz'
 import { debug } from 'console'
 
+import { updateSettingsOnProjectChange } from '../../settings.js'
+
 const dialog = electron.dialog
 let updateSettingsUiActions = {}
 let forceUpdateSettingsUi = () => {
@@ -448,6 +450,7 @@ const Settings = () => {
 								{tl('iaentitymodel.settings.header')}
 							</h2>
 							<ul style={{ marginLeft: '2em' }}>
+								{updateSettingsOnProjectChange()}
 								{Object.keys(DefaultSettings.iaentitymodel).map(
 									(child, id) => (
 										<li key={child}>

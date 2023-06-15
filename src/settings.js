@@ -591,7 +591,7 @@ class Settings {
 }
 export var settings = new Settings()
 export const settingsByUUID = new Map()
-const updateSettingsOnProjectChange = () => {
+export const updateSettingsOnProjectChange = () => {
 	if (settingsByUUID.has(Project.uuid))
 		settings.update(settingsByUUID.get(Project.uuid))
 }

@@ -388,8 +388,8 @@ const skin_dialog = new Dialog({
 				Project.texture_width = 64;
 				Project.texture_height = 64;
 
-				settings.iaentitymodel.namespace = "iainternal"
-				settings.iaentitymodel.projectName = "player"
+				//settings.iaentitymodel.namespace = "iainternal"
+				//settings.iaentitymodel.projectName = "player"
 
 				if(data.ia_project_type === 'player_emote_examples') {
 					Codecs.project.parse(basePlayerModelExamples)
