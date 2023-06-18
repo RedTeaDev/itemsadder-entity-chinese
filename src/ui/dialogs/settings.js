@@ -450,7 +450,6 @@ const Settings = () => {
 								{tl('iaentitymodel.settings.header')}
 							</h2>
 							<ul style={{ marginLeft: '2em' }}>
-								{updateSettingsOnProjectChange()}
 								{Object.keys(DefaultSettings.iaentitymodel).map(
 									(child, id) => (
 										<li key={child}>

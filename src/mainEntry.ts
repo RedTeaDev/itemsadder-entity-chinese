@@ -364,6 +364,9 @@ Blockbench.on('select_mode', () => {
 	else {*/
 		restoreEditPaintTabs()
 	//}
+
+	global.invalidCubeNotification?.delete();
+	delete global.invalidCubeNotification;
 })
 
 // Dirty

@@ -11,6 +11,8 @@ import {  safeFunctionName } from './util/replace'
 import { isSceneBased } from './util/hasSceneAsParent'
 import { fixMinecraftTexturesReferences, getModelExportFolder, isInternalModel } from './util/utilz'
 import { roundScale } from './util/misc'
+import { makeError } from './util/makeError'
+import { Scene } from 'three'
 
 function getMCPath(raw) {
 	let list = raw.split(path.sep)
@@ -484,6 +486,65 @@ let displayScaleModifier = 1
 let elementScaleModifier = displayScaleModifier / displayScale
 let yTranslation = 5.6
 
+export function isJavaCubeOutOfBoundsAdjustScale(cube) {
+	computeScaleModifiers() // Might be heavy I think. Call it elsewhere less times.
+	let newFrom = cube.from.map((v, i) => v - cube.parent.origin[i])
+	let newTo = cube.to.map((v, i) => v - cube.parent.origin[i])
+
+	if (cube.inflate) {
+		for (var i = 0; i < 3; i++) {
+			newFrom[i] -= cube.inflate
+			newTo[i] += cube.inflate
+		}
+	}
+
+	newFrom = [
+		newFrom[0] / elementScaleModifier + 8,
+		newFrom[1] / elementScaleModifier + 5,
+		newFrom[2] / elementScaleModifier + 8,
+	]
+	
+	newTo = [
+		newTo[0] / elementScaleModifier + 8, // Center the x pos in the model
+		newTo[1] / elementScaleModifier + 5, // Center the y pos in the model
+		newTo[2] / elementScaleModifier + 8, // Center the z pos in the model
+	]
+
+	// Warn about cube too big for JSON export.
+	if(isJavaCubeOutOfBounds(newTo) || isJavaCubeOutOfBounds(newFrom)) {
+		console.error(`A cube is out of java model bounds!`);
+
+		if(!global.invalidCubeNotification) {
+			global.invalidCubeNotification = Blockbench.showToastNotification({
+				text: `This cube is not valid, possible reasons:
+				- pivot of the cube or bone is in a location which makes the cube appear outside of the red box.
+				- cube is too large/long or the pivot of the cube or the bone itself is in a location which makes the cube appear outside of the red box.
+				
+				Move the pivot and/or reduce the size of the model until this message doens't appear anymore.`
+			})
+			if(global.visboxs.length > 0) {
+				global.visboxs[0].material = new THREE.LineBasicMaterial({ color: 0xff0000 })
+			}
+		}
+	} else {
+		global.invalidCubeNotification?.delete();
+		delete global.invalidCubeNotification;
+
+		if(global.visboxs.length > 0) {
+			global.visboxs[0].material = new THREE.LineBasicMaterial({ color: 0x1f6e18 })
+		}
+	}
+}
+
+function isJavaCubeOutOfBounds(array) {
+    for(let element of array) {
+        if(element > 32 || element < -16)  {
+            return true;
+        }
+    }
+    return false;
+}
+
 function computeScaleModifiers() {
 	displayScaleModifier = settings.iaentitymodel.modelScalingMode === '3x3x3' ? 1 : 4
 	elementScaleModifier = displayScaleModifier / displayScale
@@ -493,6 +554,7 @@ function computeScaleModifiers() {
 
 async function scaleModels(models) {
 	computeScaleModifiers()
+	let outOfBoundsJavaList = {};
 	for (const [modelName, model] of Object.entries(models)) {
 		// Special bone with no elements, it's empty.
 		if(model.elements && model.elements.length == 1 && Object.keys(model.elements[0]).length == 0) 
@@ -518,6 +580,12 @@ async function scaleModels(models) {
 				element.from[2] / elementScaleModifier + 8,
 			]
 
+			// Warn about cube too big for JSON export.
+			if(isJavaCubeOutOfBounds(element.to) || isJavaCubeOutOfBounds(element.from)) {
+				console.error(`"${modelName}" cube is out of java model bounds!`)
+				outOfBoundsJavaList[modelName] = "";
+			}
+
 			if (element.rotation) {
 				element.rotation.origin = [
 					element.rotation.origin[0] / elementScaleModifier + 8,
@@ -527,6 +595,15 @@ async function scaleModels(models) {
 			}
 		}
 	}
+
+	if(Object.keys(outOfBoundsJavaList).length > 0) {
+		Blockbench.showMessageBox({
+			title: "Model error",
+			message: `Some cubes of your model are too large/long or the pivot of the cube or the bone itself is in a location which makes the cube appear outside of the red box.\n\nSome examples here: https://imgur.com/a/P9GQnKa.\n\nMove the pivot and/or reduce the size of the model until this message doens't appear anymore.\nList:\n${Object.keys(outOfBoundsJavaList)}`,
+			icon: 'error'
+		})
+	}
+
 	return models
 }
 

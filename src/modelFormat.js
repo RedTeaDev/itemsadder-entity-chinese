@@ -8,6 +8,7 @@ import * as basePlayerModelExamples from './assets/player_emote_examples.json';
 import * as basePlayerModelBlank from './assets/player_emote_blank.json';
 
 import { fixMinecraftTexturesReferences } from './util/utilz'
+import { isJavaCubeOutOfBoundsAdjustScale } from './modelComputation'
 
 let sus = {};
 
@@ -339,6 +340,24 @@ const format = new ModelFormat({
 	codec,
 	onDeactivation() {
 		settingsByUUID.set(Project.uuid, settings.toObject())
+	},
+	// took from blockbench/js/io/formats/java_block.js
+	cube_size_limiter: {
+		test(cube, values = 0) {
+			if(isJavaCubeOutOfBoundsAdjustScale(cube)) {
+				return false;
+			}
+		},
+		move(cube, values = 0) {
+			if(isJavaCubeOutOfBoundsAdjustScale(cube)) {
+				return false;
+			}
+		},
+		clamp(cube, values = 0) {
+			if(isJavaCubeOutOfBoundsAdjustScale(cube)) {
+				return false;
+			}
+		}
 	}
 })
 format.new = function() {
