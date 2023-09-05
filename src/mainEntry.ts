@@ -468,8 +468,8 @@ new Property(KeyframeDataPoint, 'molang', 'y_delta', { label: 'Y delta', conditi
 new Property(KeyframeDataPoint, 'molang', 'z_delta', { label: 'Z delta', condition: point => Format.id === modelFormat.id && 'particle' == point.keyframe.channel, default: 0 });
 
 // Edit the Bedrock effect animator "script", "locator", "file" properties condition to hide itself if this project has our custom model format
-KeyframeDataPoint["properties"].effect.condition = (point) => { Format.id !== modelFormat.id && ['particle', 'timeline'].includes(point.keyframe.channel) }
-KeyframeDataPoint["properties"].script.condition = (point) => { Format.id !== modelFormat.id && ['particle', 'timeline'].includes(point.keyframe.channel) }
-KeyframeDataPoint["properties"].locator.condition = (point) => { Format.id !== modelFormat.id && 'particle' == point.keyframe.channel }
-KeyframeDataPoint["properties"].file.condition = (point) => { Format.id !== modelFormat.id && ['particle', 'timeline'].includes(point.keyframe.channel) }
+KeyframeDataPoint["properties"].effect.condition = (point) => { return Format.id !== modelFormat.id && ['particle', 'sound'].includes(point.keyframe.channel) }
+KeyframeDataPoint["properties"].script.condition = (point) => { return Format.id !== modelFormat.id && ['particle', 'timeline'].includes(point.keyframe.channel) }
+KeyframeDataPoint["properties"].locator.condition = (point) => { return Format.id !== modelFormat.id && 'particle' == point.keyframe.channel }
+KeyframeDataPoint["properties"].file.condition = (point) => { return Format.id !== modelFormat.id && ['particle', 'sound'].includes(point.keyframe.channel) }
 

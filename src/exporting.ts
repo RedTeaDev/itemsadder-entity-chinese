@@ -8,7 +8,7 @@ import { settings } from './settings'
 import { CustomError } from './util/customError'
 // @ts-ignore
 import transparent from './assets/transparent.png'
-import { getModelExportFolder, isInternalElement, toJson } from './util/utilz'
+import { getCorrectInternalElementName, getModelExportFolder, isInternalElement, toJson } from './util/utilz'
 
 // Exports the model.json rig files
 async function exportRigModels(
@@ -139,6 +139,13 @@ async function exportRigModels(
 		if(isInternalElement(name)) {
 			continue;
 		}
+		// Dirty shit to skip generating JSON models for internal bones.
+		// Skip only if the bone wasn't resized, otherwise I have to include the bone (parent) in the export folder to make 
+		// scaling working, or the scaled variants won't have the parent model.
+		// NOTE: it's a bit shitty since each emotes pack will contain duplicate (parent) internal bone (but only if resized).
+		// if(isInternalElement(name) && (!scaleModels[name] || Object.keys(scaleModels[name]).length <= 1)) {
+		// 	continue;
+		// }
 
 		// Dirty shit to skip generating JSON models for empty bones (most likely utility bones)
 		if(!model.elements || model.elements.length == 0 || (model.elements.length == 1 && JSON.stringify(model.elements[0]) === '{}'))
@@ -174,14 +181,29 @@ async function exportRigModels(
 		for (const [scale, model] of Object.entries(scales)) {
 			
 			// 1,1,1 I can skip since I'd use the normal model already added previously.
-			// 0,0,0 I won't even need this model at all ingame since I won't spawn anything for that frame.
-			if(scale === "1-1-1" || scale === "0-0-0") continue;
+			if(scale === "1-1-1") continue;
+
+			// If it's a player bone I need to spawn the 0-0-0 invisible model, to avoid rendering order issues
+			// caused by missing "player head" models, as the shader works using them to predict rendering order.
+			// 0,0,0 I won't need this model at all ingame since I won't spawn anything for that frame.
+			if(!isInternalElement(modelName) && (scale === "0-0-0")) continue;
 
 			// Dirty shit to skip generating JSON models for empty bones (most likely utility bones)
 			let mm = models[modelName];
-			if(!mm.elements || mm.elements.length == 0 || (mm.elements.length == 1 && JSON.stringify(mm.elements[0]) === '{}'))
-			{
+			if(!mm.elements || mm.elements.length == 0 || (mm.elements.length == 1 && JSON.stringify(mm.elements[0]) === '{}')) {
 				continue;
+			}
+
+			// Cambiare parent del bone in modo da usare internal bone.
+			// esempio: _iainternal:player/parm_left_3
+			// invece di: custom:sandcustom/parm_left_3
+			// Hide the bone even if size is not 0-0-0. Animating the scale of player bones would be difficult, I avoid it for now.
+			if(isInternalElement(modelName)) {
+				model.parent = getCorrectInternalElementName(modelName)
+				delete model.display.head
+				model.display["thirdperson_righthand"] = {
+					"scale": [0,0,0]
+				}
 			}
 
 			// Get the model's file path

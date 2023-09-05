@@ -47,6 +47,10 @@ export function isInternalElement(name) {
     return false;
 }
 
+export function getCorrectInternalElementName(name) {
+    return "_iainternal:entity/player/" + name;
+}
+
 export function getProjectFolder() {
     let fileName = Project.save_path.replace(/\\/g, '/').split('/').pop()
     let dirPath = Project.save_path.slice(0, -fileName.length - 1)
