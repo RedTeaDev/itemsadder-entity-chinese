@@ -463,9 +463,9 @@ new Property(KeyframeDataPoint, 'number', 'pitch', {label: "Pitch", condition: p
 new Property(KeyframeDataPoint, 'string', 'locator_name', {label: "Bone (locator)", condition: point => Format.id === modelFormat.id && 'particle' == point.keyframe.channel, default: "locator_bone_name"} );
 new Property(KeyframeDataPoint, 'number', 'speed', {label: "Speed", condition: point => Format.id === modelFormat.id && 'particle' == point.keyframe.channel, default: 1});
 new Property(KeyframeDataPoint, 'number', 'count', {label: "Count", condition: point => Format.id === modelFormat.id && 'particle' == point.keyframe.channel, default: 1});
-new Property(KeyframeDataPoint, 'molang', 'x_delta', { label: 'X delta', condition: point => Format.id === modelFormat.id && 'particle' == point.keyframe.channel, default: 0 });
-new Property(KeyframeDataPoint, 'molang', 'y_delta', { label: 'Y delta', condition: point => Format.id === modelFormat.id && 'particle' == point.keyframe.channel, default: 0 });
-new Property(KeyframeDataPoint, 'molang', 'z_delta', { label: 'Z delta', condition: point => Format.id === modelFormat.id && 'particle' == point.keyframe.channel, default: 0 });
+new Property(KeyframeDataPoint, 'number', 'x_delta', { label: 'X delta', condition: point => Format.id === modelFormat.id && 'particle' == point.keyframe.channel, default: 0 });
+new Property(KeyframeDataPoint, 'number', 'y_delta', { label: 'Y delta', condition: point => Format.id === modelFormat.id && 'particle' == point.keyframe.channel, default: 0 });
+new Property(KeyframeDataPoint, 'number', 'z_delta', { label: 'Z delta', condition: point => Format.id === modelFormat.id && 'particle' == point.keyframe.channel, default: 0 });
 
 // Edit the Bedrock effect animator "script", "locator", "file" properties condition to hide itself if this project has our custom model format
 KeyframeDataPoint["properties"].effect.condition = (point) => { return Format.id !== modelFormat.id && ['particle', 'sound'].includes(point.keyframe.channel) }

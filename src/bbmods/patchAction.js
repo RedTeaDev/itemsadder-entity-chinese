@@ -36,7 +36,11 @@ if(!animatedJavaPlugin) {
 	Action.prototype.patch = function (name) {
 		;(this.patches = this.patches || []).push(name)
 	}
-	Action.prototype._trigger = Action.prototype.trigger
+
+	console.log(Action.prototype.trigger)
+
+	Action.prototype._originalTrigger = Action.prototype.trigger
+
 	Action.prototype.trigger = function (...args) {
 		if (this.patches) {
 			const defer = this.patches.find((action) => BARS.condition(action))
@@ -44,14 +48,17 @@ if(!animatedJavaPlugin) {
 				return defer.click(...args)
 			}
 		}
-		return this._trigger(...args)
+		return this._originalTrigger(...args)
 	}
+
+	console.log(Action.prototype._originalTrigger)
+	console.log(Action.prototype.trigger)
 
 	bus.on(events.LIFECYCLE.CLEANUP, () => {
 		if (Action.prototype.patch) {
 			delete Action.prototype.patch
-			Action.prototype.trigger = Action.prototype._trigger
-			delete Action.prototype._trigger
+			Action.prototype.trigger = Action.prototype._originalTrigger
+			delete Action.prototype._originalTrigger
 			for (const i of Object.values(BarItems)) if (i.patches) delete i.patches
 		}
 		format.delete()
