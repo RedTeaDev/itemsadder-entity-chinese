@@ -393,7 +393,8 @@
 		  exportInProgress:"Export in Progress!",
 		  noExporterSelected:"No Exporter Selected!",
 		  successfullyExported:"Export Successful!",
-		  projectNotSaved:"Please save the project before exporting!" },
+		  projectNotSaved:"Please save the project before exporting!"
+		},
 		progress:{ animationRendering:"Rendering Animations... %currents/%totals" },
 		settings:{ header:"ItemsAdder Entity Settings",
 		  isGlobal:"(Global)",
@@ -633,7 +634,6 @@
 		  noExporterSelected:"エクスポーターを選んでください。",
 		  successfullyExported:"エクスポートを出来ました!",
 		  projectNotSaved:"エクスポートする前にプロジェクトをセーブしてください!" },
-		 },
 		progress:{ animationRendering:"アニメーションをレンダー中... %currents/%totals" },
 		settings:{ header:"アニメーテッド ジャバ 設定",
 		  isGlobal:"(グローバル)",
@@ -907,7 +907,8 @@
 		  exportInProgress:"导出中！",
 		  noExporterSelected:"未选择导出器！",
 		  successfullyExported:"导出成功！",
-		  projectNotSaved:"项目未保存！", },
+		  projectNotSaved:"项目未保存！" 
+		},
 		progress:{ animationRendering:"渲染动画中... %currents/%totals" },
 		settings:{ header:"ItemsAdder Entity 设置",
 		  isGlobal:"(全局)",
@@ -1086,7 +1087,8 @@
       exportInProgress:"導出中！",
       noExporterSelected:"未選擇導出器！",
       successfullyExported:"導出成功！",
-	  projectNotSaved: "專案未保存！" },
+	  projectNotSaved: "專案未保存！" 
+	},
     progress:{ animationRendering:"渲染動畫中... %currents/%totals" },
     settings:{ header:"ItemsAdder Entity設置",
         namespace:{ title:"實體命名空間",
