@@ -105,8 +105,9 @@ bus.on(EVENTS.LIFECYCLE.LOAD, () => {
 			}
 			if (Mode.selected.id === 'edit' && viewmode !== 'none') {
 				let parent = null
-				if (Group.selected && Group.selected.name !== 'SCENE') {
-					parent = Group.selected
+				let selectedGroup = Project.selected_groups?.[0]
+				if (selectedGroup && selectedGroup.name !== 'SCENE') {
+					parent = Project.selected_groups?.[0]
 				} else if (Cube.selected.length) {
 					if (Cube.selected[0].parent !== 'root')
 						parent = Cube.selected[0].parent

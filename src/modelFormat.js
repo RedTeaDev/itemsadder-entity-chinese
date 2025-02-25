@@ -378,15 +378,20 @@ const skin_dialog = new Dialog({
 				player_emote_blank: "Player Emotes Pack (blank)"
 			}
 		},
-		identifier: {
-			label: 'Identifier',
+		namespace: {
+			label: 'Namespace',
 			type: 'string',
-			default: ""
+			default: "custom"
+		},
+		identifier: {
+			label: 'ID',
+			type: 'string',
+			default: "entity"
 		}
 	},
 	draggable: true,
 	onConfirm(data) {
-		if(data.identifier === "") {
+		if(data.identifier === "" || data.namespace === "") {
 			Blockbench.showMessageBox({
 				message: data.ia_project_type.startsWith("player_emote")  ? tl("iaentitymodel.settings.playerAnimationsName.errors.invalidFunctionName")
 					: tl("iaentitymodel.settings.projectName.errors.invalidFunctionName"),
@@ -395,12 +400,11 @@ const skin_dialog = new Dialog({
 			return;
 		}
 
-
 		if (newProject(format)) {
-
 			Project.geometry_name = data.identifier;
 			settings.iaentitymodel.projectName = safeFunctionName(Project.geometry_name)
-			setProjectTitle()
+			settings.iaentitymodel.namespace = safeFunctionName(data.namespace)
+			setProjectTitle(settings.iaentitymodel.projectName)
 
 			if(data.ia_project_type.startsWith("player_emote") ) {
 
