@@ -77,6 +77,59 @@ import {
 	computeScaleModels,
 } from './modelComputation'
 
+
+import axios from 'axios';
+
+async function checkForUpdates() {
+    try {
+        // Get the current version from the environment variable
+        const currentVersion = process.env.PLUGIN_VERSION;
+        if (!currentVersion) {
+            throw new Error('Current version is not defined in the environment variables.');
+        }
+
+        // Fetch the latest release from GitHub
+        const response = await axios.get('https://api.github.com/repos/LoneDev6/itemsadder-entity/releases/latest');
+        const latestVersion = response.data.tag_name;
+
+        if (latestVersion !== currentVersion) {
+					console.log('A new update is available!');
+
+					// @ts-ignore
+					Blockbench.showMessageBox({
+						title: 'A new update is available!',
+						icon: 'update',
+						message: `A new update ItemsAdder extension is available! Download version ${latestVersion} from the releases page.`,
+						buttons: ['Download', 'Later'],
+					}, (buttonIdx) => {
+						if(buttonIdx === 0) {
+
+							// Iterate response.data.assets and get the .js file URL
+							// Open the URL in the default browser
+							response.data.assets.forEach((asset: any) => {
+								if (asset.name.endsWith('.js')) {
+									//require('electron').shell.openExternal(asset.browser_download_url);
+									
+									// Uninstall the plugin
+									// @ts-ignore
+									Plugins.all.find(p => p.id == "iaentitymodel").uninstall()
+
+									// Install from URL
+									// @ts-ignore
+									new Plugin().loadFromURL(asset.browser_download_url, true)
+								}
+							});
+						}
+					});
+        }
+    } catch (error) {
+        console.error('Error checking for updates:', error);
+    }
+}
+
+// Call the function to check for updates
+checkForUpdates();
+
 export const BuildModel = (callback: any, options: any) => {
 	if (!IAENTITY.exportInProgress) {
 		IAENTITY.exportInProgress = true
