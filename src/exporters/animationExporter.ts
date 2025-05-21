@@ -10,6 +10,10 @@ import { settings } from '../settings'
 import {getModelExportFolder, getProjectFolder, isInternalModel, needsToExportJsonsModels} from '../util/utilz'
 import type * as bc from '../ui/mods/boneConfig'
 
+import fs from 'fs'
+import path from 'path'
+import yaml from 'js-yaml';
+
 interface vanillaAnimationExporterSettings {
 }
 const loopModeIDs = ['once', 'hold', 'loop']
@@ -315,16 +319,23 @@ async function createAnimationFile(
 
 		// Hitbox
 		{
-			let tmp = Group.all.find(x => x["boneType"] === "hitbox")
-			if(tmp === undefined)
-				tmp = Group.all.find(x => x.name === "hitbox")
-			if(tmp !== undefined && tmp.children.length > 0)
-			{
+			// Find the first group with boneType "hitbox" or name "hitbox"
+			const hitboxGroup = Group.all.find(
+				x => (x["boneType"] === "hitbox" || x.name === "hitbox")
+			);
+
+			if (hitboxGroup && hitboxGroup.children.length > 0) {
+				// Only allow if it's a group, not a cube
 				generatedAnimationData["hitbox"] = {
-					pos: tmp.children[0]["origin"],
+					pos: hitboxGroup.children[0]["origin"],
+					// Groups do not have a size method, so skip size if not present
+					// Only include size if the child is a group and has a size method
 					// @ts-ignore
-					size: tmp.children[0].size()
-				}
+					size: typeof hitboxGroup.children[0].size === "function"
+					// @ts-ignore
+						? hitboxGroup.children[0].size()
+						: undefined
+				};
 			}
 		}
 		// EyesHeight
@@ -367,9 +378,104 @@ async function exportAnimationFile(
 		content: generated.animationFile,
 		custom_writer: null,
 	})
+
+	// Iterate all .yml files in the project folder and check if they contain the custom entity, otherwise generate a new one.
+	const projectFolder = getProjectFolder()
+	function getAllYmlFiles(dir: string): string[] {
+		let results: string[] = [];
+		const list = fs.readdirSync(dir);
+		list.forEach(function(file) {
+			const filePath = path.join(dir, file);
+			const stat = fs.statSync(filePath);
+			if (stat && stat.isDirectory()) {
+				results = results.concat(getAllYmlFiles(filePath));
+			} else if (file.endsWith('.yml')) {
+				results.push(filePath);
+			}
+		});
+		return results;
+	}
+
+	const files = getAllYmlFiles(projectFolder);
+	let found = false;
+	for (const file of files) {
+		const fileContent = fs.readFileSync(file, 'utf8');
+		let ymlData;
+		try {
+			ymlData = yaml.load(fileContent);
+		} catch (e) {
+			console.warn(`Failed to parse YAML file: ${file}`, e);
+			continue;
+		}
+
+		if (ymlData && ymlData.info && ymlData.info.namespace === settings.iaentitymodel.namespace) {
+			console.log(`File ${file} contains the correct namespace: ${settings.iaentitymodel.namespace}`);
+
+			// Check if the file contains the custom entity
+			if (ymlData.entities && ymlData.entities[settings.iaentitymodel.projectName]) {
+
+				console.log(`File ${file} contains the custom entity: ${settings.iaentitymodel.projectName}`);
+				found = true;
+				break;
+			}
+		}
+	}
+
+	if(!found) {
+		const ymlFile = path.join(projectFolder, "custom_entity_" + settings.iaentitymodel.projectName + ".yml");
+		const ymlData = {
+			info: {
+				namespace: settings.iaentitymodel.namespace,
+			},
+			entities: {
+				[settings.iaentitymodel.projectName]: {
+					model_folder: "entity/" + settings.iaentitymodel.projectName,
+					type: "ZOMBIE",
+					can_sun_burn: false,
+				}
+			}
+		};
+
+		fs.writeFileSync(ymlFile, yaml.dump(ymlData), 'utf8');
+		console.log(`Created new YML file: ${ymlFile}`);
+	}
 }
 
 async function animationExport(data: any) {
+	// Check if it's inside an ItemsAdder contents sub-folder. Otherwise show a warning about that.
+	// Also check if the namespace is the same as the project name, otherwise show a warning about that.
+	let projectFolder = getProjectFolder()
+	let projectNamespace = settings.iaentitymodel.namespace
+
+	// Example: C:\Progetti\Minecraft\TestServer\1.21.5\plugins\ItemsAdder\contents\test
+
+	const contentsFolderMatch = projectFolder.match(/contents[\/\\]([^\/\\]+)/i)
+	if (!contentsFolderMatch) {
+		// @ts-ignore
+		Blockbench.showMessageBox({
+			title: "Export error",
+			// tl('iaentitymodel.exporters.vanillaAnimation.dialogs.errors.notInContentsFolder')
+			message: "Save the project into an ItemsAdder contents folder before exporting! Example: 'ItemsAdder/contents/test/project.iaentitymodel'",
+			icon: 'error'
+		})
+		console.log("Not in contents folder.", projectFolder)
+		return
+	}
+	const folderNamespace = contentsFolderMatch[1]
+	if (folderNamespace !== projectNamespace) {
+		// @ts-ignore
+		Blockbench.showMessageBox({
+			title: "Export error",
+			// tl('iaentitymodel.exporters.vanillaAnimation.dialogs.errors.namespaceMismatch', {
+			// 	projectNamespace,
+			// 	folderNamespace
+			// })
+			message: "Wrong namespace. The project namespace is '" + projectNamespace + "' but the ItemsAdder folder namespace is '" + folderNamespace + "'!",
+			icon: 'error'
+		})
+		return
+	}
+
 	const exporterSettings: vanillaAnimationExporterSettings =
 		data.settings.vanillaAnimationExporter
 	const generated = await createAnimationFile(

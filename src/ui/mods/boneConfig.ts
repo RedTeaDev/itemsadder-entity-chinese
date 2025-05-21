@@ -125,6 +125,30 @@ function click (ev: any) {
 				selected.maxHeadRotY = undefined
 			}
 
+			// If hitbox, set texture to completely transparent
+			if (selected.boneType === "hitbox") {
+				for (const group of Group.all as AJGroup[]) {
+					if (group.boneType === "hitbox") {
+						if (selected.name === group.name) {
+							selected.children.forEach((child) => {
+								if (child instanceof Cube) {
+									let cube = child as Cube
+									// @ts-ignore
+									for (const key of Object.keys(cube.faces)) {
+										// @ts-ignore
+										const face = cube.faces[key];
+										face.texture = null; // To make it transparent
+									}
+								}
+							});
+						}
+					}
+
+					// To force updating the textures which I just made transparent
+					Canvas.updateAll()
+				}
+			}
+
 			refreshIcons()
 			dialog.hide()
 		},
