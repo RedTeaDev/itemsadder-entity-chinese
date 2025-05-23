@@ -18,6 +18,8 @@ interface vanillaAnimationExporterSettings {
 }
 const loopModeIDs = ['once', 'hold', 'loop']
 
+const staticAnimationUuid = store.get('staticAnimationUuid')
+
 async function createAnimationFile(
 	bones: aj.BoneObject,
 	models: aj.ModelObject,
@@ -32,7 +34,6 @@ async function createAnimationFile(
 	headYOffset += -0.1
 	console.log(headYOffset)
 
-	const staticAnimationUuid = store.get('staticAnimationUuid')
 	const staticFrame = animations[staticAnimationUuid].frames[0].bones
 
 	animations = removeKeyGently(staticAnimationUuid, animations)
@@ -481,7 +482,7 @@ async function animationExport(data: any) {
 	const generated = await createAnimationFile(
 		data.bones,
 		data.models,
-		data.animations,
+		data.animations, // Animations (each entry is RenderedAnimation)
 		data.settings,
 		data.variantModels,
 		data.scaleModels,
@@ -490,6 +491,111 @@ async function animationExport(data: any) {
 	)
 
 	await exportAnimationFile(generated, data.settings, exporterSettings)
+
+	// Check if it's an emote
+	if (isInternalModel(settings)) {
+		// Iterate all .yml files in the project folder and check if they contain the emote, otherwise generate a new one.
+		const projectFolder = getProjectFolder()
+		function getAllYmlFiles(dir: string): string[] {
+			let results: string[] = [];
+			const list = fs.readdirSync(dir);
+			list.forEach(function (file) {
+				const filePath = path.join(dir, file);
+				const stat = fs.statSync(filePath);
+				if (stat && stat.isDirectory()) {
+					results = results.concat(getAllYmlFiles(filePath));
+				} else if (file.endsWith('.yml')) {
+					results.push(filePath);
+				}
+			});
+			return results;
+		}
+
+		const files = getAllYmlFiles(projectFolder);
+		let yamlData = undefined;
+		let ymlFile = undefined;
+		for (const file of files) {
+			const fileContent = fs.readFileSync(file, 'utf8');
+			let currentYamlData;
+			try {
+				currentYamlData = yaml.load(fileContent);
+			} catch (e) {
+				console.warn(`Failed to parse YAML file: ${file}`, e);
+				continue;
+			}
+
+			if (currentYamlData && currentYamlData.info && currentYamlData.info.namespace === settings.iaentitymodel.namespace) {
+				console.log(`File ${file} contains the correct namespace: ${settings.iaentitymodel.namespace}`);
+
+				// Check if the file contains the emote
+				if (currentYamlData.emotes) {
+					// NOTE: this will cause issues if there are multiple files with emotes declarations for this namespace.
+					yamlData = currentYamlData;
+					ymlFile = file;
+					console.log(`File ${file} contains the emote: ${settings.iaentitymodel.projectName}`);
+
+					// Update the emotes with the animations, and remove the unrecognized ones (old ones probably)
+					const validEmoteNames = new Set(
+						Object.values(data.animations as aj.Animations)
+							.filter(anim => anim && typeof anim.name === "string")
+							.map(anim => anim.name)
+					);
+
+					// Remove emotes not present in current animations
+					for (const emoteName of Object.keys(currentYamlData.emotes)) {
+						if (!validEmoteNames.has(emoteName)) {
+							delete currentYamlData.emotes[emoteName];
+						}
+					}
+
+					// Add/update emotes from current animations
+					for (const [key, anim] of Object.entries(data.animations as aj.Animations)) {
+						if (key === staticAnimationUuid) continue;
+						if (anim && typeof anim.name === "string") {
+							if (currentYamlData.emotes[anim.name]) {
+								// Merge properties, existing properties take precedence unless overwritten
+								currentYamlData.emotes[anim.name] = {
+									...currentYamlData.emotes[anim.name],
+									id: anim.name,
+									can_player_move: Boolean(anim.canPlayerMove),
+								};
+							} else {
+								currentYamlData.emotes[anim.name] = {
+									id: anim.name,
+									can_player_move: Boolean(anim.canPlayerMove),
+								};
+							}
+						}
+					}
+
+					break;
+				}
+			}
+		}
+
+		if (!yamlData) {
+			ymlFile = path.join(projectFolder, "custom_emote_" + settings.iaentitymodel.projectName + ".yml");
+			yamlData = {
+				info: {
+					namespace: settings.iaentitymodel.namespace,
+				},
+				emotes: {}
+			};
+
+			for (const [key, anim] of Object.entries(data.animations as aj.Animations)) {
+				if (key === staticAnimationUuid) continue;
+				if (anim && typeof anim.name === "string") {
+					yamlData.emotes[anim.name] = {
+						id: anim.name,
+						can_player_move: Boolean(anim.canPlayerMove),
+					}
+				}
+			}
+		}
+
+		fs.writeFileSync(ymlFile, yaml.dump(yamlData), 'utf8');
+		console.log(`Created new YML file: ${ymlFile}`);
+	}
 
 	Blockbench.showQuickMessage(tl('iaentitymodel.popups.successfullyExported'))
 }
