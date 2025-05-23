@@ -134,7 +134,7 @@ export function getProjectSaveFolder() {
 	return dirPath = normalizePath(dirPath);
 }
 
-export function refreshIcons() {
+export function refreshGroupsProperties() {
     // If any project is opened
     if(Project) {
         for (const [groupName, group] of Object.entries(Project.groups)) {
@@ -159,6 +159,13 @@ export function refreshIcons() {
                 group["icon"] = "fa fa-archive"
             else
                 group["icon"] = "fa fa-bone"
+
+            // Rename to lowercase each group name.
+            // Transform from "GroupName" to "group_name" (snake case)
+            let newName = group["name"].replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
+            if(newName !== group["name"]) {
+                group["name"] = newName;
+            }
 
             group.updateElement()
         }

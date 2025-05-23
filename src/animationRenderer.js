@@ -43,15 +43,8 @@ function getRotations(animation) {
 	})
 	const results = {}
 	function getRotation(obj3d) {
-		const group = Group.all.find(x => x.uuid == obj3d.name); // Shitty
-
+		// TODO: Is that needed at all?
 		const prevQuat = obj3d.quaternion.clone()
-		if(group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot" || group.boneType === "hatPivot") {
-		// 	obj3d.applyQuaternion(new THREE.Quaternion().setFromEuler(new Euler(0, 0, -10, 'ZYX')))
-			if(!isInternalModel(settings))
-				obj3d.rotateZ(-0.785398); // -45 // TODO: wtf is this? I should have commented that hardcoded fix.
-		// 	obj3d.rotateX(-0.261799); // -15
-		}
 		const worldQuat = obj3d.getWorldQuaternion(new THREE.Quaternion())
 		const e = new THREE.Euler(1, 1, 1, 'ZYX').setFromQuaternion(worldQuat)
 		obj3d.quaternion = prevQuat
@@ -73,22 +66,28 @@ function getPositions() {
 		
 		// Fix the hands offset calculation because items are shown on top of armorstand head not directly on the neck. 
 		let prevPos = group.mesh.position.clone();
-		if(group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot" || group.boneType === "hatPivot") {
-			// TODO: is this wrong? may I need to use relative position? entity should be in T-pose, so I might not need to worry.
-
-			if(isInternalModel(settings)) {
-				group.mesh.position.x -= 1
+		if (isInternalModel(settings)) {
+			group.mesh.position.x -= 1
+			group.mesh.position.y += 10
+			group.mesh.position.z += 0.5
+		} else {
+			if (group.boneType === "rightHandPivot") {
+				group.mesh.position.x -= 1.2
 				group.mesh.position.y += 10
 				group.mesh.position.z += 0.5
-			} else {
-				group.mesh.position.x -= 8.75
-				group.mesh.position.y -= 2
-				group.mesh.position.z += -4
+			} else  if (group.boneType === "leftHandPivot") {
+				group.mesh.position.x -= 1.2
+				group.mesh.position.y += 10
+				group.mesh.position.z += 0.5
+			}
+
+			if (group.boneType === "hatPivot") {
+				group.mesh.position.y -= 8
+				group.mesh.position.z -= 4
 			}
 		}
 
 		let pos = group.mesh.getWorldPosition(new THREE.Vector3())
-
 		pos.x = roundToN(pos.x / 16, 100000)
 		pos.y = roundToN(pos.y / 16, 100000)
 		pos.z = roundToN(pos.z / 16, 100000)

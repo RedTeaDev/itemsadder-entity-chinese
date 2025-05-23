@@ -332,7 +332,7 @@ Blockbench.on('select_project', () => {
 		if(Format.id === modelFormat.id) {
 
 			if(!global?.LONEDEV_DEBUG) {
-				refreshIcons()
+				refreshGroupsProperties()
 				// Hide the "variable placeholders" panel under the keyframe coords
 				// @ts-ignore
 				Interface.Panels.variable_placeholders.node.style.visibility = "hidden"
@@ -368,19 +368,19 @@ Blockbench.on('select_project', () => {
 // @ts-ignore
 Blockbench.on('add_group', () => {
 	if(Format.id === modelFormat.id) {
-		refreshIcons()
+		refreshGroupsProperties()
 	}
 })
 // @ts-ignore
 Blockbench.on('group_elements', () => {
 	if(Format.id === modelFormat.id) {
-		refreshIcons()
+		refreshGroupsProperties()
 	}
 })
 // @ts-ignore
 Blockbench.on('add_cube', () => {
 	if(Format.id === modelFormat.id) {
-		refreshIcons()
+		refreshGroupsProperties()
 
 		/*if(isInternalModel(settings)) {
 			alert("This is not currently supported. You can only add bones and mark them to `locator`. Please delete the cube.")
@@ -410,7 +410,7 @@ Blockbench.on('add_cube', () => {
 }
 
 Blockbench.on('select_mode', () => {
-	refreshIcons()
+	refreshGroupsProperties()
 	/*if(isInternalModel(settings)) {
 		hideEditPaintTabs()
 	}
@@ -424,7 +424,7 @@ Blockbench.on('select_mode', () => {
 
 // Dirty
 document.body.addEventListener('click', () => {
-	refreshIcons()
+	refreshGroupsProperties()
 }, true);
 
 // @ts-ignore
@@ -433,7 +433,7 @@ Blockbench.on('unselect_project', () => {
 })
 // @ts-ignore
 import logo from './assets/itemsadder_icon.png'
-import {isInternalModel, refreshIcons} from './util/utilz'
+import {isInternalModel, refreshGroupsProperties} from './util/utilz'
 import { safeFunctionName } from './util/replace'
 menu.label.innerHTML = tl('iaentitymodel.menubar.dropdown')
 let img = document.createElement('img')

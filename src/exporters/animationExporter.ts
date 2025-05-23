@@ -16,9 +16,6 @@ import yaml from 'js-yaml';
 
 interface vanillaAnimationExporterSettings {
 }
-const loopModeIDs = ['once', 'hold', 'loop']
-
-const staticAnimationUuid = store.get('staticAnimationUuid')
 
 async function createAnimationFile(
 	bones: aj.BoneObject,
@@ -32,8 +29,9 @@ async function createAnimationFile(
 ): Promise<{ animationFile: string }> {
 	let headYOffset = -1.813
 	headYOffset += -0.1
-	console.log(headYOffset)
+	console.log('headYOffset', headYOffset)
 
+	const staticAnimationUuid = store.get('staticAnimationUuid')
 	const staticFrame = animations[staticAnimationUuid].frames[0].bones
 
 	animations = removeKeyGently(staticAnimationUuid, animations)
@@ -490,6 +488,7 @@ async function animationExport(data: any) {
 		data.variantTouchedModels
 	)
 
+	const staticAnimationUuid = store.get('staticAnimationUuid')
 	await exportAnimationFile(generated, data.settings, exporterSettings)
 
 	// Check if it's an emote

@@ -1,6 +1,6 @@
 import { CustomAction } from '../../util/customAction'
 import { tl } from '../../util/intl'
-import {isInternalModel, refreshIcons} from '../../util/utilz'
+import {isInternalModel, refreshGroupsProperties} from '../../util/utilz'
 import { isCustomFormat } from '../../modelFormat'
 import { settings } from '../../settings'
 
@@ -149,7 +149,7 @@ function click (ev: any) {
 				}
 			}
 
-			refreshIcons()
+			refreshGroupsProperties()
 			dialog.hide()
 		},
 		onFormChange: (formData: any) => {
