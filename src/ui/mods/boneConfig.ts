@@ -12,7 +12,6 @@ export type AJGroup = {
 	mount: boolean
 	locator: boolean
 	hitbox: boolean
-	eyesHeight: boolean
 	boneType: string
 	maxHeadRotX: number
 	maxHeadRotY: number
@@ -47,7 +46,6 @@ const form1 = {
 			"mount": tl('iaentitymodel.dialogs.boneConfig.mount'),
 			"locator": tl('iaentitymodel.dialogs.boneConfig.locator'),
 			"hitbox": tl('iaentitymodel.dialogs.boneConfig.hitbox'),
-			"eyesHeight": tl('iaentitymodel.dialogs.boneConfig.eyesHeight'),
 			"head": tl('iaentitymodel.dialogs.boneConfig.head'),
 		}
 	}

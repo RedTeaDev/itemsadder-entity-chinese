@@ -293,7 +293,7 @@ async function renderAnimation(options) {
 				!isSceneBased(group) &&
 				group.visibility &&
 				(
-					group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot" || group.boneType === "hatPivot" || group.boneType === "mount" || group.boneType === "locator" || group.boneType === "hitbox" || group.boneType === "eyesHeight" ||
+					group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot" || group.boneType === "hatPivot" || group.boneType === "mount" || group.boneType === "locator" || group.boneType === "hitbox" ||
 					group.children.find((child) => child instanceof Cube)
 				)
 		)

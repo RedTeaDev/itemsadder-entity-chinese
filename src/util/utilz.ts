@@ -153,8 +153,6 @@ export function refreshGroupsProperties() {
                 group["icon"] = "fa fa-anchor"
             else if(group["boneType"] === "hitbox")
                 group["icon"] = "fa fa-square-full"
-            else if(group["boneType"] === "eyesHeight")
-                group["icon"] = "fa fa-eye"
             else if(group.parent["name"] === undefined) // Root element
                 group["icon"] = "fa fa-archive"
             else

@@ -278,7 +278,7 @@ async function createAnimationFile(
 		for (const [boneName, bone] of Object.entries(bones)) {
 			
 			// Skip hitbox, it's handled after this loop
-			if(boneName === "hitbox" || bone.boneType === "hitbox" || bone.boneType === "eyesHeight")
+			if(boneName === "hitbox" || bone.boneType === "hitbox")
 				continue
 
 			let scaledPosRot = staticFrame[boneName]
@@ -335,16 +335,6 @@ async function createAnimationFile(
 						? hitboxGroup.children[0].size()
 						: undefined
 				};
-			}
-		}
-		// EyesHeight
-		{
-			const tmp = Group.all.find(x => x["boneType"] === "eyesHeight")
-			if(tmp !== undefined && tmp.children.length > 0)
-			{
-				generatedAnimationData["eyes_height"] = {
-					height: tmp.children[0]["origin"][1]
-				}
 			}
 		}
 
