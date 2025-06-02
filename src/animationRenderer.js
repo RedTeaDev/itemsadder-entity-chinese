@@ -66,27 +66,29 @@ function getPositions() {
 		
 		// Fix the hands offset calculation because items are shown on top of armorstand head not directly on the neck. 
 		let prevPos = group.mesh.position.clone();
-		if (isInternalModel(settings)) {
-			group.mesh.position.x -= 1
-			group.mesh.position.y += 10
-			group.mesh.position.z += 0.5
-		} else {
-			if (group.boneType === "rightHandPivot") {
-				group.mesh.position.x -= 1.2
+		if(group.boneType === "leftHandPivot" || group.boneType === "rightHandPivot" || group.boneType === "hatPivot") {
+			if (isInternalModel(settings)) {
+				group.mesh.position.x -= 1
 				group.mesh.position.y += 10
 				group.mesh.position.z += 0.5
-			} else  if (group.boneType === "leftHandPivot") {
-				group.mesh.position.x -= 1.2
-				group.mesh.position.y += 10
-				group.mesh.position.z += 0.5
-			}
+			} else {
+				if (group.boneType === "rightHandPivot") {
+					group.mesh.position.x -= 1.2
+					group.mesh.position.y += 10
+					group.mesh.position.z += 0.5
+				} else if (group.boneType === "leftHandPivot") {
+					group.mesh.position.x -= 1.2
+					group.mesh.position.y += 10
+					group.mesh.position.z += 0.5
+				}
 
-			if (group.boneType === "hatPivot") {
-				group.mesh.position.y -= 8
-				group.mesh.position.z -= 4
+				if (group.boneType === "hatPivot") {
+					group.mesh.position.y -= 8
+					group.mesh.position.z -= 4
+				}
 			}
 		}
-
+		
 		let pos = group.mesh.getWorldPosition(new THREE.Vector3())
 		pos.x = roundToN(pos.x / 16, 100000)
 		pos.y = roundToN(pos.y / 16, 100000)
