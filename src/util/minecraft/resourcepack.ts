@@ -63,20 +63,43 @@ export function getTexturePath(texture: any) {
 	let texturesFolder = getTexturesExportFolder(settings)
 	let newPath = path.join(texturesFolder, texture.name.toLowerCase())
 
-	if(texture.saved && texture.path !== '') {
-		if(fs.existsSync(texture.path)) {
-			fs.copyFile(texture.path, newPath, (err) => {
-				if (err) {
-					console.error(err)
-					return
+	// If the newPath does not end with .png, append it
+	if (!newPath.endsWith('.png')) {
+		newPath += '.png'
+	}
+
+	if(texture.path === '') {
+		texture.path = newPath
+	}
+
+	if(texture.saved && fs.existsSync(texture.path)) {
+		fs.copyFile(texture.path, newPath, (err) => {
+			if (err) {
+				console.error(err)
+				return
+			}
+			console.log('Copied texture to export path', newPath)
+		});
+	} else {
+		texture.saved = false
+		const dataUrl = texture.getDataURL();
+		if (typeof dataUrl === 'string' && dataUrl.startsWith('data:image/png;base64,')) {
+			const base64Data = dataUrl.replace(/^data:image\/png;base64,/, '');
+			fs.writeFileSync(newPath, base64Data, 'base64');
+			texture.saved = true;
+			console.log('Created new texture file at', newPath);
+
+			// Export the texture animation if it has one
+			if (texture.frameCount && texture.frameCount > 1) {
+				const metaContent = texture.getMCMetaContent();
+				if (metaContent) {
+					const metaPath = newPath.replace(/\.png$/, '.png.mcmeta');
+					fs.writeFileSync(metaPath, JSON.stringify(metaContent, null, 2));
+					console.log('Created .mcmeta file at', metaPath);
 				}
-				console.log('Copied texture to export path', newPath)
-			});
+			}
 		} else {
-			texture.saved = false
-			fs.closeSync(fs.openSync(texture.path, 'w')) // Hack to create a blank file
-			texture.save(false)
-			texture.saved = true
+			console.error('Invalid data URL for texture:', dataUrl);
 		}
 	}
 
