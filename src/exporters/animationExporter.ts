@@ -368,65 +368,67 @@ async function exportAnimationFile(
 		custom_writer: null,
 	})
 
-	// Iterate all .yml files in the project folder and check if they contain the custom entity, otherwise generate a new one.
-	const projectFolder = getProjectFolder()
-	function getAllYmlFiles(dir: string): string[] {
-		let results: string[] = [];
-		const list = fs.readdirSync(dir);
-		list.forEach(function(file) {
-			const filePath = path.join(dir, file);
-			const stat = fs.statSync(filePath);
-			if (stat && stat.isDirectory()) {
-				results = results.concat(getAllYmlFiles(filePath));
-			} else if (file.endsWith('.yml')) {
-				results.push(filePath);
-			}
-		});
-		return results;
-	}
-
-	const files = getAllYmlFiles(projectFolder);
-	let found = false;
-	for (const file of files) {
-		const fileContent = fs.readFileSync(file, 'utf8');
-		let ymlData;
-		try {
-			ymlData = yaml.load(fileContent);
-		} catch (e) {
-			console.warn(`Failed to parse YAML file: ${file}`, e);
-			continue;
+	if(!isInternalModel(settings)) {
+		// Iterate all .yml files in the project folder and check if they contain the custom entity, otherwise generate a new one.
+		const projectFolder = getProjectFolder()
+		function getAllYmlFiles(dir: string): string[] {
+			let results: string[] = [];
+			const list = fs.readdirSync(dir);
+			list.forEach(function(file) {
+				const filePath = path.join(dir, file);
+				const stat = fs.statSync(filePath);
+				if (stat && stat.isDirectory()) {
+					results = results.concat(getAllYmlFiles(filePath));
+				} else if (file.endsWith('.yml')) {
+					results.push(filePath);
+				}
+			});
+			return results;
 		}
 
-		if (ymlData && ymlData.info && ymlData.info.namespace === settings.iaentitymodel.namespace) {
-			console.log(`File ${file} contains the correct namespace: ${settings.iaentitymodel.namespace}`);
-
-			// Check if the file contains the custom entity
-			if (ymlData.entities && ymlData.entities[settings.iaentitymodel.projectName]) {
-
-				console.log(`File ${file} contains the custom entity: ${settings.iaentitymodel.projectName}`);
-				found = true;
-				break;
+		const files = getAllYmlFiles(projectFolder);
+		let found = false;
+		for (const file of files) {
+			const fileContent = fs.readFileSync(file, 'utf8');
+			let ymlData;
+			try {
+				ymlData = yaml.load(fileContent);
+			} catch (e) {
+				console.warn(`Failed to parse YAML file: ${file}`, e);
+				continue;
 			}
-		}
-	}
 
-	if(!found) {
-		const ymlFile = path.join(projectFolder, "custom_entity_" + settings.iaentitymodel.projectName + ".yml");
-		const ymlData = {
-			info: {
-				namespace: settings.iaentitymodel.namespace,
-			},
-			entities: {
-				[settings.iaentitymodel.projectName]: {
-					model_folder: "entity/" + settings.iaentitymodel.projectName,
-					type: "ZOMBIE",
-					can_sun_burn: false,
+			if (ymlData && ymlData.info && ymlData.info.namespace === settings.iaentitymodel.namespace) {
+				console.log(`File ${file} contains the correct namespace: ${settings.iaentitymodel.namespace}`);
+
+				// Check if the file contains the custom entity
+				if (ymlData.entities && ymlData.entities[settings.iaentitymodel.projectName]) {
+
+					console.log(`File ${file} contains the custom entity: ${settings.iaentitymodel.projectName}`);
+					found = true;
+					break;
 				}
 			}
-		};
+		}
 
-		fs.writeFileSync(ymlFile, yaml.dump(ymlData), 'utf8');
-		console.log(`Created new YML file: ${ymlFile}`);
+		if(!found) {
+			const ymlFile = path.join(projectFolder, "custom_entity_" + settings.iaentitymodel.projectName + ".yml");
+			const ymlData = {
+				info: {
+					namespace: settings.iaentitymodel.namespace,
+				},
+				entities: {
+					[settings.iaentitymodel.projectName]: {
+						model_folder: "entity/" + settings.iaentitymodel.projectName,
+						type: "ZOMBIE",
+						can_sun_burn: false,
+					}
+				}
+			};
+
+			fs.writeFileSync(ymlFile, yaml.dump(ymlData), 'utf8');
+			console.log(`Created new YML file: ${ymlFile}`);
+		}
 	}
 }
 
