@@ -23,6 +23,7 @@ iaentitymodel:
         exportInProgress: 导出中！
         noExporterSelected: 未选择导出器！
         successfullyExported: 导出成功！
+        projectNotSaved: 项目未保存！
 
     progress:
         animationRendering: 渲染动画中... %currents/%totals
