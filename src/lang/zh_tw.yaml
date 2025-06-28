@@ -1,2 +1,370 @@
-# please copy the contents of en.yaml to this file before you translate it.
-delete: me #this is required for a successful build
+---
+#? AJ
+iaentitymodel:
+    plugin:
+        title: ItemsAdder Entity
+
+    menubar:
+        dropdown: ItemsAdder Entity
+        settings: 設置
+        export: 導出模型
+        about: 關於...
+
+    panels:
+        variants:
+            title: 模型變體
+            addVariant:
+                title: 添加變體
+                description: 為模型添加變體
+            back: 返回
+
+    popups:
+        exportCancelled: 導出已取消！
+        exportInProgress: 導出中！
+        noExporterSelected: 未選擇導出器！
+        successfullyExported: 導出成功！
+        projectNotSaved: 專案未保存！
+
+    progress:
+        animationRendering: 渲染動畫中... %currents/%totals
+
+    settings:
+        header: ItemsAdder Entity設置
+        namespace:
+            title: 實體命名空間
+            description:
+                - 您的實體的命名空間。
+            errors:
+                invalidFunctionName: 實體命名空間無效！
+        rotationMode:
+            title: 旋轉模式 (Rotation Mode)
+            description:
+                - ItemsAdder 提供兩種骨骼旋轉模式。
+                - 您需要根據實體的用途來決定：
+                - " - 平滑：適用於不會快速移動且骨骼較少的 NPC 和實體。"
+                - " - 精確：適用於骨骼較多且移動速度快的怪物（例如：跑步、跳躍、飛行、具有複雜攻擊的 Boss 等）。"
+            options:
+                smooth: 平滑
+                precise: 精確
+        modelScalingMode:
+            title: 模型縮放模式
+            description:
+                - 最大模型尺寸提供 7x7x7 方塊寬的模型，但僅限於縮小。
+                - 最大縮放範圍提供縮小和放大至 3.125 倍的尺寸，但最大模型尺寸限制為 3x3x3 方塊。
+            options:
+                3x3x3: 最大縮放
+                7x7x7: 最大模型尺寸
+        isGlobal: (全局)
+        isOptional: (可選)
+        generic:
+            errors:
+                invalid: 當你看見這條信息時代表 ItemsAdder Entity壞了。（哎喲）
+                emptyValue: 值不能為空
+                mustBeBoolean: 必須為布爾值
+                mustBeString: 必須為字符串
+                missingFormatString: 缺少必要的 %notFound 格式化字符串
+                invalidEntityTag: 不是有效的實體標籤
+        projectName:
+            title: 型號名稱
+            description:
+                - 您的實體的唯一 ID。 確保你設置了這個！
+            errors:
+                invalidFunctionName: 實體名稱無效！
+        exporter:
+            title: 導出器
+            description:
+                - 此項目所使用的導出格式
+            errors:
+                mustBeValidExporter: 所選的導出器不存在於已註冊的列表中！
+        verbose:
+            title: 詳細
+            description:
+                - 所選的導出器是否導出額外的調試/錯誤信息。
+                - 僅影響靜態和動畫導出器。
+        transparentTexturePath:
+            title: 透明紋理路徑
+            description:
+                - 為變體添加透明紋理。僅在變體需要透明紋理時使用。
+            errors:
+                undefinedWhenNeeded: 變體使用透明紋理時必須定義該路徑！
+        useCache:
+            title: 使用動畫緩存
+            description:
+                - 僅在動畫改變時重新渲染
+        cacheMode:
+            title: 動畫緩存模式
+            description:
+                - 允許僅在上次導出後動畫改變時重新渲染動畫。使重複導出更快，尤其是在較大的模型上。
+                - '- 內存模式，更快但會使用更多的內存用於緩存。'
+                - '- 磁盤模式，較慢但會將緩存保存到磁盤以節省內存使用量。'
+            options:
+                memory: 內存模式
+                disk: 磁盤模式
+        boundingBoxRenderMode:
+            title: 骨骼大小限制框
+            description:
+                - 配置或禁用骨骼大小限制框。
+                - '- 單個，僅會顯示一個限制框。'
+                - '- 複數，會顯示所選骨骼的限制框。'
+                - '- 禁用，不顯示限制框。'
+            options:
+                single: 單個
+                many: 複數
+                none: 禁用
+
+    dialogs:
+        boneConfig:
+            title: 骨骼配置
+            boneNbt: 骨骼 NBT
+            armAnimationEnabled: 啟用手臂動畫
+            head: Is Head
+
+        variants:
+            title: 模型變體
+            description:
+                - 允許你的模型擁有不同的「皮膚」，可以在運行中通過執行函數來切換皮膚。
+
+        about:
+            title: 關於 ItemsAdder Entity
+            description:
+                - 一個為幫助 Minecraft Java 版地圖創作者們製作絲滑、豐富的動畫而準備的工具。
+
+            version: 版本
+            buildID: 構建版本 ID
+
+            creators: 作者
+            discordServer: 加入我們的 Discord 伺服器！
+            githubRepo: 源碼
+            developers: 開發者
+            patrons: Patrons
+            honourableMentions: 特別鳴謝
+
+            fetchbotQuote: '「讓Java版怪物也舞動起來！」'
+            snavesutitQuote: '「盔甲架是愛，亦是生活。」'
+
+            youtuber: Youtuber
+            translator: 翻譯員
+            contributor: 貢獻者
+            moderator: Discord 管理員
+            closedBeta: 內測成員
+            brandingArtist: 美工
+            patronTier1: 一級贊助者
+            patronTier2: 二級贊助者
+            patronTier3: 三級贊助者
+
+        animationProperties:
+            animationCompleteCommand:
+                label: 動畫結束後執行的指令
+
+        errors:
+            misc:
+                title: ItemsAdder Entity 出現了一個未知錯誤
+                body:
+                    - |-
+                        <textarea style="height: 256px" readonly="readonly">
+                        ------ Error ------
+                        %errorMessage  //  "%randomErrorMessage"
+                        ------ Stack ------
+                        %errorStack
+
+                        Build ID: %buildID
+                        </textarea>
+                    - <p>請在 <a href="%githubLink">ItemsAdder Entity的GitHub</a> 上報告這個錯誤，提供重現方式及上述錯誤信息。</p>
+                    - <p>你也可以加入我們的 <a href="%discordLink">Discord 伺服器</a> 並在 #animated-java-support 頻道上尋求幫助。</p>
+                    - <p>感謝！</p>
+
+            topLevelCubes:
+                title: 模型存在不包含在組的塊
+                body:
+                    - 所有塊必須包含在組內。
+
+            predicateMergeFailed:
+                title: Predicate 合併失敗
+                body:
+                    - '%reason'
+                    - 僅支持合併到 ItemsAdder Entity 控制的 predicate 模型。
+                    - 請確保你的 predicate 物品模型合併到一個已存在且有效的 ItemsAdder Entity predicate 物品模型。
+                reasons:
+                    overridesMissing: 模型缺少 overrides 列表。
+                    ajMetaMissing: 所合併到的物品模型並非 ItemsAdder Entity predicate 文件。
+
+            invalidAnimationSnappingValue:
+                title: 無效的動畫吸附值
+                body:
+                    - "'%animationName' 動畫的吸附值為 %snapping！"
+                    - ItemsAdder Entity 僅支持和使用與 Minecraft 遊戲刻相同的吸附值（20）。
+                    - 請在導出前更新該動畫為此值。
+                    - （你可能需要稍微移動時間軸上的關鍵幀以更新現有的吸附時間）
+
+            rigFolderHasUnknownContent:
+                title: 未使用的骨骼資料夾
+                body:
+                    - 所選的骨骼模型資料夾存在未知文件。
+                    - 確定讓骨骼文件內容覆蓋到此資料夾？
+                    - '所選資料夾：'
+                    - <textarea>%path</textarea>
+                    - '未知文件：'
+                    - <textarea>%files</textarea>
+
+            rigFolderAlreadyUsedByOther:
+                title: 已在使用的骨骼資料夾
+                body:
+                    - 所選的骨骼模型資料夾已存在其他骨骼模型。
+                    - 確定讓骨骼文件內容覆蓋已存在的內容？
+                    - '所選資料夾：'
+                    - <textarea>%path</textarea>
+                    - '文件：'
+                    - <textarea>%files</textarea>
+
+            unableToGenerateTexturePath:
+                title: 無效的紋理路徑
+                body:
+                    - 紋理 '%textureName' 在資源包中的路徑無效
+                    - 請確保紋理正確地保存在資源包的 'assets/namespace/textures/' 路徑下
+                    - 例：'resources/assets/minecraft/textures/item/diamond.png'
+
+            unableToGenerateModelPath:
+                title: 無效的模型路徑
+                body:
+                    - 模型 '%modelName' 在資源包中的路徑無效
+                    - 請確保模型正確地保存在資源包的 'assets/namespace/models/' 路徑下
+                    - 例：'resources/assets/minecraft/models/item/diamond.json'
+
+            invalidCubeRotations:
+                title: 無效的旋轉塊
+                body:
+                    - 某些塊的旋轉值在Java模型格式中無效。
+                    - 導出前需要移除所有塊中的無效旋轉值。
+
+            unsavedTexture:
+                title: 未保存的紋理
+                body:
+                    - 紋理 '%textureName' 未保存！
+                    - 請確保紋理已正確地保存在資源包內。
+
+            transparentTexturePathNotFound:
+                title: 未定義透明紋理路徑
+                body:
+                    - 在使用的變體帶有未定義路徑的透明紋理嗎？
+                    - 導出前需要在配置中設置透明紋理的路徑。
+
+    exporters:
+        #? Generic Exporter Strings
+        generic:
+            progress:
+                writingDataPack: 數據包寫入到硬碟中... %progress% | %fileName 寫入中
+                exportingDataPack: 生成數據包中... %progress%
+
+            settings:
+                rootEntityType:
+                    title: 根實體類型
+                    description:
+                        - 根實體所使用的實體類型
+                    errors:
+                        invalidEntity: 所選實體不存在！
+
+                rootEntityNbt:
+                    title: 根實體 NBT
+                    description:
+                        - 根實體的 NBT 數據
+                    errors:
+                        invalidNbt: 無效的 NBT！
+
+                markerArmorStands:
+                    title: 盔甲架 Marker
+                    description:
+                        - 啟用時將移除所有用於顯示骨骼的盔甲架的碰撞箱。
+
+                modelTag:
+                    title: 模型標籤
+                    description:
+                        - 選擇此模型時所使用的標籤
+
+                rootTag:
+                    title: 根標籤
+                    description:
+                        - 選擇此靜態根實體時所使用的標籤
+
+                allBonesTag:
+                    title: 所有骨骼標籤
+                    description:
+                        - 選擇此靜態模型任意/所有骨骼時所使用的標籤
+
+                boneModelDisplayTag:
+                    title: 骨骼模型顯示標籤
+                    description:
+                        - 選擇顯示模型的實體所使用的標籤（頭戴物品的 armor_stands）
+
+                individualBoneTag:
+                    title: 特定骨骼標籤
+                    description:
+                        - 選擇指定名稱的骨骼時所使用的標籤
+
+                internalScoreboardObjective:
+                    title: 內部記分板
+                    description:
+                        - 用於內部計算的記分板目標名稱
+
+                idScoreboardObjective:
+                    title: 模型 ID 記分板
+                    description:
+                        - 用於標識不同實體和模型實例的記分板目標名稱
+
+                exportMode:
+                    title: 導出模式
+                    description:
+                        - 導出的格式。原版導出數據包和資源包。
+                        - MC-Build（MCB）則導出資源包和用於 lang-mc 編譯器的 .mc 文件
+                    options:
+                        mcb: MCB
+                        vanilla: 原版
+
+                itemsadderItemConfig:
+                    title: Lang-mc 文件路徑
+                    description:
+                        - .mc 文件的導出路徑
+                        - 需要先安裝 mc-extra 到你的 MCB 工作區才能構建導出的資源包
+
+                mcbConfigPath:
+                    title: Lang-mc config.json 路徑
+                    description:
+                        - 導出用於 ItemsAdder Entity 的默認 MCB 配置
+                        - 警告！該操作會覆蓋現有的 config.json
+                    errors:
+                        mustBeNamedAfterProject: 路徑必須指向名為 %projectName.mc 的文件！
+
+        #? Vanilla Statue Exporter
+        vanillaStatue:
+            title: 靜態導出器
+
+        #? Vanilla Animation Exporter
+        vanillaAnimation:
+            title: 動畫導出器
+            dialogs:
+                errors:
+                    zeroLengthAnimation:
+                        title: 零長度動畫
+                        body:
+                            - 動畫 %animationName 的長度過短！最短動畫長度應至少為0.05秒（1遊戲刻）
+
+                    noAnimations:
+                        title: 缺少動畫
+                        body:
+                            - 未發現任何動畫！
+                            - 使用動畫導出器前需要在動畫模式中創建動畫。
+
+            settings:
+                frameScoreboardObjective:
+                    title: 幀 記分板
+                    description:
+                        - 用於跟蹤動畫下一幀的記分板目標名稱
+
+                animatingFlagScoreboardObjective:
+                    title: 動畫標記 記分板
+                    description:
+                        - 用於查詢骨骼動畫是否播放中的記分板目標名稱
+
+                animationLoopModeScoreboardObjective:
+                    title: 動畫循環模式 記分板
+                    description:
+                        - 用於控制各動畫循環行為的記分板目標名稱
